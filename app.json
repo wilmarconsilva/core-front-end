@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Core",
+    "slug": "core",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "newArchEnabled": true,
+      "edgeToEdge": {
+        "enabled": true
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "ios": {
+      "supportsTablet": true,
+      "newArchEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/logo.png",
+      "name": "Core",
+      "shortName": "Core",
+      "description": "Sistema ERP Core.",
+      "themeColor": "#1e501b",
+      "backgroundColor": "#FFFFFF",
+      "display": "standalone",
+      "orientation": "any",
+      "lang": "pt-BR",
+      "scope": "/",
+      "startUrl": "/"
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
