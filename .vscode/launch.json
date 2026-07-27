@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Core - Web Application",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:8081",
+      "webRoot": "${workspaceFolder}",
+      "skipFiles": [
+        "chrome-error://**",
+        "edge-error://**",
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+        "webpack:////*": "/*",
+        "webpack://?:*/*": "${workspaceFolder}/*"
+      }
+    },
+    {
+      "name": "Attach to Expo (Hermes)",
+      "type": "reactnativedirect",
+      "request": "attach"
+    }
+  ]
+}

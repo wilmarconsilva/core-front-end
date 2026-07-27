@@ -1,0 +1,42 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "setup": "node setup.js",
+    "reorganize": "node reorganize.js",
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "preweb": "npm run pwa:sync",
+    "web": "expo start --web",
+    "web:tunnel": "expo start --web --tunnel",
+    "pwa:sync": "tsx scripts/sync-pwa-artifacts.ts",
+    "build:web": "npm run pwa:sync && expo export -p web"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^15.1.1",
+    "expo": "^55.0.17",
+    "expo-font": "~55.0.6",
+    "expo-status-bar": "~55.0.5",
+    "idb": "^8.0.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-native": "0.83.6",
+    "react-native-currency-input": "^1.1.1",
+    "react-native-mask-input": "^1.2.3",
+    "react-native-toast-message": "^2.3.3",
+    "react-native-web": "^0.21.0",
+    "react-to-print": "^3.3.0",
+    "signature_pad": "^5.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "~19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "expo-module-scripts": "~55.0.2",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}
