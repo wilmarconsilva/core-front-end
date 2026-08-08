@@ -1,7 +1,7 @@
 {
   "name": "Core",
   "short_name": "Core",
-  "description": "Sistema ERP Core.",
+  "description": "Sistema ERP Core",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

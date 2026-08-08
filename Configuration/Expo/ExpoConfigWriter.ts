@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { ExpoConfigurationFactory } from './ExpoConfigurationFactory';
-import { IExpoConfigWriter } from './IExpoConfigWriter';
+import { IExpoConfigWriter } from './Interfaces/IExpoConfigWriter';
 
 export class ExpoConfigWriter implements IExpoConfigWriter {
   async write(projectRoot: string): Promise<void> {

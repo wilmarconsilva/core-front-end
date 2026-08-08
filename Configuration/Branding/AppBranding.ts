@@ -1,9 +1,8 @@
-import { IAppBranding } from './IAppBranding';
+import { IAppBranding } from './Interfaces/IAppBranding';
 
 export const AppBranding: IAppBranding = {
   name: 'Core',
   shortName: 'Core',
-  slug: 'core',
-  description: 'Sistema ERP Core.',
+  description: 'Sistema ERP Core',
   languageTag: 'pt-BR',
 };

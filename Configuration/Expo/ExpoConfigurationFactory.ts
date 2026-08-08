@@ -1,13 +1,14 @@
 import { AppBranding } from '../Branding/AppBranding';
 import { AppThemeColors } from '../Theme/AppThemeColors';
 import { PwaAssetPaths } from '../Pwa/PwaAssetPaths';
+import { ExpoProjectIdentity } from './ExpoProjectIdentity';
 
 export class ExpoConfigurationFactory {
   static create() {
     return {
       expo: {
         name: AppBranding.name,
-        slug: AppBranding.slug,
+        slug: ExpoProjectIdentity.slug,
         version: '1.0.0',
         orientation: 'portrait',
         icon: PwaAssetPaths.sourceLogo,
