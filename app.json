@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Core",
-    "slug": "core",
+    "slug": "core-front-end",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -30,7 +30,7 @@
       "favicon": "./assets/logo.png",
       "name": "Core",
       "shortName": "Core",
-      "description": "Sistema ERP Core.",
+      "description": "Sistema ERP Core",
       "themeColor": "#1e501b",
       "backgroundColor": "#FFFFFF",
       "display": "standalone",
