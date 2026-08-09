@@ -5,4 +5,5 @@ export interface IColumn<T> {
   label: string;
   render?: (item: T) => ReactNode;
   flex?: number;
+  minWidth?: number;
 }

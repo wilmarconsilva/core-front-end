@@ -46,7 +46,7 @@ export function ProductsListScreen({ onGoBack, onNavigateToForm }: ICrudListScre
         </View>
       )}
       columns={[
-        { key: 'id', label: 'Código', flex: 0.4 },
+        { key: 'id', label: 'Código', flex: 1 },
         { key: 'description', label: 'Descrição', flex: 2 },
       ]}
       data={listings}

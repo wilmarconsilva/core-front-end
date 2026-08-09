@@ -106,7 +106,7 @@ export function CommercialDocumentFormScreen({
               name: filters.name?.trim() || undefined,
             })}
             columns={[
-              { key: 'id', label: 'Código', flex: 0.4 },
+              { key: 'id', label: 'Código', flex: 1 },
               { key: 'name', label: 'Nome', flex: 2 },
               { key: 'document', label: 'Documento', flex: 1.2 },
             ]}
@@ -155,7 +155,7 @@ export function CommercialDocumentFormScreen({
                     description: filters.description?.trim() || undefined,
                   })}
                   columns={[
-                    { key: 'id', label: 'Código', flex: 0.4 },
+                    { key: 'id', label: 'Código', flex: 1 },
                     { key: 'description', label: 'Descrição', flex: 2 },
                   ]}
                   keyExtractor={(product) => String(product.id)}

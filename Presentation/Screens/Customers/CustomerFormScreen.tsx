@@ -131,7 +131,7 @@ export function CustomerFormScreen({ id, onGoBack }: IEntityFormScreenProps) {
                 description: filters.description?.trim() || undefined,
               })}
               columns={[
-                { key: 'id', label: 'Código', flex: 0.4 },
+                { key: 'id', label: 'Código', flex: 1 },
                 { key: 'description', label: 'Descrição', flex: 2 },
               ]}
               keyExtractor={(l) => String(l.id)}

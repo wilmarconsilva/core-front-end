@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { ActivityIndicator, LayoutChangeEvent, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { IColumn } from '../Interfaces/DataGrid/IColumn';
 import { IDataGridProps } from '../Interfaces/DataGrid/IDataGridProps';
-import { colors, tableStyles } from '../Styles';
+import { colors, tableStyles, TABLE_ROW_HORIZONTAL_PADDING } from '../Styles';
 
 export type { IColumn } from '../Interfaces/DataGrid/IColumn';
 
@@ -10,6 +11,13 @@ function getCellValue<T>(item: T, key: keyof T | string): string {
   const value = (item as Record<string, unknown>)[key as string];
   if (value === null || value === undefined) return '';
   return String(value);
+}
+
+const ACTIONS_COLUMN_WIDTH = 100;
+const FLEX_UNIT_WIDTH = 70;
+
+function getColumnMinWidth<T>(col: IColumn<T>): number {
+  return col.minWidth ?? Math.round((col.flex ?? 1) * FLEX_UNIT_WIDTH);
 }
 
 export function DataGrid<T>({
@@ -34,26 +42,35 @@ export function DataGrid<T>({
     setContainerWidth(e.nativeEvent.layout.width);
   };
 
+  const contentMinWidth = columns.reduce((sum, col) => sum + getColumnMinWidth(col), 0)
+    + (hasActions ? ACTIONS_COLUMN_WIDTH : 0)
+    + TABLE_ROW_HORIZONTAL_PADDING * 2;
+  const contentWidth = Math.max(containerWidth, contentMinWidth);
+  const isScrollable = containerWidth > 0 && contentMinWidth > containerWidth;
+
   const isPrevDisabled = page <= 1;
   const isNextDisabled = data.length < pageSize;
 
   return (
     <View style={[tableStyles.container, { width: '100%' }]} onLayout={onLayout}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{ minWidth: containerWidth || '100%' }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={isScrollable}>
+        <View style={{ width: contentWidth }}>
           {/* Header */}
           <View style={tableStyles.header}>
             {columns.map((col, idx) => (
               <Text
                 key={idx}
-                style={[tableStyles.headerCell, { flex: col.flex ?? 1, paddingRight: 8 }]}
+                style={[
+                  tableStyles.headerCell,
+                  { flexGrow: col.flex ?? 1, flexShrink: 0, flexBasis: getColumnMinWidth(col), paddingRight: 8 },
+                ]}
                 numberOfLines={1}
               >
                 {col.label}
               </Text>
             ))}
             {hasActions && (
-              <Text style={[tableStyles.headerCell, { width: 100 }]}>Ações</Text>
+              <Text style={[tableStyles.headerCell, { width: ACTIONS_COLUMN_WIDTH }]}>Ações</Text>
             )}
           </View>
 
@@ -79,7 +96,16 @@ export function DataGrid<T>({
             const rowContent = (
               <>
                 {columns.map((col, colIdx) => (
-                  <View key={colIdx} style={{ flex: col.flex ?? 1, paddingRight: 8 }}>
+                  <View
+                    key={colIdx}
+                    style={{
+                      flexGrow: col.flex ?? 1,
+                      flexShrink: 0,
+                      flexBasis: getColumnMinWidth(col),
+                      paddingRight: 8,
+                      alignItems: 'center',
+                    }}
+                  >
                     {col.render ? (
                       col.render(item)
                     ) : (
@@ -90,7 +116,7 @@ export function DataGrid<T>({
                   </View>
                 ))}
                 {hasActions && (
-                  <View style={[tableStyles.actionsCell, { width: 100 }]}>
+                  <View style={[tableStyles.actionsCell, { width: ACTIONS_COLUMN_WIDTH }]}>
                     {onEdit && canMutate && (
                       <TouchableOpacity
                         onPress={() => onEdit(item)}
