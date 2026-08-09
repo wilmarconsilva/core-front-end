@@ -7,7 +7,7 @@ export { layoutStyles } from './layoutStyles';
 export { typographyStyles } from './typographyStyles';
 export { gridStyles } from './gridStyles';
 export { breadcrumbStyles } from './breadcrumbStyles';
-export { tableStyles } from './tableStyles';
+export { tableStyles, TABLE_ROW_HORIZONTAL_PADDING } from './tableStyles';
 export { modalStyles } from './modalStyles';
 export { appToastStyles } from './appToastStyles';
 export { customerFormScreenStyles } from './Customers/customerFormScreenStyles';

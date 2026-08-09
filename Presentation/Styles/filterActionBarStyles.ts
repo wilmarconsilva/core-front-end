@@ -2,21 +2,17 @@ import { StyleSheet } from 'react-native';
 
 export const filterActionBarStyles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    gap: 8,
     marginBottom: 12,
-    alignItems: 'center',
-    flexWrap: 'wrap',
   },
   filters: {
-    flex: 1,
     flexDirection: 'row',
     gap: 8,
-    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
   },
   actions: {
     flexDirection: 'row',
     gap: 8,
+    justifyContent: 'flex-end',
   },
   btn: {
     marginTop: 0,

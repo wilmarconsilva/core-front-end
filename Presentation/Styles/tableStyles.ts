@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
 import { colors } from './colors';
 
+export const TABLE_ROW_HORIZONTAL_PADDING = 16;
+
 export const tableStyles = StyleSheet.create({
   container: {
     backgroundColor: colors.surface,
@@ -13,7 +15,7 @@ export const tableStyles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#f9fbf9',
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: TABLE_ROW_HORIZONTAL_PADDING,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
@@ -22,11 +24,12 @@ export const tableStyles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 11,
     letterSpacing: 0.8,
+    textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
     paddingVertical: 13,
-    paddingHorizontal: 16,
+    paddingHorizontal: TABLE_ROW_HORIZONTAL_PADDING,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
     alignItems: 'center',
@@ -36,11 +39,13 @@ export const tableStyles = StyleSheet.create({
     fontSize: 13,
     color: colors.textPrimary,
     lineHeight: 18,
+    textAlign: 'center',
   },
   actionsCell: {
     flexDirection: 'row',
     gap: 4,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   actionButton: {
     padding: 6,
