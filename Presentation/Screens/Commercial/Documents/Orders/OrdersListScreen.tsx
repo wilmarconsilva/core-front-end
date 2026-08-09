@@ -47,7 +47,7 @@ export function OrdersListScreen({ onGoBack, onNavigateToForm }: ICrudListScreen
         {
           key: 'budgetId',
           label: 'Orçamento',
-          flex: 0.8,
+          flex: 1.1,
           render: (item) => (
             <Text style={tableStyles.cell}>
               {item.budgetId ?? ''}

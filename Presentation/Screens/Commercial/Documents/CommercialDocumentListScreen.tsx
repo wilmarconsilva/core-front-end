@@ -63,9 +63,9 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
   operationMode,
 }: CommercialDocumentListScreenProps<TListing>) {
   const columns: IColumn<TListing>[] = [
-    { key: 'id', label: 'Código', flex: 0.4 },
+    { key: 'id', label: 'Código', flex: 1 },
     { key: 'custormerName', label: 'Cliente', flex: 2 },
-    { key: 'customerLocalityState', label: 'Localidade/Estado', flex: 1.5 },
+    { key: 'customerLocalityState', label: 'Localidade/Estado', flex: 2.4 },
   ];
 
   if (showCreationDate) {
