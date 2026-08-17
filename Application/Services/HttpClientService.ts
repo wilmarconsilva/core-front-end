@@ -3,7 +3,7 @@ import { IAccessToken } from '../Interfaces/DataTransferObjects/Authentication/I
 import { TokenStorageService } from './TokenStorageService';
 
 if (!process.env?.EXPO_PUBLIC_WEB_SERVICE_URL?.trim()) {
-  throw new Error('EXPO_PUBLIC_WEB_SERVICE_URL is not defined in the .env file.');
+  throw new Error('EXPO_PUBLIC_WEB_SERVICE_URL is not defined as an environment variable or in the .env file.');
 }
 
 export const API_BASE_URL = process.env.EXPO_PUBLIC_WEB_SERVICE_URL as string;
