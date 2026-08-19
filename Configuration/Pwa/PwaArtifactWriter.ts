@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { generateImageAsync } from '@expo/image-utils';
-import { AppThemeColors } from '../Themes/AppThemeColors';
+import { appThemeColors } from '../Themes/appThemeColors';
 import { IPwaArtifactWriter } from './IPwaArtifactWriter';
 import { IPwaManifest } from './IPwaManifest';
 import { IPwaWebHeadMetadata } from './IPwaWebHeadMetadata';
@@ -36,7 +36,7 @@ export class PwaArtifactWriter implements IPwaArtifactWriter {
             width: size,
             height: size,
             resizeMode: 'contain',
-            backgroundColor: AppThemeColors.surface,
+            backgroundColor: appThemeColors.surface,
           },
         );
 

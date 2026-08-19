@@ -1,4 +1,4 @@
-export const AppThemeColors = {
+export const appThemeColors = {
   primary: '#1e501b',
   primaryLight: '#2d4b2b',
 

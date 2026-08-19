@@ -1,5 +1,5 @@
 import { AppBranding } from '../Brandings/AppBranding';
-import { AppThemeColors } from '../Themes/AppThemeColors';
+import { appThemeColors } from '../Themes/appThemeColors';
 import { IPwaWebHeadMetadata } from './IPwaWebHeadMetadata';
 import { IPwaWebHeadMetadataBuilder } from './IPwaWebHeadMetadataBuilder';
 import { PwaPublicAssetUrls } from './PwaAssetPaths';
@@ -9,7 +9,7 @@ export class PwaWebHeadMetadataBuilder implements IPwaWebHeadMetadataBuilder {
     return {
       title: AppBranding.name,
       description: AppBranding.description,
-      themeColor: AppThemeColors.primary,
+      themeColor: appThemeColors.primary,
       manifestPath: PwaPublicAssetUrls.manifest,
       appleMobileWebAppTitle: AppBranding.shortName,
       appleTouchIconPath: PwaPublicAssetUrls.icon192,
