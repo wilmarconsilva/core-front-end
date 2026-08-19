@@ -1,1 +1,1 @@
-export { AppThemeColors as colors } from '../../Configuration/Theme/AppThemeColors';
+export { AppThemeColors as colors } from '../../Configuration/Themes/AppThemeColors';

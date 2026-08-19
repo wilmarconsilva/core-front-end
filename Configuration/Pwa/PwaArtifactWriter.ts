@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { generateImageAsync } from '@expo/image-utils';
-import { AppThemeColors } from '../Theme/AppThemeColors';
+import { AppThemeColors } from '../Themes/AppThemeColors';
 import { IPwaArtifactWriter } from './IPwaArtifactWriter';
 import { IPwaManifest } from './IPwaManifest';
 import { IPwaWebHeadMetadata } from './IPwaWebHeadMetadata';
@@ -12,6 +12,7 @@ import {
 
 const PWA_HEAD_START_MARKER = '<!-- PWA_HEAD_START -->';
 const PWA_HEAD_END_MARKER = '<!-- PWA_HEAD_END -->';
+const CACHE_VERSION_PATTERN = /const CACHE_VERSION = '[^']*';/;
 
 export class PwaArtifactWriter implements IPwaArtifactWriter {
   async writeManifest(manifest: IPwaManifest, publicDirectoryPath: string): Promise<void> {
@@ -63,5 +64,18 @@ export class PwaArtifactWriter implements IPwaArtifactWriter {
         );
 
     await fs.writeFile(indexHtmlPath, updatedIndexHtml, 'utf8');
+  }
+
+  async updateServiceWorkerCacheVersion(
+    cacheVersion: string,
+    serviceWorkerPath: string,
+  ): Promise<void> {
+    const serviceWorker = await fs.readFile(serviceWorkerPath, 'utf8');
+    const updatedServiceWorker = serviceWorker.replace(
+      CACHE_VERSION_PATTERN,
+      `const CACHE_VERSION = '${cacheVersion}';`,
+    );
+
+    await fs.writeFile(serviceWorkerPath, updatedServiceWorker, 'utf8');
   }
 }
