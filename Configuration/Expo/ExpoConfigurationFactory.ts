@@ -1,5 +1,5 @@
 import { AppBranding } from '../Brandings/AppBranding';
-import { AppThemeColors } from '../Themes/AppThemeColors';
+import { appThemeColors } from '../Themes/appThemeColors';
 import { AppVersion } from '../Versions/AppVersion';
 import { PwaAssetPaths } from '../Pwa/PwaAssetPaths';
 import { ExpoProjectIdentity } from './ExpoProjectIdentity';
@@ -17,12 +17,12 @@ export class ExpoConfigurationFactory {
         splash: {
           image: PwaAssetPaths.sourceLogo,
           resizeMode: 'contain',
-          backgroundColor: AppThemeColors.surface,
+          backgroundColor: appThemeColors.surface,
         },
         android: {
           adaptiveIcon: {
             foregroundImage: PwaAssetPaths.sourceLogo,
-            backgroundColor: AppThemeColors.surface,
+            backgroundColor: appThemeColors.surface,
           },
           newArchEnabled: true,
           edgeToEdge: {
@@ -39,8 +39,8 @@ export class ExpoConfigurationFactory {
           name: AppBranding.shortName,
           shortName: AppBranding.shortName,
           description: AppBranding.description,
-          themeColor: AppThemeColors.primary,
-          backgroundColor: AppThemeColors.surface,
+          themeColor: appThemeColors.primary,
+          backgroundColor: appThemeColors.surface,
           display: 'standalone',
           orientation: 'any',
           lang: AppBranding.languageTag,

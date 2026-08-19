@@ -10,7 +10,12 @@ export const documentReportScreenStyles = StyleSheet.create({
     alignItems: 'flex-end',
     flexWrap: 'wrap',
   },
-  actionBtn: { marginTop: 0, paddingHorizontal: 16, paddingVertical: 12 },
+  actionBtn: {
+    marginTop: 0,
+    marginBottom: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
   summaryBox: {
     backgroundColor: colors.primary,
     borderRadius: 12,
@@ -34,6 +39,18 @@ export const documentReportScreenStyles = StyleSheet.create({
   reportCity: { fontSize: 12, color: colors.textSecondary },
   reportDate: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
   reportPayment: { fontSize: 12, color: colors.textSecondary },
+  reportSection: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    gap: 3,
+  },
+  reportDetailRow: { flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' },
+  reportDetailLabel: { fontSize: 12, color: colors.textSecondary },
+  reportDetailValue: { fontSize: 12, color: colors.textPrimary, fontWeight: '600' },
+  reportObservations: { fontSize: 12, color: colors.textSecondary, fontStyle: 'italic', marginTop: 6 },
+  reportFooter: { fontSize: 11, color: colors.textSecondary, marginTop: 8 },
   pdfButton: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,5 +1,5 @@
 import { AppBranding } from '../Brandings/AppBranding';
-import { AppThemeColors } from '../Themes/AppThemeColors';
+import { appThemeColors } from '../Themes/appThemeColors';
 import { IPwaManifest } from './IPwaManifest';
 import { IPwaManifestBuilder } from './IPwaManifestBuilder';
 import { PwaPublicAssetUrls } from './PwaAssetPaths';
@@ -13,8 +13,8 @@ export class PwaManifestBuilder implements IPwaManifestBuilder {
       start_url: '/',
       scope: '/',
       display: 'standalone',
-      theme_color: AppThemeColors.primary,
-      background_color: AppThemeColors.surface,
+      theme_color: appThemeColors.primary,
+      background_color: appThemeColors.surface,
       orientation: 'any',
       lang: AppBranding.languageTag,
       icons: [
