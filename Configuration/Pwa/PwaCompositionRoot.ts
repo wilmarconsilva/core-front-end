@@ -1,4 +1,5 @@
 import { ExpoConfigWriter } from '../Expo/ExpoConfigWriter';
+import { PackageJsonVersionWriter } from '../Versions/PackageJsonVersionWriter';
 import { PwaArtifactSyncService } from './PwaArtifactSyncService';
 import { PwaArtifactWriter } from './PwaArtifactWriter';
 import { PwaManifestBuilder } from './PwaManifestBuilder';
@@ -11,6 +12,7 @@ export class PwaCompositionRoot {
       new PwaWebHeadMetadataBuilder(),
       new PwaArtifactWriter(),
       new ExpoConfigWriter(),
+      new PackageJsonVersionWriter(),
     );
   }
 }

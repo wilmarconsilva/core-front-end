@@ -9,4 +9,5 @@ export interface IPwaArtifactWriter {
     indexHtmlPath: string,
     headMetadataHtml: string,
   ): Promise<void>;
+  updateServiceWorkerCacheVersion(cacheVersion: string, serviceWorkerPath: string): Promise<void>;
 }
