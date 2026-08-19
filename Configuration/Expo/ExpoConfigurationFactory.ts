@@ -1,5 +1,5 @@
 import { AppBranding } from '../Brandings/AppBranding';
-import { appThemeColors } from '../Themes/appThemeColors';
+import { appThemeColors } from '../Themes/AppThemeColors';
 import { AppVersion } from '../Versions/AppVersion';
 import { PwaAssetPaths } from '../Pwa/PwaAssetPaths';
 import { ExpoProjectIdentity } from './ExpoProjectIdentity';
