@@ -1,5 +1,6 @@
-import { AppBranding } from '../Branding/AppBranding';
-import { AppThemeColors } from '../Theme/AppThemeColors';
+import { AppBranding } from '../Brandings/AppBranding';
+import { AppThemeColors } from '../Themes/AppThemeColors';
+import { AppVersion } from '../Versions/AppVersion';
 import { PwaAssetPaths } from '../Pwa/PwaAssetPaths';
 import { ExpoProjectIdentity } from './ExpoProjectIdentity';
 
@@ -9,7 +10,7 @@ export class ExpoConfigurationFactory {
       expo: {
         name: AppBranding.name,
         slug: ExpoProjectIdentity.slug,
-        version: '1.0.0',
+        version: AppVersion.semanticVersion,
         orientation: 'portrait',
         icon: PwaAssetPaths.sourceLogo,
         userInterfaceStyle: 'light',

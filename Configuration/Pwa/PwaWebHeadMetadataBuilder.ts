@@ -1,5 +1,5 @@
-import { AppBranding } from '../Branding/AppBranding';
-import { AppThemeColors } from '../Theme/AppThemeColors';
+import { AppBranding } from '../Brandings/AppBranding';
+import { AppThemeColors } from '../Themes/AppThemeColors';
 import { IPwaWebHeadMetadata } from './IPwaWebHeadMetadata';
 import { IPwaWebHeadMetadataBuilder } from './IPwaWebHeadMetadataBuilder';
 import { PwaPublicAssetUrls } from './PwaAssetPaths';
