@@ -1,0 +1,24 @@
+# Mantém o contexto de build enxuto (node_modules local invalida cache e infla o upload).
+node_modules/
+dist/
+web-build/
+.expo/
+.git/
+.github/
+.vscode/
+.vs/
+.serena/
+.claude/
+ios/
+android/
+.kotlin/
+bin/
+obj/
+logs/
+Logs/
+.env
+.env.*
+!.env.example
+*.md
+*.tsbuildinfo
+npm-debug.*
