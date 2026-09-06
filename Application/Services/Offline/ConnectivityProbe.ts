@@ -1,5 +1,5 @@
 import { IConnectivityProbe } from '../../Interfaces/Services/IConnectivityProbe';
-import { API_BASE_URL } from '../HttpClientService';
+import { WEB_SERVICE_REST_URL } from '../HttpClientService';
 
 const REACHABILITY_TIMEOUT_MS = 3000;
 
@@ -29,7 +29,7 @@ export class ConnectivityProbe implements IConnectivityProbe {
       // by path may serve the base URL from the front-end itself, hiding a dead API.
       // The status is checked on purpose: a proxy that is up while the API is down answers 502,
       // and "no-cors" would resolve that as success.
-      const response = await fetch(`${API_BASE_URL}${HEALTH_PATH}`, {
+      const response = await fetch(`${WEB_SERVICE_REST_URL}${HEALTH_PATH}`, {
         method: 'GET',
         cache: 'no-store',
         signal: controller.signal,

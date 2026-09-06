@@ -1,6 +1,6 @@
 import Toast from 'react-native-toast-message';
 import { IApiError } from '../Interfaces/DataTransferObjects/APIConsumer/IApiError';
-import { API_BASE_URL, fetchWithAuth, SessionExpiredError } from './HttpClientService';
+import { WEB_SERVICE_REST_URL, fetchWithAuth, SessionExpiredError } from './HttpClientService';
 import { TokenStorageService } from './TokenStorageService';
 import { IRequestOptions } from '../Interfaces/DataTransferObjects/APIConsumer/IRequestOptions';
 import { APIConsumerUtility } from './Utilities/APIConsumerUtility';
@@ -17,7 +17,7 @@ export class APIConsumerService {
     requestOptions?: IRequestOptions
   ): Promise<T> {
     try {
-      const response = await this.fetchFn(`${API_BASE_URL}${path}`, requestInit);
+      const response = await this.fetchFn(`${WEB_SERVICE_REST_URL}${path}`, requestInit);
 
       if (!response.ok) 
       {
