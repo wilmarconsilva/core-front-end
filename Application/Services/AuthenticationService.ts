@@ -21,8 +21,10 @@ export class AuthenticationService extends APIConsumerService implements IAuthen
     { toastsConfiguration: { doNotShowSuccess: true } });
   }
 
+  // Errors are silenced here because both callers already handle them: the startup bootstrap
+  // falls back to offline mode, and the HTTP interceptor shows its own "session expired" message.
   async refresh(): Promise<IAccessToken> {
-    return this.request<IAccessToken>('/authentication/refresh', { method: 'POST', credentials: 'include' }, { toastsConfiguration: { doNotShowSuccess: true } });
+    return this.request<IAccessToken>('/authentication/refresh', { method: 'POST', credentials: 'include' }, { toastsConfiguration: { doNotShowSuccess: true, doNotShowError: true } });
   }
 
   async revoke(): Promise<void> {
