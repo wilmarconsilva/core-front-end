@@ -2,11 +2,11 @@ import Toast from 'react-native-toast-message';
 import { IAccessToken } from '../Interfaces/DataTransferObjects/Authentication/IAccessToken';
 import { TokenStorageService } from './TokenStorageService';
 
-if (!process.env?.EXPO_PUBLIC_WEB_SERVICE_URL?.trim()) {
-  throw new Error('EXPO_PUBLIC_WEB_SERVICE_URL is not defined as an environment variable or in the .env file.');
+if (!process.env?.EXPO_PUBLIC_WEB_SERVICE_REST_URL?.trim()) {
+  throw new Error('EXPO_PUBLIC_WEB_SERVICE_REST_URL is not defined as an environment variable or in the .env file.');
 }
 
-export const API_BASE_URL = process.env.EXPO_PUBLIC_WEB_SERVICE_URL as string;
+export const WEB_SERVICE_REST_URL = process.env.EXPO_PUBLIC_WEB_SERVICE_REST_URL as string;
 
 export class SessionExpiredError extends Error {
   constructor() {
