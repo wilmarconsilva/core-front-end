@@ -18,16 +18,16 @@ RUN npm ci
 # As variáveis EXPO_PUBLIC_* são embutidas no bundle em tempo de build (não são lidas em runtime).
 # Consequência: mudar a URL da API exige rebuild da imagem. Declaradas DEPOIS do npm ci
 # para que trocar a URL não invalide o cache das dependências.
-ARG EXPO_PUBLIC_WEB_SERVICE_REST_URL
+ARG EXPO_PUBLIC_WEB_API_REST_URL
 ARG EXPO_PUBLIC_OPERATION_MODE=""
 
-ENV EXPO_PUBLIC_WEB_SERVICE_REST_URL=$EXPO_PUBLIC_WEB_SERVICE_REST_URL \
+ENV EXPO_PUBLIC_WEB_API_REST_URL=$EXPO_PUBLIC_WEB_API_REST_URL \
     EXPO_PUBLIC_OPERATION_MODE=$EXPO_PUBLIC_OPERATION_MODE
 
 # Falha cedo e com mensagem clara: sem a URL da API o app quebra no primeiro import
 # (Application/Services/HttpClientService.ts).
-RUN test -n "$EXPO_PUBLIC_WEB_SERVICE_REST_URL" \
-    || (echo "ERRO: build arg EXPO_PUBLIC_WEB_SERVICE_REST_URL é obrigatório." && exit 1)
+RUN test -n "$EXPO_PUBLIC_WEB_API_REST_URL" \
+    || (echo "ERRO: build arg EXPO_PUBLIC_WEB_API_REST_URL é obrigatório." && exit 1)
 
 # Copia o código-fonte
 COPY . .
