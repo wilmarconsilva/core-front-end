@@ -10,6 +10,7 @@ export class PwaWebHeadMetadataBuilder implements IPwaWebHeadMetadataBuilder {
       title: AppBranding.name,
       description: AppBranding.description,
       themeColor: appThemeColors.primary,
+      backgroundColor: appThemeColors.background,
       manifestPath: PwaPublicAssetUrls.manifest,
       appleMobileWebAppTitle: AppBranding.shortName,
       appleTouchIconPath: PwaPublicAssetUrls.icon192,
@@ -25,8 +26,26 @@ export class PwaWebHeadMetadataBuilder implements IPwaWebHeadMetadataBuilder {
       `<meta name="apple-mobile-web-app-status-bar-style" content="default" />`,
       `<meta name="apple-mobile-web-app-title" content="${metadata.appleMobileWebAppTitle}" />`,
       `<link rel="apple-touch-icon" href="${metadata.appleTouchIconPath}" />`,
+      this.safeAreaStyle(metadata),
       this.serviceWorkerRegistrationScript(),
     ].join('\n    ');
+  }
+
+  /**
+   * O recuo das faixas do sistema é responsabilidade da moldura da aplicação
+   * (AppShell), que usa a mesma medição em iOS, Android e web — por isso não se
+   * repete aqui. O que só o documento pode fazer é pintar o fundo antes de o
+   * bundle subir, evitando a tarja branca no primeiro quadro.
+   */
+  private safeAreaStyle(metadata: IPwaWebHeadMetadata): string {
+    return [
+      '<style id="pwa-safe-area">',
+      '      html,',
+      '      body {',
+      `        background-color: ${metadata.backgroundColor};`,
+      '      }',
+      '    </style>',
+    ].join('\n');
   }
 
   private serviceWorkerRegistrationScript(): string {

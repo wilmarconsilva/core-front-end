@@ -7,7 +7,7 @@ import { UseOperationMode } from '../../../Application/Hooks/UseOperationMode';
 import { ICustomerListing } from '../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
 import { ICustomerListingFilter } from '../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
 import { ICrudListScreenProps } from '../../Interfaces/Screens/ICrudListScreenProps';
-import { listScreenStyles } from '../../Styles';
+import { filterActionBarStyles } from '../../Styles';
 import { CrudListScreen } from '../CrudListScreen';
 import { isLocalRecord } from '../../../Application/Services/Utilities/OfflineUtilities';
 import { OperationMode } from '../../../Application/Services/Offline/OperationModeService';
@@ -35,7 +35,7 @@ export function CustomersListScreen({ onGoBack, onNavigateToForm }: ICrudListScr
       onGoBack={onGoBack}
       onNavigateToForm={onNavigateToForm}
       filterContent={(
-        <View style={listScreenStyles.filterFieldWide}>
+        <View style={filterActionBarStyles.fieldWide}>
           <FormField
             label="Nome"
             placeholder="Filtrar por nome..."
@@ -46,7 +46,7 @@ export function CustomersListScreen({ onGoBack, onNavigateToForm }: ICrudListScr
         </View>
       )}
       columns={[
-        { key: 'id', label: 'Código', flex: 1 },
+        { key: 'id', label: 'Código', flex: 1, align: 'center' },
         { key: 'name', label: 'Nome', flex: 2 },
         { key: 'localityState', label: 'Localidade/Estado', flex: 1.2 },
       ]}

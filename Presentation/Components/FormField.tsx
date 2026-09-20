@@ -1,8 +1,12 @@
-import React, { useCallback } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Text, TextInput, TextInputProps, View } from 'react-native';
 import MaskInput from 'react-native-mask-input';
 import { IFormFieldProps } from '../Interfaces/Fields/IFormFieldProps';
-import { colors, formStyles } from '../Styles';
+import { colors, formStyles, interactionStyles } from '../Styles';
+
+/** Derivados de TextInputProps para não fixar tipos que mudam entre versões do RN. */
+type FocusHandler = NonNullable<TextInputProps['onFocus']>;
+type BlurHandler = NonNullable<TextInputProps['onBlur']>;
 
 export function FormField({
   label,
@@ -12,11 +16,32 @@ export function FormField({
   mask,
   onChangeText,
   keyboardType,
+  onFocus,
+  onBlur,
   ...inputProps
 }: IFormFieldProps) {
   const { onSubmitEditing, returnKeyType, ...restInput } = inputProps;
 
   const resolvedKeyboardType = keyboardType ?? (mask ? 'numeric' : undefined);
+
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Compõe com o onFocus/onBlur que venha por props em vez de sobrescrevê-lo.
+  const handleFocus = useCallback<FocusHandler>(
+    (e) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    },
+    [onFocus],
+  );
+
+  const handleBlur = useCallback<BlurHandler>(
+    (e) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    },
+    [onBlur],
+  );
 
   const handleMaskedChange = useCallback(
     (masked: string, _unmasked: string, _obfuscated: string) => {
@@ -25,7 +50,12 @@ export function FormField({
     [onChangeText],
   );
 
-  const sharedInputStyle = [formStyles.input, error ? formStyles.inputError : null, style];
+  const sharedInputStyle = [
+    formStyles.input,
+    error ? formStyles.inputError : null,
+    !error && isFocused ? interactionStyles.focusRing : null,
+    style,
+  ];
 
   return (
     <View style={formStyles.field}>
@@ -43,6 +73,8 @@ export function FormField({
             keyboardType={resolvedKeyboardType}
             mask={mask}
             onChangeText={handleMaskedChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
         ) : (
           <TextInput
@@ -55,6 +87,8 @@ export function FormField({
             onSubmitEditing={onSubmitEditing}
             keyboardType={resolvedKeyboardType}
             onChangeText={onChangeText}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
         ))}
       {error ? <Text style={formStyles.fieldError}>{error}</Text> : null}

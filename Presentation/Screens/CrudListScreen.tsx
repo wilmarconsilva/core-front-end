@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { ScreenScrollView } from '../Components/ScreenScrollView';
 import { IColumn } from '../Interfaces/DataGrid/IColumn';
 import { Breadcrumb } from '../Components/Breadcrumb';
 import { ConfirmDialog } from '../Components/ConfirmDialog';
@@ -65,7 +66,7 @@ export function CrudListScreen<TListing extends { id: number }>({
 }: CrudListScreenProps<TListing>) {
   return (
     <View style={layoutStyles.screenWrapper}>
-      <ScrollView contentContainerStyle={layoutStyles.scrollContainer}>
+      <ScreenScrollView contentContainerStyle={layoutStyles.scrollContainer}>
         <Breadcrumb items={[{ label: 'Início', onPress: onGoBack }, { label: title }]} />
         <Text style={typographyStyles.title}>{title}</Text>
 
@@ -93,7 +94,7 @@ export function CrudListScreen<TListing extends { id: number }>({
             emptyGridMessage={emptyGridMessage}
           />
         </View>
-      </ScrollView>
+      </ScreenScrollView>
 
       <ConfirmDialog
         visible={deleteDialogVisible}

@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { IEntitySelectFieldProps } from '../Interfaces/EntitySelectField/IEntitySelectFieldProps';
-import { entitySelectFieldStyles as styles, formStyles } from '../Styles';
+import { entitySelectFieldStyles as styles, filterActionBarStyles, formStyles } from '../Styles';
 import { DataGrid } from './DataGrid';
 import { FilterActionBar } from './FilterActionBar';
 
@@ -103,7 +103,7 @@ export function EntitySelectField<TListing, TFilter>({
                 {renderFilter ? (
                   <View style={styles.filterSection}>
                     <FilterActionBar onSearch={handleSearch}>
-                      <View style={styles.filterField}>{renderFilter(handleSearch)}</View>
+                      <View style={filterActionBarStyles.fieldWide}>{renderFilter(handleSearch)}</View>
                     </FilterActionBar>
                   </View>
                 ) : null}

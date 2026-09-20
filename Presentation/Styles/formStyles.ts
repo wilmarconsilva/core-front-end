@@ -1,5 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { colors } from './colors';
+import {
+  INPUT_BORDER_RADIUS,
+  INPUT_BORDER_WIDTH,
+  INPUT_FONT_SIZE,
+  INPUT_PADDING_HORIZONTAL,
+  INPUT_PADDING_VERTICAL,
+} from './inputTokens';
 
 export const formStyles = StyleSheet.create({
   field: {
@@ -12,12 +19,12 @@ export const formStyles = StyleSheet.create({
     marginBottom: 6,
   },
   input: {
-    borderWidth: 1,
+    borderWidth: INPUT_BORDER_WIDTH,
     borderColor: colors.border,
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
+    borderRadius: INPUT_BORDER_RADIUS,
+    paddingHorizontal: INPUT_PADDING_HORIZONTAL,
+    paddingVertical: INPUT_PADDING_VERTICAL,
+    fontSize: INPUT_FONT_SIZE,
     color: colors.textPrimary,
     backgroundColor: colors.surfaceAlt,
   },
@@ -32,16 +39,16 @@ export const formStyles = StyleSheet.create({
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: INPUT_BORDER_WIDTH,
     borderColor: colors.border,
-    borderRadius: 8,
+    borderRadius: INPUT_BORDER_RADIUS,
     backgroundColor: colors.surfaceAlt,
   },
   passwordInput: {
     flex: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
+    paddingHorizontal: INPUT_PADDING_HORIZONTAL,
+    paddingVertical: INPUT_PADDING_VERTICAL,
+    fontSize: INPUT_FONT_SIZE,
     color: colors.textPrimary,
   },
   eyeButton: {

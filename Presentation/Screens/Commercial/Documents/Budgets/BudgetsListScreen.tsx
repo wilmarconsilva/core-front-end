@@ -1,15 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Pressable } from 'react-native';
 import { UsePagedCrudList } from '../../../../../Application/Hooks/UsePagedCrudList';
 import { UseBudgets } from '../../../../../Application/Hooks/UseBudgets';
 import { UseOperationMode } from '../../../../../Application/Hooks/UseOperationMode';
 import { isLocalRecord } from '../../../../../Application/Services/Utilities/OfflineUtilities';
+import { toApiDayEnd, toApiDayStart } from '../../../../../Application/Services/Utilities/DateTimeUtilities';
 import { IBudgetListing } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListing';
 import { IBudgetListingFilter } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListingFilter';
 import { ICrudListScreenProps } from '../../../../Interfaces/Screens/ICrudListScreenProps';
+import { IPressableInteractionState } from '../../../../Interfaces/Pressable/IPressableInteractionState';
 import { ConfirmDialog } from '../../../../Components/ConfirmDialog';
-import { colors } from '../../../../Styles';
+import { colors, interactionStyles, tableStyles } from '../../../../Styles';
 import { CommercialDocumentListScreen } from '../CommercialDocumentListScreen';
 import { OperationMode } from '../../../../../Application/Services/Offline/OperationModeService';
 
@@ -24,8 +26,8 @@ export function BudgetsListScreen({ onGoBack, onNavigateToForm }: ICrudListScree
   const buildFilter = useCallback((p: number, pageSize: number): IBudgetListingFilter => ({
     registersStart: (p - 1) * pageSize,
     registersEnd: p * pageSize,
-    creationDateTimeStart: startDate || undefined,
-    creationDateTimeEnd: endDate || undefined,
+    creationDateTimeStart: toApiDayStart(startDate),
+    creationDateTimeEnd: toApiDayEnd(endDate),
   }), [startDate, endDate]);
 
   const listState = UsePagedCrudList<IBudgetListing, IBudgetListingFilter>({
@@ -66,15 +68,17 @@ export function BudgetsListScreen({ onGoBack, onNavigateToForm }: ICrudListScree
       setEndDate={setEndDate}
       deleteTitle="Excluir Orçamento"
       getDeleteMessage={(item) => `Deseja excluir o orçamento ${item?.id}?`}
-      showCreationDate
       extraActions={operationMode === OperationMode.Offline ? undefined : (item) => (
-        <TouchableOpacity
+        <Pressable
           onPress={() => openCreateOrderConfirm(item)}
-          activeOpacity={0.7}
           disabled={isCreatingOrder}
+          style={({ hovered }: IPressableInteractionState) => [
+            tableStyles.actionButton,
+            hovered && interactionStyles.actionButtonHovered,
+          ]}
         >
           <Ionicons name="clipboard-outline" size={18} color={colors.primary} />
-        </TouchableOpacity>
+        </Pressable>
       )}
       onGoBack={onGoBack}
       onNavigateToForm={onNavigateToForm}

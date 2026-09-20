@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { ScreenScrollView } from '../Components/ScreenScrollView';
 import { Breadcrumb } from '../Components/Breadcrumb';
 import { PrimaryButton } from '../Components/PrimaryButton';
 import { SecondaryButton } from '../Components/SecondaryButton';
@@ -30,7 +31,7 @@ export function CrudFormScreen({
 }: CrudFormScreenProps) {
   return (
     <View style={layoutStyles.screenWrapper}>
-      <ScrollView contentContainerStyle={[layoutStyles.scrollContainer, { justifyContent: 'flex-start' }]}>
+      <ScreenScrollView contentContainerStyle={[layoutStyles.scrollContainer, { justifyContent: 'flex-start' }]}>
         <Breadcrumb items={[
           { label: 'Início', onPress: onGoBack },
           { label: breadcrumbEntityLabel, onPress: onGoBack },
@@ -51,7 +52,7 @@ export function CrudFormScreen({
             />
           </View>
         </View>
-      </ScrollView>
+      </ScreenScrollView>
     </View>
   );
 }

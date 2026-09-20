@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { IBreadcrumbProps } from '../Interfaces/Breadcrumb/IBreadcrumbProps';
-import { breadcrumbStyles } from '../Styles';
+import { IPressableInteractionState } from '../Interfaces/Pressable/IPressableInteractionState';
+import { breadcrumbStyles, interactionStyles } from '../Styles';
 
 export type { IBreadcrumbItem } from '../Interfaces/Breadcrumb/IBreadcrumbItem';
 
@@ -19,9 +20,14 @@ export function Breadcrumb({ items }: IBreadcrumbProps) {
             {isLast ? (
               <Text style={breadcrumbStyles.itemActive}>{item.label}</Text>
             ) : (
-              <TouchableOpacity onPress={item.onPress}>
+              <Pressable
+                onPress={item.onPress}
+                style={({ pressed, hovered }: IPressableInteractionState) =>
+                  (pressed || hovered) ? interactionStyles.hovered : null
+                }
+              >
                 <Text style={breadcrumbStyles.item}>{item.label}</Text>
-              </TouchableOpacity>
+              </Pressable>
             )}
           </React.Fragment>
         );

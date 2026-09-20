@@ -106,10 +106,10 @@ export function CustomerFormScreen({ id, onGoBack }: IEntityFormScreenProps) {
               )}
             </View>
             <View style={styles.row}>
-              <View style={styles.flex1}>
+              <View style={styles.rowFieldWide}>
                 <FormField label="Rua *" placeholder="Nome da rua" value={addr.street} onChangeText={(v) => updateAddress(index, 'street', v)} editable={!isSaving} error={errors[addressErrorKey(index, 'street')]} />
               </View>
-              <View style={styles.flex1}>
+              <View style={styles.rowFieldWide}>
                 <FormField label="Bairro *" placeholder="Nome do bairro" value={addr.neighborhood} onChangeText={(v) => updateAddress(index, 'neighborhood', v)} editable={!isSaving} error={errors[addressErrorKey(index, 'neighborhood')]} />
               </View>
             </View>
@@ -148,10 +148,10 @@ export function CustomerFormScreen({ id, onGoBack }: IEntityFormScreenProps) {
               )}
             />
             <View style={styles.row}>
-              <View style={styles.flex1}>
+              <View style={styles.rowFieldCompact}>
                 <FormField label="Número" placeholder="Nº" value={addr.number ?? ''} onChangeText={(v) => updateAddress(index, 'number', v)} editable={!isSaving} />
               </View>
-              <View style={styles.flex1}>
+              <View style={styles.rowFieldCompact}>
                 <FormField
                   label="CEP"
                   placeholder="00000-000"

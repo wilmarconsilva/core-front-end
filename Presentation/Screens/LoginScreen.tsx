@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import { ScreenScrollView } from '../Components/ScreenScrollView';
 import { FormField } from '../Components/FormField';
 import { PasswordField } from '../Components/PasswordField';
 import { PrimaryButton } from '../Components/PrimaryButton';
@@ -28,7 +23,7 @@ export function LoginScreen({
       style={layoutStyles.screenWrapper}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView
+      <ScreenScrollView
         contentContainerStyle={layoutStyles.loginContainer}
         keyboardShouldPersistTaps="handled"
       >
@@ -62,7 +57,7 @@ export function LoginScreen({
             onPress={handleLogin}
           />
         </View>
-      </ScrollView>
+      </ScreenScrollView>
     </KeyboardAvoidingView>
   );
 }

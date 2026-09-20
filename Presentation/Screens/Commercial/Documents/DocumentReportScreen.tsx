@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
+import { ScreenScrollView } from '../../../Components/ScreenScrollView';
 import { IDocumentReport } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReport';
 import { IDocumentReportFilter } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportFilter';
 import { IDocumentReportListing } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportListing';
 import { IDocumentReportSummary } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportSummary';
 import { formatCurrency } from '../../../../Application/Services/Utilities/FormatUtilities';
+import { toApiDayEnd, toApiDayStart } from '../../../../Application/Services/Utilities/DateTimeUtilities';
 import { Breadcrumb } from '../../../Components/Breadcrumb';
 import { DateField } from '../../../Components/DateField';
 import { DocumentReportCard } from '../../../Components/DocumentReportCard';
@@ -13,8 +15,8 @@ import { IDocumentReportScreenProps } from '../../../Interfaces/Screens/IDocumen
 import {
   colors,
   documentReportScreenStyles as styles,
+  filterActionBarStyles,
   layoutStyles,
-  listScreenStyles,
   typographyStyles,
 } from '../../../Styles';
 
@@ -39,8 +41,8 @@ export function DocumentReportScreen<TReport extends IDocumentReport, TSummary e
       const filter: IDocumentReportFilter = {
         registersStart: REGISTERS_START,
         registersEnd: REGISTERS_END,
-        creationDateTimeStart: startDate || undefined,
-        creationDateTimeEnd: endDate || undefined,
+        creationDateTimeStart: toApiDayStart(startDate),
+        creationDateTimeEnd: toApiDayEnd(endDate),
       };
       const result = await service.get(filter);
       setData(result);
@@ -53,7 +55,7 @@ export function DocumentReportScreen<TReport extends IDocumentReport, TSummary e
 
   return (
     <View style={layoutStyles.screenWrapper}>
-      <ScrollView contentContainerStyle={[layoutStyles.scrollContainer, { justifyContent: 'flex-start' }]}>
+      <ScreenScrollView contentContainerStyle={[layoutStyles.scrollContainer, { justifyContent: 'flex-start' }]}>
         <Breadcrumb items={[
           { label: 'Início', onPress: onGoBack },
           { label: 'Relatórios', onPress: onGoBack },
@@ -63,10 +65,10 @@ export function DocumentReportScreen<TReport extends IDocumentReport, TSummary e
 
         <View style={layoutStyles.sectionCardSpaced}>
           <View style={styles.filterRow}>
-            <View style={listScreenStyles.filterFieldCompact}>
+            <View style={filterActionBarStyles.fieldCompact}>
               <DateField label="Data início" value={startDate} onChangeText={setStartDate} />
             </View>
-            <View style={listScreenStyles.filterFieldCompact}>
+            <View style={filterActionBarStyles.fieldCompact}>
               <DateField label="Data fim" value={endDate} onChangeText={setEndDate} />
             </View>
             <PrimaryButton title="Gerar" isLoading={isLoading} onPress={handleSearch} style={styles.actionBtn} />
@@ -97,7 +99,7 @@ export function DocumentReportScreen<TReport extends IDocumentReport, TSummary e
             )}
           </View>
         )}
-      </ScrollView>
+      </ScreenScrollView>
     </View>
   );
 }

@@ -1,5 +1,6 @@
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { ScreenScrollView } from '../Components/ScreenScrollView';
 import { Breadcrumb } from '../Components/Breadcrumb';
 import { MenuItem } from '../Components/MenuItem';
 import { ScreenTransition } from '../Components/ScreenTransition';
@@ -29,7 +30,7 @@ function HomeMenuScreen({ userName, navigate, operationMode }: IHomeMenuProps) {
 
   return (
     <View style={layoutStyles.screenWrapper}>
-      <ScrollView contentContainerStyle={layoutStyles.scrollContainer}>
+      <ScreenScrollView contentContainerStyle={layoutStyles.scrollContainer}>
         <Breadcrumb items={[{ label: 'Início' }]} />
         <Text style={typographyStyles.title}>Olá, {userName}!</Text>
         <Text style={typographyStyles.subtitle}>O que deseja acessar?</Text>
@@ -45,7 +46,7 @@ function HomeMenuScreen({ userName, navigate, operationMode }: IHomeMenuProps) {
             </>
           )}
         </View>
-      </ScrollView>
+      </ScreenScrollView>
     </View>
   );
 

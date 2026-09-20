@@ -1,15 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import { IMenuItemProps } from '../Interfaces/MenuItem/IMenuItemProps';
-import { colors, gridStyles } from '../Styles';
+import { IPressableInteractionState } from '../Interfaces/Pressable/IPressableInteractionState';
+import { colors, gridStyles, interactionStyles } from '../Styles';
 
 export function MenuItem({ icon, label, menuItemSize, onPress }: IMenuItemProps) {
   return (
-    <TouchableOpacity
-      style={menuItemSize === 'large' ? gridStyles.menuItemLarge : gridStyles.menuItemMedium}
+    <Pressable
+      style={({ pressed, hovered }: IPressableInteractionState) => [
+        menuItemSize === 'large' ? gridStyles.menuItemLarge : gridStyles.menuItemMedium,
+        (pressed || hovered) && interactionStyles.hovered,
+      ]}
       onPress={onPress}
-      activeOpacity={0.7}
     >
       <Ionicons
         name={icon}
@@ -18,6 +21,6 @@ export function MenuItem({ icon, label, menuItemSize, onPress }: IMenuItemProps)
         style={gridStyles.menuItemIcon}
       />
       <Text style={gridStyles.menuItemText}>{label}</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 }

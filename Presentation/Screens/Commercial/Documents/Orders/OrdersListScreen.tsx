@@ -4,6 +4,7 @@ import { UsePagedCrudList } from '../../../../../Application/Hooks/UsePagedCrudL
 import { UseOrders } from '../../../../../Application/Hooks/UseOrders';
 import { UseOperationMode } from '../../../../../Application/Hooks/UseOperationMode';
 import { isLocalRecord } from '../../../../../Application/Services/Utilities/OfflineUtilities';
+import { toApiDayEnd, toApiDayStart } from '../../../../../Application/Services/Utilities/DateTimeUtilities';
 import { IOrderListing } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderListing';
 import { IOrderListingFilter } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderListingFilter';
 import { ICrudListScreenProps } from '../../../../Interfaces/Screens/ICrudListScreenProps';
@@ -20,8 +21,8 @@ export function OrdersListScreen({ onGoBack, onNavigateToForm }: ICrudListScreen
   const buildFilter = useCallback((p: number, pageSize: number): IOrderListingFilter => ({
     registersStart: (p - 1) * pageSize,
     registersEnd: p * pageSize,
-    creationDateTimeStart: startDate || undefined,
-    creationDateTimeEnd: endDate || undefined,
+    creationDateTimeStart: toApiDayStart(startDate),
+    creationDateTimeEnd: toApiDayEnd(endDate),
   }), [startDate, endDate]);
 
   const listState = UsePagedCrudList<IOrderListing, IOrderListingFilter>({
@@ -48,6 +49,7 @@ export function OrdersListScreen({ onGoBack, onNavigateToForm }: ICrudListScreen
           key: 'budgetId',
           label: 'Orçamento',
           flex: 1.1,
+          align: 'center',
           render: (item) => (
             <Text style={tableStyles.cell}>
               {item.budgetId ?? ''}
