@@ -3,7 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!--
+      `viewport-fit=cover` faz o layout ocupar a janela inteira do aparelho e,
+      em troca, habilita o `env(safe-area-inset-*)`: e dai que a moldura da
+      aplicacao le, no web, as faixas do relogio e do indicador de gestos. Sem
+      este token as medidas chegariam zeradas e o conteudo ficaria por baixo.
+    -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+    />
     <title>%WEB_TITLE%</title>
     <!-- PWA_HEAD_START -->
     <link rel="manifest" href="/manifest.json" />
@@ -12,6 +21,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Core" />
     <link rel="apple-touch-icon" href="/pwa-icon-192.png" />
+    <style id="pwa-safe-area">
+      html,
+      body {
+        background-color: #F3F4F6;
+      }
+    </style>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
@@ -27,15 +42,22 @@
       body {
         height: 100%;
       }
+      /* Impede o iOS de inflar o texto ao girar o aparelho para landscape */
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
       /* These styles disable body scrolling if you are using <ScrollView> */
       body {
         overflow: hidden;
+        /* Remove o rubber-band / pull-to-refresh do PWA em modo standalone */
+        overscroll-behavior: none;
       }
       /* These styles make the root element full-height */
       #root {
         display: flex;
         height: 100%;
         flex: 1;
+        box-sizing: border-box;
       }
     </style>
   </head>

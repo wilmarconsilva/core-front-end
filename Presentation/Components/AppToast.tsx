@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast, { ToastConfig, ToastConfigParams } from 'react-native-toast-message';
 import { appToastStyles as styles, colors } from '../Styles';
 
@@ -36,11 +37,21 @@ const toastConfig: ToastConfig = {
   info:    (props) => <ToastItem {...props} type="info" />,
 };
 
+/** Folga entre o toast e o fim da área útil, acima do indicador de gestos. */
+const TOAST_BOTTOM_GAP = 40;
+
+/**
+ * O toast é irmão da moldura (AppShell), e não filho: ele cobre a tela inteira,
+ * inclusive as faixas do sistema. Por isso soma a faixa inferior por conta
+ * própria, em vez de herdar o recuo da moldura.
+ */
 export function AppToast() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Toast
       position="bottom"
-      bottomOffset={40}
+      bottomOffset={TOAST_BOTTOM_GAP + insets.bottom}
       config={toastConfig}
       visibilityTime={10000}
     />

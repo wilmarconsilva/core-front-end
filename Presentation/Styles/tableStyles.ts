@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { colors } from './colors';
+import { TOUCH_TARGET_MIN } from './inputTokens';
 
 export const TABLE_ROW_HORIZONTAL_PADDING = 16;
 
@@ -22,9 +23,8 @@ export const tableStyles = StyleSheet.create({
   headerCell: {
     color: colors.textSecondary,
     fontWeight: '600',
-    fontSize: 11,
-    letterSpacing: 0.8,
-    textAlign: 'center',
+    fontSize: 12,
+    letterSpacing: 0.4,
   },
   row: {
     flexDirection: 'row',
@@ -39,17 +39,20 @@ export const tableStyles = StyleSheet.create({
     fontSize: 13,
     color: colors.textPrimary,
     lineHeight: 18,
-    textAlign: 'center',
   },
   actionsCell: {
     flexDirection: 'row',
-    gap: 4,
+    gap: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  /** 44x44: um dos alvos é Excluir, destrutivo - não pode depender de precisão. */
   actionButton: {
-    padding: 6,
-    borderRadius: 6,
+    minWidth: TOUCH_TARGET_MIN,
+    minHeight: TOUCH_TARGET_MIN,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
     backgroundColor: '#F3F4F6',
   },
   paginationContainer: {
@@ -65,8 +68,10 @@ export const tableStyles = StyleSheet.create({
   paginationButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 4,
-    paddingVertical: 6,
+    minHeight: TOUCH_TARGET_MIN,
+    paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
@@ -82,6 +87,8 @@ export const tableStyles = StyleSheet.create({
     fontWeight: '500',
   },
   paginationPageChip: {
+    minHeight: TOUCH_TARGET_MIN,
+    justifyContent: 'center',
     paddingVertical: 6,
     paddingHorizontal: 14,
     borderRadius: 8,

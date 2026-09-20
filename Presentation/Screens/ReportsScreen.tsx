@@ -1,5 +1,6 @@
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { ScreenScrollView } from '../Components/ScreenScrollView';
 import { Breadcrumb } from '../Components/Breadcrumb';
 import { MenuItem } from '../Components/MenuItem';
 import { IReportsScreenProps } from '../Interfaces/Reports/IReportsScreenProps';
@@ -8,7 +9,7 @@ import { gridStyles, layoutStyles, typographyStyles } from '../Styles';
 export function ReportsScreen({ onGoBack, onNavigateToBudgetReport, onNavigateToOrderReport }: IReportsScreenProps) {
   return (
     <View style={layoutStyles.screenWrapper}>
-      <ScrollView contentContainerStyle={layoutStyles.scrollContainer}>
+      <ScreenScrollView contentContainerStyle={layoutStyles.scrollContainer}>
         <Breadcrumb
           items={[
             { label: 'Início', onPress: onGoBack },
@@ -33,7 +34,7 @@ export function ReportsScreen({ onGoBack, onNavigateToBudgetReport, onNavigateTo
             onPress={onNavigateToOrderReport}
           />
         </View>
-      </ScrollView>
+      </ScreenScrollView>
     </View>
   );
 }

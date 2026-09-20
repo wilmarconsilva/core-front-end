@@ -7,7 +7,7 @@ import { UseOperationMode } from '../../../Application/Hooks/UseOperationMode';
 import { IProductListing } from '../../../Application/Interfaces/DataTransferObjects/Products/IProductListing';
 import { IProductListingFilter } from '../../../Application/Interfaces/DataTransferObjects/Products/IProductListingFilter';
 import { ICrudListScreenProps } from '../../Interfaces/Screens/ICrudListScreenProps';
-import { listScreenStyles } from '../../Styles';
+import { filterActionBarStyles } from '../../Styles';
 import { CrudListScreen } from '../CrudListScreen';
 import { isLocalRecord } from '../../../Application/Services/Utilities/OfflineUtilities';
 import { OperationMode } from '../../../Application/Services/Offline/OperationModeService';
@@ -35,7 +35,7 @@ export function ProductsListScreen({ onGoBack, onNavigateToForm }: ICrudListScre
       onGoBack={onGoBack}
       onNavigateToForm={onNavigateToForm}
       filterContent={(
-        <View style={listScreenStyles.filterFieldWide}>
+        <View style={filterActionBarStyles.fieldWide}>
           <FormField
             label="Descrição"
             placeholder="Filtrar..."
@@ -46,7 +46,7 @@ export function ProductsListScreen({ onGoBack, onNavigateToForm }: ICrudListScre
         </View>
       )}
       columns={[
-        { key: 'id', label: 'Código', flex: 1 },
+        { key: 'id', label: 'Código', flex: 1, align: 'center' },
         { key: 'description', label: 'Descrição', flex: 2 },
       ]}
       data={listings}

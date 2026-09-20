@@ -24,6 +24,7 @@ import { ILocalityListingFilter } from '../../Interfaces/DataTransferObjects/Loc
 import { ILocalitySaveDto } from '../../Interfaces/DataTransferObjects/Localities/ILocalitySaveDto';
 import { IOfflineRepository } from '../../../Infrastructure/Persistence/Interfaces/IOfflineRepository';
 import { CommercialDocumentFormService } from '../Commercial/Documents/CommercialDocumentFormService';
+import { toApiDateTime, toTimestamp } from '../Utilities/DateTimeUtilities';
 
 function containsIgnoreCase(value: string, term?: string): boolean {
   if (!term) return true;
@@ -42,14 +43,29 @@ export function matchesCustomerFilter(listing: ICustomerListing, filter: ICustom
   return matchesEntityId(listing.id, filter.id) && containsIgnoreCase(listing.name, filter.name);
 }
 
+/**
+ * A comparação é feita por instante, e não lexicograficamente: filtro e listagem
+ * chegam em ISO 8601 mas com precisões e fusos diferentes, o que torna a ordem
+ * textual das strings não confiável.
+ */
+function isWithinPeriod(value: string, start?: string, end?: string): boolean {
+  const startInstant = toTimestamp(start);
+  const endInstant = toTimestamp(end);
+  if (startInstant === undefined && endInstant === undefined) return true;
+
+  const instant = toTimestamp(value);
+  if (instant === undefined) return false;
+
+  return (startInstant === undefined || instant >= startInstant) &&
+          (endInstant === undefined || instant <= endInstant);
+}
+
 export function matchesDocumentListingFilter(
   listing: IDocumentListing,
   filter: IDocumentListingFilter,
 ): boolean {
-  if (!matchesEntityId(listing.id, filter.id)) return false;
-  if (filter.creationDateTimeStart && listing.creationDateTime < filter.creationDateTimeStart) return false;
-  if (filter.creationDateTimeEnd && listing.creationDateTime > filter.creationDateTimeEnd) return false;
-  return true;
+  return matchesEntityId(listing.id, filter.id) &&
+          isWithinPeriod(listing.creationDateTime, filter.creationDateTimeStart, filter.creationDateTimeEnd);
 }
 
 export function matchesLocalityFilter(listing: ILocalityListing, filter: ILocalityListingFilter): boolean {
@@ -74,13 +90,6 @@ export function listingToLocalitySaveDto(listing: ILocalityListing): ILocalitySa
     description: listing.description,
     stateId: listing.stateId,
   };
-}
-
-function toIsoDateTime(value: Date | string): string {
-  if (value instanceof Date) {
-    return value.toISOString();
-  }
-  return String(value);
 }
 
 export function productSaveToDetail(dto: IProductSaveDto): IProductDetailDto {
@@ -141,7 +150,7 @@ export async function describeDocument(
   customerRepository: IOfflineRepository<ICustomerSaveDto, ICustomerListing, unknown>,
 ): Promise<string> {
   const customer = await customerRepository.getById(dto.customerId);
-  const creationDate = new Date(toIsoDateTime(dto.creationDateTime)).toLocaleDateString('pt-BR');
+  const creationDate = new Date(toApiDateTime(dto.creationDateTime)).toLocaleDateString('pt-BR');
   const customerName = customer?.name ?? 'Cliente não identificado';
 
   return `${customerName} - ${creationDate}`;
@@ -157,7 +166,7 @@ export async function buildDocumentListing(
     id: dto.id,
     custormerName: customer?.name ?? '',
     customerLocalityState: '',
-    creationDateTime: toIsoDateTime(dto.creationDateTime),
+    creationDateTime: toApiDateTime(dto.creationDateTime),
     valueTotal: CommercialDocumentFormService.calculateTotal(dto.products, dto.payment.discountValue),
   };
 }

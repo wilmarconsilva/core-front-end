@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { ScreenScrollView } from '../../Components/ScreenScrollView';
 import { Breadcrumb } from '../../Components/Breadcrumb';
 import { DataGrid } from '../../Components/DataGrid';
 import { layoutStyles, tableStyles, typographyStyles } from '../../Styles';
@@ -18,7 +19,7 @@ export function SynchronizationPendenciesScreen({ onGoBack, onEditPendency }: IS
 
   return (
     <View style={layoutStyles.screenWrapper}>
-      <ScrollView contentContainerStyle={layoutStyles.scrollContainer}>
+      <ScreenScrollView contentContainerStyle={layoutStyles.scrollContainer}>
         <Breadcrumb items={[{ label: 'Início', onPress: onGoBack }, { label: 'Pendências de Sincronização' }]} />
         <Text style={typographyStyles.title}>Pendências de Sincronização</Text>
         <Text style={typographyStyles.subtitle}>
@@ -31,7 +32,7 @@ export function SynchronizationPendenciesScreen({ onGoBack, onEditPendency }: IS
               {
                 key: 'entityType',
                 label: 'Cadastro',
-                flex: 0.8,
+                flex: 2,
                 render: (item) => (
                   <Text style={tableStyles.cell} numberOfLines={1}>
                     {SynchronizationEntityTypeUtility.getLabel(item.entityType)}
@@ -51,7 +52,7 @@ export function SynchronizationPendenciesScreen({ onGoBack, onEditPendency }: IS
             emptyGridMessage="Nenhuma pendência de sincronização."
           />
         </View>
-      </ScrollView>
+      </ScreenScrollView>
     </View>
   );
 }

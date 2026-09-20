@@ -5,7 +5,7 @@
  * assets (HTML, CSS, JS, images, fonts) available offline.
  */
 
-const CACHE_VERSION = '1.1.0';
+const CACHE_VERSION = '1.1.1';
 const CACHE_NAME = `core-pwa-${CACHE_VERSION}`;
 const APP_SHELL_URL = '/index.html';
 

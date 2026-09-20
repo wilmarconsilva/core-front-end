@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, Text, TouchableOpacity, View } from 'react-native';
+import { ScreenScrollView } from '../../../Components/ScreenScrollView';
 import { PaymentMethod } from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
 import { ICustomerListing } from '../../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
 import { ICustomerListingFilter } from '../../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
@@ -78,7 +79,7 @@ export function CommercialDocumentFormScreen({
 }: ICommercialDocumentFormScreenProps) {
   return (
     <View style={layoutStyles.screenWrapper}>
-      <ScrollView contentContainerStyle={[layoutStyles.scrollContainer, { justifyContent: 'flex-start' }]}>
+      <ScreenScrollView contentContainerStyle={[layoutStyles.scrollContainer, { justifyContent: 'flex-start' }]}>
         <Breadcrumb items={[
           { label: 'Início', onPress: onGoBack },
           { label: breadcrumbEntityLabel, onPress: onGoBack },
@@ -311,7 +312,7 @@ export function CommercialDocumentFormScreen({
             style={{ flex: 1 }}
           />
         </View>
-      </ScrollView>
+      </ScreenScrollView>
     </View>
   );
 }

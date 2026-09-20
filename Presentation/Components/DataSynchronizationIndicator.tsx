@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, Easing, LayoutChangeEvent, StyleSheet, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { UseDataSynchronization } from '../../Application/Hooks/UseDataSynchronization';
 import { UseOperationMode } from '../../Application/Hooks/UseOperationMode';
 import { SynchronizationStatus } from '../../Application/Interfaces/Services/IDataSynchronizationService';
-import { colors } from '../Styles';
+import { colors, FLOATING_INDICATOR_BOTTOM } from '../Styles';
 import { OperationMode } from '../../Application/Services/Offline/OperationModeService';
 
 type IndicatorAppearance = {
@@ -13,6 +14,23 @@ type IndicatorAppearance = {
   label: string;
   spinning: boolean;
 };
+
+/** Tempo que o estado de sucesso permanece visível antes de sair de cena. */
+const AUTO_HIDE_DELAY_MS = 5000;
+
+/**
+ * Parâmetros copiados do react-native-toast-message para que a entrada e a
+ * saída deste indicador sejam indistinguíveis das de um toast do app:
+ * `DEFAULT_ANIMATION_CONFIG` (spring, friction 8) e a interpolação de opacidade
+ * de `useSlideAnimation`. Como o `AppToast` usa `position="bottom"`, o
+ * movimento é de baixo para cima na entrada e o inverso na saída.
+ */
+const TOAST_SPRING_FRICTION = 8;
+const TOAST_OPACITY_INPUT_RANGE = [0, 0.7, 1];
+const TOAST_OPACITY_OUTPUT_RANGE = [0, 1, 1];
+
+/** Distância usada enquanto a altura real ainda não foi medida. */
+const TRAVEL_FALLBACK = 96;
 
 function resolveAppearance(status: SynchronizationStatus, operationMode: OperationMode): IndicatorAppearance | null {
   if (operationMode === OperationMode.Offline) {
@@ -32,16 +50,26 @@ function resolveAppearance(status: SynchronizationStatus, operationMode: Operati
 }
 
 /**
- * Fixed bottom-left indicator that reflects the synchronization status.
- * Purely presentational: it observes the status and never blocks the UI.
+ * Indicador fixo no canto inferior esquerdo que reflete o status da sincronização.
+ * Puramente apresentacional: observa o status e nunca bloqueia a interface.
+ *
+ * Entra deslizando como um toast quando a sincronização começa e sai da mesma
+ * forma, em sentido contrário, 5 segundos após o sucesso. Falha e modo offline
+ * permanecem, porque descrevem condições que persistem.
  */
 export function DataSynchronizationIndicator() {
   const { status } = UseDataSynchronization();
   const operationMode = UseOperationMode();
+  const insets = useSafeAreaInsets();
   const spin = useRef(new Animated.Value(0)).current;
+  const slide = useRef(new Animated.Value(0)).current;
+  const [height, setHeight] = useState(0);
+  const [isHidden, setIsHidden] = useState(false);
 
   const appearance = resolveAppearance(status, operationMode);
   const isSpinning = appearance?.spinning ?? false;
+  const hasAppearance = appearance !== null;
+  const shouldAutoHide = status === 'success' && operationMode !== OperationMode.Offline;
 
   useEffect(() => {
     if (!isSpinning) {
@@ -63,27 +91,90 @@ export function DataSynchronizationIndicator() {
     return () => animation.stop();
   }, [isSpinning, spin]);
 
-  if (!appearance) {
+  useEffect(() => {
+    if (!hasAppearance) {
+      return;
+    }
+
+    // Traz o indicador de volta: cobre tanto a entrada (início da sincronização)
+    // quanto o caso de uma saída em andamento ser interrompida por um status novo.
+    setIsHidden(false);
+    Animated.spring(slide, {
+      toValue: 1,
+      friction: TOAST_SPRING_FRICTION,
+      // O react-native-web não tem o módulo nativo de animação. É também o que
+      // a própria biblioteca de toast faz fora do iOS.
+      useNativeDriver: false,
+    }).start();
+
+    if (!shouldAutoHide) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      Animated.spring(slide, {
+        toValue: 0,
+        friction: TOAST_SPRING_FRICTION,
+        useNativeDriver: false,
+      }).start(({ finished }) => {
+        if (finished) setIsHidden(true);
+      });
+    }, AUTO_HIDE_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [status, operationMode, hasAppearance, shouldAutoHide, slide]);
+
+  const onLayout = (e: LayoutChangeEvent) => setHeight(e.nativeEvent.layout.height);
+
+  // Mesma proporção do toast: o dobro da própria altura, o que o tira de cena
+  // por completo independentemente do tamanho do rótulo.
+  const travel = height > 0 ? height * 2 : TRAVEL_FALLBACK;
+
+  const animationStyle = useMemo(
+    () => ({
+      opacity: slide.interpolate({
+        inputRange: TOAST_OPACITY_INPUT_RANGE,
+        outputRange: TOAST_OPACITY_OUTPUT_RANGE,
+      }),
+      transform: [
+        {
+          translateY: slide.interpolate({
+            inputRange: [0, 1],
+            outputRange: [travel, 0],
+          }),
+        },
+      ],
+    }),
+    [slide, travel],
+  );
+
+  if (!appearance || isHidden) {
     return null;
   }
 
   const rotate = spin.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '360deg'] });
 
   return (
-    <View style={styles.container} pointerEvents="none">
+    <Animated.View
+      style={[styles.container, { bottom: insets.bottom + FLOATING_INDICATOR_BOTTOM }, animationStyle]}
+      onLayout={onLayout}
+      pointerEvents="none"
+    >
       <Animated.View style={isSpinning ? { transform: [{ rotate }] } : undefined}>
         <Ionicons name={appearance.icon} size={18} color={appearance.color} />
       </Animated.View>
       <Text style={[styles.label, { color: appearance.color }]}>{appearance.label}</Text>
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    // Ancorado à área de telas do AppShell, que não rola — por isso o
+    // indicador fica parado. O afastamento do rodapé vem por estilo inline,
+    // porque depende da área segura do aparelho.
     position: 'absolute',
     left: 16,
-    bottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,

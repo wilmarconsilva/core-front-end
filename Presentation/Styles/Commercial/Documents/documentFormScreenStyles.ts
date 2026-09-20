@@ -6,6 +6,7 @@ import { formScreenCommonStyles } from '../../formScreenCommonStyles';
 const documentOnly = StyleSheet.create({
   productRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
     borderWidth: 1,
     borderColor: colors.border,
@@ -19,8 +20,12 @@ const documentOnly = StyleSheet.create({
     alignSelf: 'flex-start',
     paddingBottom: 0,
   },
-  productField: { flex: 1 },
-  productSmallField: { width: 90 },
+  /**
+   * O flexBasis alto faz "Produto" ocupar a linha inteira no celular (Qtd. e
+   * Vl. Unit. caem para a linha de baixo) e permanecer lado a lado no desktop.
+   */
+  productField: { flexGrow: 1, flexShrink: 1, flexBasis: 240, minWidth: 0 },
+  productSmallField: { flexGrow: 0, flexShrink: 0, flexBasis: 90 },
   totalText: { fontSize: 13, color: colors.textSecondary, marginTop: 4 },
   summaryRow: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12 },
   summaryText: { fontSize: 15, fontWeight: '700', color: colors.textPrimary },

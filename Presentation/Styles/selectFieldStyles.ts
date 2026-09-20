@@ -1,13 +1,20 @@
 import { StyleSheet } from 'react-native';
 import { colors } from './colors';
+import {
+  INPUT_BORDER_RADIUS,
+  INPUT_BORDER_WIDTH,
+  INPUT_FONT_SIZE,
+  INPUT_PADDING_HORIZONTAL,
+  INPUT_PADDING_VERTICAL,
+} from './inputTokens';
 
 export const selectFieldStyles = StyleSheet.create({
   trigger: {
-    borderWidth: 1,
+    borderWidth: INPUT_BORDER_WIDTH,
     borderColor: colors.border,
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderRadius: INPUT_BORDER_RADIUS,
+    paddingHorizontal: INPUT_PADDING_HORIZONTAL,
+    paddingVertical: INPUT_PADDING_VERTICAL,
     backgroundColor: colors.surfaceAlt,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -17,7 +24,7 @@ export const selectFieldStyles = StyleSheet.create({
     borderColor: colors.error,
   },
   triggerText: {
-    fontSize: 15,
+    fontSize: INPUT_FONT_SIZE,
     color: colors.textPrimary,
     flex: 1,
   },

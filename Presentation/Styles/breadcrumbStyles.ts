@@ -4,6 +4,7 @@ import { colors } from './colors';
 export const breadcrumbStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     marginBottom: 20,
   },

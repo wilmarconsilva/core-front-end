@@ -26,13 +26,15 @@ export const formScreenCommonStyles = StyleSheet.create({
   entityCard: {
     backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
     ...panelShadow,
   },
   card: {
     backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
     marginBottom: 16,
     ...panelShadow,
   },
@@ -42,15 +44,24 @@ export const formScreenCommonStyles = StyleSheet.create({
     color: colors.textPrimary,
     marginBottom: 16,
   },
-  actionRow: { flexDirection: 'row', gap: 12, marginTop: 8 },
+  actionRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 8 },
   documentFooterActions: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
     marginTop: 8,
     marginBottom: 24,
   },
-  row: { flexDirection: 'row', gap: 12 },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   flex1: { flex: 1 },
+
+  /**
+   * Slots de campo dentro de `row`. O `flexBasis` decide QUANDO a linha quebra:
+   * `rowFieldWide` empilha no celular, `rowFieldCompact` continua lado a lado
+   * (usar para valores curtos como Número e CEP).
+   */
+  rowFieldWide: { flexGrow: 1, flexShrink: 1, flexBasis: 220, minWidth: 0 },
+  rowFieldCompact: { flexGrow: 1, flexShrink: 1, flexBasis: 110, minWidth: 0 },
   addCustomerAddressButton: {
     ...outlineButtonBase,
     marginBottom: 16,

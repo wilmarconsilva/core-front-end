@@ -1,12 +1,13 @@
 import React, { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import { IDocumentListing } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/IDocumentListing';
+import { formatCurrency, formatDateTime } from '../../../../Application/Services/Utilities/FormatUtilities';
 import { IColumn } from '../../../Interfaces/DataGrid/IColumn';
 import { ICrudListScreenProps } from '../../../Interfaces/Screens/ICrudListScreenProps';
 import { CrudOperationType, CrudOperationTypeUtility } from '../../../../Infrastructure/Persistence/Enums/CrudOperationType';
 import { DateField } from '../../../Components/DateField';
 import { CrudListScreen } from '../../CrudListScreen';
-import { listScreenStyles, tableStyles } from '../../../Styles';
+import { filterActionBarStyles, listScreenStyles, tableStyles } from '../../../Styles';
 import { OperationMode } from '../../../../Application/Services/Offline/OperationModeService';
 
 interface CommercialDocumentListState<TListing extends IDocumentListing> {
@@ -33,7 +34,6 @@ interface CommercialDocumentListScreenProps<TListing extends IDocumentListing> e
   setEndDate: (value: string) => void;
   deleteTitle: string;
   getDeleteMessage: (item: TListing | null) => string;
-  showCreationDate?: boolean;
   extraColumns?: IColumn<TListing>[];
   extraActions?: (item: TListing) => ReactNode;
   allowedCrudOperationTypes?: CrudOperationType[];
@@ -53,7 +53,6 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
   setEndDate,
   deleteTitle,
   getDeleteMessage,
-  showCreationDate = false,
   extraColumns = [],
   extraActions,
   allowedCrudOperationTypes = CrudOperationTypeUtility.getAll(),
@@ -63,23 +62,21 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
   operationMode,
 }: CommercialDocumentListScreenProps<TListing>) {
   const columns: IColumn<TListing>[] = [
-    { key: 'id', label: 'Código', flex: 1 },
+    { key: 'id', label: 'Código', flex: 1, align: 'center' },
     { key: 'custormerName', label: 'Cliente', flex: 2 },
     { key: 'customerLocalityState', label: 'Localidade/Estado', flex: 2.4 },
-  ];
-
-  if (showCreationDate) {
-    columns.push({
+    {
       key: 'creationDateTime',
       label: 'Data de criação',
       flex: 1.5,
+      align: 'center',
       render: (item) => (
         <Text style={tableStyles.cell}>
-          {new Date(item.creationDateTime).toLocaleString('pt-BR')}
+          {formatDateTime(item.creationDateTime)}
         </Text>
       ),
-    });
-  }
+    },
+  ];
 
   columns.push(...extraColumns);
 
@@ -87,9 +84,10 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
     key: 'valueTotal',
     label: 'Total',
     flex: 1,
+    align: 'center',
     render: (item) => (
       <Text style={listScreenStyles.currency}>
-        {item.valueTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+        {formatCurrency(item.valueTotal)}
       </Text>
     ),
   });
@@ -101,7 +99,7 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
       onNavigateToForm={onNavigateToForm}
       filterContent={(
         <>
-          <View style={listScreenStyles.filterFieldCompact}>
+          <View style={filterActionBarStyles.fieldCompact}>
             <DateField
               label="Data início"
               value={startDate}
@@ -109,7 +107,7 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
               onSubmitEditing={listState.handleSearch}
             />
           </View>
-          <View style={listScreenStyles.filterFieldCompact}>
+          <View style={filterActionBarStyles.fieldCompact}>
             <DateField
               label="Data fim"
               value={endDate}
