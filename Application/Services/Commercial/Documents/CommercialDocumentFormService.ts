@@ -153,6 +153,11 @@ export class CommercialDocumentFormService {
       : [CommercialDocumentFormService.createEmptyProductLine<TProduct>()];
   }
 
+  /** Desvincula as linhas de um documento de origem: os ids pertencem ao documento copiado. */
+  static detachProductLines<TProduct extends IDocumentProductSaveDto>(productLines: TProduct[]): TProduct[] {
+    return productLines.map((productLine) => ({ ...productLine, id: 0 }));
+  }
+
   static updateProductLine<TProduct extends IDocumentProductSaveDto>(
     productLines: TProduct[],
     index: number,

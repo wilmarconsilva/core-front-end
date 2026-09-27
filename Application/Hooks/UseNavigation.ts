@@ -9,7 +9,7 @@ export type Screen =
   | { name: 'budgets' }
   | { name: 'budgetForm'; id?: number }
   | { name: 'orders' }
-  | { name: 'orderForm'; id?: number }
+  | { name: 'orderForm'; id?: number; budgetId?: number }
   | { name: 'localities' }
   | { name: 'localityForm'; id?: number }
   | { name: 'reports' }

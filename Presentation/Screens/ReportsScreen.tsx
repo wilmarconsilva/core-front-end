@@ -26,11 +26,13 @@ export function ReportsScreen({ onGoBack, onNavigateToBudgetReport, onNavigateTo
           <MenuItem
             icon="cash-outline"
             label="Orçamentos"
+            menuItemSize="medium"
             onPress={onNavigateToBudgetReport}
           />
           <MenuItem
             icon="clipboard-outline"
             label="Pedidos"
+            menuItemSize="medium"
             onPress={onNavigateToOrderReport}
           />
         </View>
