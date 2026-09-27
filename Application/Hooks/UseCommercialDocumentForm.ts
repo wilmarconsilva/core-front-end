@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { UseCustomers } from './UseCustomers';
 import { UseFormValidation } from './UseFormValidation';
 import { UseProducts } from './UseProducts';
@@ -50,7 +50,9 @@ interface UseCommercialDocumentFormConfig<
   formService: ICommercialDocumentFormService<TProduct, TFormState, TDetail, TSaveDto>;
   applyExtraFormState?: (form: TFormState) => void;
   getExtraFormState?: () => Partial<TFormState>;
-  extraReturn?: Record<string, unknown>;
+  /** Estado inicial de um documento novo, copiado de outra origem (ex.: pedido a partir de orçamento). */
+  seedForm?: TFormState | null;
+  isLoadingSeed?: boolean;
 }
 
 export function UseCommercialDocumentForm<
@@ -65,7 +67,8 @@ export function UseCommercialDocumentForm<
   formService,
   applyExtraFormState,
   getExtraFormState,
-  extraReturn,
+  seedForm,
+  isLoadingSeed,
 }: UseCommercialDocumentFormConfig<TProduct, TFormState, TDetail, TSaveDto>) {
   const { currentItem, isLoadingItem, isSaving, loadById, save, clearCurrentItem } = useDocument();
   const { listings: customers, isLoadingList: isLoadingCustomers, loadAll: loadCustomers } = UseCustomers();
@@ -84,6 +87,7 @@ export function UseCommercialDocumentForm<
   const [productLines, setProductLines] = useState<TProduct[]>(initialForm.productLines);
   const [filterCustomerName, setFilterCustomerName] = useState('');
   const [filterProductDescription, setFilterProductDescription] = useState('');
+  const isSeedApplied = useRef(false);
 
   const valueTotal = CommercialDocumentFormService.calculateTotal(productLines, discountValue);
   const installmentFields = UseDocumentInstallmentForm(
@@ -101,10 +105,7 @@ export function UseCommercialDocumentForm<
     return () => clearCurrentItem();
   }, [id]);
 
-  useEffect(() => {
-    if (!currentItem) return;
-
-    const form = formService.detailToForm(currentItem);
+  const applyForm = (form: TFormState) => {
     CommercialDocumentFormService.applyBaseFormState(form, {
       setCustomerId,
       setCustomerDisplayLabel,
@@ -116,7 +117,21 @@ export function UseCommercialDocumentForm<
       setProductLines,
     });
     applyExtraFormState?.(form);
+  };
+
+  useEffect(() => {
+    if (!currentItem) return;
+
+    applyForm(formService.detailToForm(currentItem));
   }, [currentItem]);
+
+  // A origem preenche o formulário uma única vez: a partir daí valem as edições do usuário.
+  useEffect(() => {
+    if (isEditing || !seedForm || isSeedApplied.current) return;
+
+    isSeedApplied.current = true;
+    applyForm(seedForm);
+  }, [seedForm]);
 
   const currentForm = (): TFormState =>
     ({
@@ -173,7 +188,7 @@ export function UseCommercialDocumentForm<
   return {
     pageSize: PAGE_SIZE,
     isEditing,
-    isLoadingItem,
+    isLoadingItem: isLoadingItem || !!isLoadingSeed,
     isSaving,
     customers,
     isLoadingCustomers,
@@ -207,6 +222,5 @@ export function UseCommercialDocumentForm<
     setFilterProductDescription,
     handleSave,
     buildDetailFromForm: () => formService.formToDetail(id, currentForm()),
-    ...extraReturn,
   };
 }

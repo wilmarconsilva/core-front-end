@@ -1,3 +1,4 @@
+import { IBudgetDetailDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetDetailDto';
 import { IOrderDetailDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderDetailDto';
 import { IOrderProductSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderProductSaveDto';
 import { IOrderSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderSaveDto';
@@ -22,6 +23,22 @@ export class OrderFormService {
     return {
       ...CommercialDocumentFormService.detailToFormState<IOrderProductSaveDto>(detail),
       budgetId: detail.budgetId ? String(detail.budgetId) : '',
+    };
+  }
+
+  /**
+   * Estado inicial de um pedido novo copiado de um orçamento: o usuário confere e ajusta
+   * antes de salvar. A assinatura não é herdada — ela é dada para o documento que o cliente
+   * assinou — e as linhas são desvinculadas dos itens do orçamento.
+   */
+  static budgetToForm(budget: IBudgetDetailDto): OrderFormState {
+    const form = CommercialDocumentFormService.detailToFormState<IOrderProductSaveDto>(budget);
+
+    return {
+      ...form,
+      signature: null,
+      productLines: CommercialDocumentFormService.detachProductLines(form.productLines),
+      budgetId: String(budget.id),
     };
   }
 

@@ -8,15 +8,15 @@ import { isLocalRecord } from '../../../../../Application/Services/Utilities/Off
 import { toApiDayEnd, toApiDayStart } from '../../../../../Application/Services/Utilities/DateTimeUtilities';
 import { IBudgetListing } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListing';
 import { IBudgetListingFilter } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListingFilter';
-import { ICrudListScreenProps } from '../../../../Interfaces/Screens/ICrudListScreenProps';
+import { IBudgetsListScreenProps } from '../../../../Interfaces/Screens/IBudgetsListScreenProps';
 import { IPressableInteractionState } from '../../../../Interfaces/Pressable/IPressableInteractionState';
 import { ConfirmDialog } from '../../../../Components/ConfirmDialog';
 import { colors, interactionStyles, tableStyles } from '../../../../Styles';
 import { CommercialDocumentListScreen } from '../CommercialDocumentListScreen';
 import { OperationMode } from '../../../../../Application/Services/Offline/OperationModeService';
 
-export function BudgetsListScreen({ onGoBack, onNavigateToForm }: ICrudListScreenProps) {
-  const { listings, isLoadingList, isDeleting, loadAll, remove, isCreatingOrder, createOrderByBudget } = UseBudgets();
+export function BudgetsListScreen({ onGoBack, onNavigateToForm, onNavigateToOrderForm }: IBudgetsListScreenProps) {
+  const { listings, isLoadingList, isDeleting, loadAll, remove } = UseBudgets();
   const operationMode = UseOperationMode();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -45,13 +45,11 @@ export function BudgetsListScreen({ onGoBack, onNavigateToForm }: ICrudListScree
     setCreateOrderDialogVisible(false);
   };
 
-  const confirmCreateOrder = async () => {
+  const confirmCreateOrder = () => {
     if (!createOrderTarget) return;
-    const success = await createOrderByBudget(createOrderTarget.id);
-    if (success) {
-      listState.reloadCurrentPage();
-      closeCreateOrderConfirm();
-    }
+
+    onNavigateToOrderForm(createOrderTarget.id);
+    closeCreateOrderConfirm();
   };
 
   return (
@@ -71,7 +69,6 @@ export function BudgetsListScreen({ onGoBack, onNavigateToForm }: ICrudListScree
       extraActions={operationMode === OperationMode.Offline ? undefined : (item) => (
         <Pressable
           onPress={() => openCreateOrderConfirm(item)}
-          disabled={isCreatingOrder}
           style={({ hovered }: IPressableInteractionState) => [
             tableStyles.actionButton,
             hovered && interactionStyles.actionButtonHovered,
@@ -88,10 +85,9 @@ export function BudgetsListScreen({ onGoBack, onNavigateToForm }: ICrudListScree
     <ConfirmDialog
       visible={createOrderDialogVisible}
       title="Criar Pedido"
-      message={createOrderTarget ? `Deseja criar um pedido a partir do orçamento ${createOrderTarget.id}?` : ''}
+      message={createOrderTarget ? `Deseja criar um pedido a partir do orçamento ${createOrderTarget.id}?\n\nOs dados serão carregados no formulário para conferência.` : ''}
       onConfirm={confirmCreateOrder}
       onCancel={closeCreateOrderConfirm}
-      isLoading={isCreatingOrder}
       confirmLabel="Criar Pedido"
     />
     </>

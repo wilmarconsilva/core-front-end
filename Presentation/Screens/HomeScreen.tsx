@@ -53,7 +53,14 @@ function HomeMenuScreen({ userName, navigate, operationMode }: IHomeMenuProps) {
 }
 
 function screenKey(screen: Screen): string {
-  return 'id' in screen ? `${screen.name}-${screen.id ?? 'new'}` : screen.name;
+  if (!('id' in screen)) return screen.name;
+  if (screen.id) return `${screen.name}-${screen.id}`;
+
+  // Dois documentos novos originados de orçamentos diferentes precisam de chaves diferentes,
+  // senão a tela não remonta e reaproveita o estado do anterior.
+  const origin = 'budgetId' in screen && screen.budgetId ? `budget-${screen.budgetId}` : 'new';
+
+  return `${screen.name}-${origin}`;
 }
 
 /** Resolves the form screen that edits the local record of a synchronization pendency. */
@@ -87,14 +94,20 @@ export function HomeScreen({ userName }: IHomeScreenProps) {
         return <ProductFormScreen id={currentScreen.id} onGoBack={goBack} />;
 
       case 'budgets':
-        return <BudgetsListScreen onGoBack={goBack} onNavigateToForm={(id) => navigate({ name: 'budgetForm', id })} />;
+        return (
+          <BudgetsListScreen
+            onGoBack={goBack}
+            onNavigateToForm={(id) => navigate({ name: 'budgetForm', id })}
+            onNavigateToOrderForm={(budgetId) => navigate({ name: 'orderForm', budgetId })}
+          />
+        );
       case 'budgetForm':
         return <BudgetFormScreen id={currentScreen.id} onGoBack={goBack} />;
 
       case 'orders':
         return <OrdersListScreen onGoBack={goBack} onNavigateToForm={(id) => navigate({ name: 'orderForm', id })} />;
       case 'orderForm':
-        return <OrderFormScreen id={currentScreen.id} onGoBack={goBack} />;
+        return <OrderFormScreen id={currentScreen.id} budgetId={currentScreen.budgetId} onGoBack={goBack} />;
 
       case 'reports':
         return (
