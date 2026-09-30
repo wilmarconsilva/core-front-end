@@ -64,3 +64,31 @@ Sempre priorize:
 - Memento
 - Visitor
 - Null Object
+
+# Estrutura de pastas
+
+Espelha o `core-back-end`: camadas no topo e, dentro de cada camada, fatias por módulo de domínio — `Camada/Módulo/[Submódulo]/Tipo`.
+
+- Camadas: `Domain`, `Application`, `Infrastructure`, `Presentation` (+ `Configuration`, transversal de build).
+- Módulos: `Authentication`, `Documents` (`Budgets`, `Orders`), `Persons` (`Customers`), `Products`, `Territories` (`Localities`), `Offline`; em `Presentation` também `Home` e `Reports`.
+- `Shared`: código genérico (CRUD, HTTP, componentes, estilos, listagens). `Shared` não deve depender de módulos de domínio.
+- Tipos por camada:
+  - `Domain`: `Enums`, `ValueObjects`, `Exceptions`
+  - `Application`: `DataTransferObjects`, `Services`, `Services/Interfaces`, `Repositories/Interfaces`, `Hooks`, `Templates`, `Utilities`
+  - `Infrastructure`: `Persistence`, `Repositories`
+  - `Presentation`: `Screens`, `Components`, `Interfaces` (props), `Styles`; `Presentation/DependencyInjection` (composition root)
+- Estilos de um módulo são importados diretamente de `<Módulo>/Styles/...`, não pelo barrel `Presentation/Shared/Styles`.
+
+## Regra de dependência
+
+| Camada           | Pode importar                                                        |
+| ---------------- | -------------------------------------------------------------------- |
+| `Domain`         | *(nada)*                                                             |
+| `Application`    | `Domain`                                                             |
+| `Infrastructure` | `Domain`, `Application`                                              |
+| `Presentation`   | `Application`, `Domain`; `Infrastructure` **somente** em `Presentation/DependencyInjection` |
+
+- Interfaces de repositório são portas da aplicação: ficam em `Application/<Módulo>/Repositories/Interfaces` (usam DTOs, por isso não ficam em `Domain`) e são implementadas em `Infrastructure`.
+- Injeção de dependência: `Application/DependencyInjection` define o contrato `IApplicationServices`, o `ApplicationServicesContext` e o hook `UseApplicationServices`. O composition root (`Presentation/DependencyInjection/ApplicationCompositionRoot.ts`, equivalente ao `Program.cs` do back-end) monta as implementações concretas, e o `App.tsx` as fornece pelo Provider.
+- Hooks da `Application` obtêm serviços via `UseApplicationServices()`, nunca importando o composition root.
+- Ao criar um serviço novo que dependa de `Infrastructure`: declare-o em `IApplicationServices` e registre-o no `ApplicationCompositionRoot`.
