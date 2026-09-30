@@ -1,13 +1,13 @@
-import { IValidationRule } from '../../../Hooks/UseFormValidation';
+import { IValidationRule } from '../../Shared/Hooks/UseFormValidation';
 import {
   PaymentMethod,
   PaymentMethodLabels,
   PaymentMethodNotDefinedLabel,
-} from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
-import { IDocumentProductSaveDto } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentProductSaveDto';
-import { IDocumentSaveDto } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentSaveDto';
-import { IPaymentSaveDto } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/Payments/IPaymentSaveDto';
-import { IEntityReferenceDto } from '../../../Interfaces/DataTransferObjects/Entities/IEntityReferenceDto';
+} from '../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
+import { IDocumentProductSaveDto } from '../DataTransferObjects/IDocumentProductSaveDto';
+import { IDocumentSaveDto } from '../DataTransferObjects/IDocumentSaveDto';
+import { IPaymentSaveDto } from '../DataTransferObjects/Payments/IPaymentSaveDto';
+import { IEntityReferenceDto } from '../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
 import { DocumentInstallmentFormState, InstallmentFormService } from './Payments/InstallmentFormService';
 interface DocumentProductDetail {
   id: number;
@@ -20,7 +20,7 @@ interface DocumentProductDetail {
   valueTotal: number;
 }
 
-export interface CommercialDocumentFormState<TProduct extends IDocumentProductSaveDto> {
+export interface DocumentFormState<TProduct extends IDocumentProductSaveDto> {
   customerId: number;
   customerDisplayLabel: string;
   observations: string;
@@ -42,7 +42,7 @@ export interface PaymentMethodPolicy {
   initialValue: PaymentMethod | null;
 }
 
-export interface ICommercialDocumentDetailDto {
+export interface IDocumentDetailDto {
   customer: IEntityReferenceDto;
   payment: IDocumentPaymentDto;
   observations?: string;
@@ -50,7 +50,7 @@ export interface ICommercialDocumentDetailDto {
   products: DocumentProductDetail[];
 }
 
-export interface CommercialDocumentFormBaseSetters<TProduct extends IDocumentProductSaveDto> {
+export interface DocumentFormBaseSetters<TProduct extends IDocumentProductSaveDto> {
   setCustomerId: (value: number) => void;
   setCustomerDisplayLabel: (value: string) => void;
   setObservations: (value: string) => void;
@@ -61,7 +61,7 @@ export interface CommercialDocumentFormBaseSetters<TProduct extends IDocumentPro
   setProductLines: (value: TProduct[]) => void;
 }
 
-export class CommercialDocumentFormService {
+export class DocumentFormService {
   static readonly paymentMethodOptions = Object.values(PaymentMethod)
     .filter((v) => typeof v === 'number')
     .map((v) => ({ label: PaymentMethodLabels[v as PaymentMethod], value: v as PaymentMethod }));
@@ -77,11 +77,11 @@ export class CommercialDocumentFormService {
   };
 
   static paymentMethodOptionsFor(policy: PaymentMethodPolicy): { label: string; value: PaymentMethod | null }[] {
-    if (policy.isRequired) return CommercialDocumentFormService.paymentMethodOptions;
+    if (policy.isRequired) return DocumentFormService.paymentMethodOptions;
 
     return [
       { label: PaymentMethodNotDefinedLabel, value: null },
-      ...CommercialDocumentFormService.paymentMethodOptions,
+      ...DocumentFormService.paymentMethodOptions,
     ];
   }
 
@@ -91,7 +91,7 @@ export class CommercialDocumentFormService {
 
   static createInitialFormState<TProduct extends IDocumentProductSaveDto>(
     paymentMethodPolicy: PaymentMethodPolicy,
-  ): CommercialDocumentFormState<TProduct> {
+  ): DocumentFormState<TProduct> {
     return {
       customerId: 0,
       customerDisplayLabel: '',
@@ -100,28 +100,28 @@ export class CommercialDocumentFormService {
       paymentMethod: paymentMethodPolicy.initialValue,
       discountValue: 0,
       installment: InstallmentFormService.createInitialState(),
-      productLines: [CommercialDocumentFormService.createEmptyProductLine<TProduct>()],
+      productLines: [DocumentFormService.createEmptyProductLine<TProduct>()],
     };
   }
 
   static detailToFormState<TProduct extends IDocumentProductSaveDto>(
-    detail: ICommercialDocumentDetailDto,
-  ): CommercialDocumentFormState<TProduct> {
+    detail: IDocumentDetailDto,
+  ): DocumentFormState<TProduct> {
     return {
       customerId: detail.customer.id,
-      customerDisplayLabel: CommercialDocumentFormService.entitySelectLabel(detail.customer),
+      customerDisplayLabel: DocumentFormService.entitySelectLabel(detail.customer),
       observations: detail.observations ?? '',
       signature: detail.customerSignatureImage ?? null,
       paymentMethod: detail.payment.method,
       discountValue: detail.payment.discountValue,
       installment: InstallmentFormService.fromPayment(detail.payment),
-      productLines: CommercialDocumentFormService.detailProductsToForm<TProduct>(detail.products),
+      productLines: DocumentFormService.detailProductsToForm<TProduct>(detail.products),
     };
   }
 
   static applyBaseFormState<TProduct extends IDocumentProductSaveDto>(
-    form: CommercialDocumentFormState<TProduct>,
-    setters: CommercialDocumentFormBaseSetters<TProduct>,
+    form: DocumentFormState<TProduct>,
+    setters: DocumentFormBaseSetters<TProduct>,
   ): void {
     setters.setCustomerId(form.customerId);
     setters.setCustomerDisplayLabel(form.customerDisplayLabel);
@@ -135,7 +135,7 @@ export class CommercialDocumentFormService {
 
   static buildSaveDtoFields<TProduct extends IDocumentProductSaveDto>(
     id: number | undefined,
-    form: CommercialDocumentFormState<TProduct>,
+    form: DocumentFormState<TProduct>,
   ): Pick<
     IDocumentSaveDto<TProduct, IDocumentPaymentDto>,
     'id' | 'creationDateTime' | 'customerId' | 'payment' | 'observations' | 'customerSignatureImage' | 'products'
@@ -144,19 +144,19 @@ export class CommercialDocumentFormService {
       id: id ?? 0,
       creationDateTime: new Date(),
       customerId: form.customerId,
-      payment: CommercialDocumentFormService.buildPayment(
+      payment: DocumentFormService.buildPayment(
         form.paymentMethod,
         form.discountValue,
         form.installment,
       ),
       observations: form.observations.trim() || undefined,
       customerSignatureImage: form.signature ?? undefined,
-      products: CommercialDocumentFormService.saveProductLines(form.productLines),
+      products: DocumentFormService.saveProductLines(form.productLines),
     };
   }
 
   static buildValidationRules(
-    form: CommercialDocumentFormState<IDocumentProductSaveDto>,
+    form: DocumentFormState<IDocumentProductSaveDto>,
     paymentMethodPolicy: PaymentMethodPolicy,
   ): IValidationRule[] {
     return [
@@ -189,7 +189,7 @@ export class CommercialDocumentFormService {
         valueUnit: product.valueUnit,
         valueTotal: product.valueTotal,
       } as TProduct))
-      : [CommercialDocumentFormService.createEmptyProductLine<TProduct>()];
+      : [DocumentFormService.createEmptyProductLine<TProduct>()];
   }
 
   /** Desvincula as linhas de um documento de origem: os ids pertencem ao documento copiado. */
@@ -258,20 +258,20 @@ export class CommercialDocumentFormService {
 
   static formToDetailDto(
     id: number | undefined,
-    form: CommercialDocumentFormState<IDocumentProductSaveDto>,
-  ): ICommercialDocumentDetailDto & { id: number; userId: number } {
+    form: DocumentFormState<IDocumentProductSaveDto>,
+  ): IDocumentDetailDto & { id: number; userId: number } {
     return {
       id: id ?? 0,
       userId: 0,
       customer: { id: form.customerId, description: form.customerDisplayLabel },
-      payment: CommercialDocumentFormService.buildPayment(
+      payment: DocumentFormService.buildPayment(
         form.paymentMethod,
         form.discountValue,
         form.installment,
       ),
       observations: form.observations.trim() || undefined,
       customerSignatureImage: form.signature ?? undefined,
-      products: CommercialDocumentFormService.saveProductLines(form.productLines).map((line) => ({
+      products: DocumentFormService.saveProductLines(form.productLines).map((line) => ({
         id: line.id,
         product: {
           id: line.productId,

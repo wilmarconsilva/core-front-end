@@ -1,4 +1,4 @@
-import { MeasureUnit } from '../../../../Domain/ValueObjects/Enums/Products/MeasureUnit';
+import { MeasureUnit } from '../../../Domain/Products/Enums/MeasureUnit';
 
 export interface IProductDetailDto {
   id: number;

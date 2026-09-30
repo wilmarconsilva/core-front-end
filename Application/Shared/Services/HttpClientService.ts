@@ -1,6 +1,6 @@
 import Toast from 'react-native-toast-message';
-import { IAccessToken } from '../Interfaces/DataTransferObjects/Authentication/IAccessToken';
-import { TokenStorageService } from './TokenStorageService';
+import { IAccessToken } from '../../Authentication/DataTransferObjects/IAccessToken';
+import { TokenStorageService } from '../../Authentication/Services/TokenStorageService';
 
 if (!process.env?.EXPO_PUBLIC_WEB_API_REST_URL?.trim()) {
   throw new Error('EXPO_PUBLIC_WEB_API_REST_URL is not defined as an environment variable or in the .env file.');

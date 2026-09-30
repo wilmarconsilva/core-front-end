@@ -1,5 +1,5 @@
-import { IConnectivityProbe } from '../../Interfaces/Services/IConnectivityProbe';
-import { WEB_SERVICE_REST_URL } from '../HttpClientService';
+import { IConnectivityProbe } from './Interfaces/IConnectivityProbe';
+import { WEB_SERVICE_REST_URL } from '../../Shared/Services/HttpClientService';
 
 const REACHABILITY_TIMEOUT_MS = 3000;
 

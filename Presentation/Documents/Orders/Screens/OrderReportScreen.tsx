@@ -1,7 +1,7 @@
 import React from 'react';
-import { OrderReportService } from '../../../../../Application/Services/Commercial/Documents/Orders/OrderReportService';
-import { IBackOnlyScreenProps } from '../../../../Interfaces/Screens/IBackOnlyScreenProps';
-import { DocumentReportScreen } from '../DocumentReportScreen';
+import { OrderReportService } from '../../../../Application/Documents/Orders/Services/OrderReportService';
+import { IBackOnlyScreenProps } from '../../../Shared/Interfaces/Screens/IBackOnlyScreenProps';
+import { DocumentReportScreen } from '../../Screens/DocumentReportScreen';
 
 const orderReportService = new OrderReportService();
 

@@ -1,4 +1,4 @@
-import { IDocumentSaveDto } from '../IDocumentSaveDto';
+import { IDocumentSaveDto } from '../../DataTransferObjects/IDocumentSaveDto';
 import { IOrderPaymentSaveDto } from './IOrderPaymentSaveDto';
 import { IOrderProductSaveDto } from './IOrderProductSaveDto';
 

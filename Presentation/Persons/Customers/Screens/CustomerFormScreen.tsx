@@ -2,15 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Masks } from 'react-native-mask-input';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { EntitySelectField } from '../../Components/EntitySelectField';
-import { FormField } from '../../Components/FormField';
-import { SelectField } from '../../Components/SelectField';
-import { UseCustomerForm } from '../../../Application/Hooks/UseCustomerForm';
-import { ILocalityListing } from '../../../Application/Interfaces/DataTransferObjects/Localities/ILocalityListing';
-import { ILocalityListingFilter } from '../../../Application/Interfaces/DataTransferObjects/Localities/ILocalityListingFilter';
-import { IEntityFormScreenProps } from '../../Interfaces/Screens/IEntityFormScreenProps';
-import { colors, customerFormScreenStyles as styles } from '../../Styles';
-import { CrudFormScreen } from '../CrudFormScreen';
+import { EntitySelectField } from '../../../Shared/Components/EntitySelectField';
+import { FormField } from '../../../Shared/Components/FormField';
+import { SelectField } from '../../../Shared/Components/SelectField';
+import { UseCustomerForm } from '../../../../Application/Persons/Customers/Hooks/UseCustomerForm';
+import { ILocalityListing } from '../../../../Application/Territories/Localities/DataTransferObjects/ILocalityListing';
+import { ILocalityListingFilter } from '../../../../Application/Territories/Localities/DataTransferObjects/ILocalityListingFilter';
+import { IEntityFormScreenProps } from '../../../Shared/Interfaces/Screens/IEntityFormScreenProps';
+import { colors } from '../../../Shared/Styles';
+import { customerFormScreenStyles as styles } from '../Styles/customerFormScreenStyles';
+import { CrudFormScreen } from '../../../Shared/Screens/CrudFormScreen';
 
 export function CustomerFormScreen({ id, onGoBack }: IEntityFormScreenProps) {
   const {

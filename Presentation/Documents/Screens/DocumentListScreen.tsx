@@ -1,16 +1,15 @@
 import React, { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import { IDocumentListing } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/IDocumentListing';
-import { formatCurrency, formatDateTime } from '../../../../Application/Services/Utilities/FormatUtilities';
-import { IColumn } from '../../../Interfaces/DataGrid/IColumn';
-import { ICrudListScreenProps } from '../../../Interfaces/Screens/ICrudListScreenProps';
-import { CrudOperationType, CrudOperationTypeUtility } from '../../../../Infrastructure/Persistence/Enums/CrudOperationType';
-import { DateField } from '../../../Components/DateField';
-import { CrudListScreen } from '../../CrudListScreen';
-import { filterActionBarStyles, listScreenStyles, tableStyles } from '../../../Styles';
-import { OperationMode } from '../../../../Application/Services/Offline/OperationModeService';
+import { IDocumentListing } from '../../../Application/Documents/DataTransferObjects/IDocumentListing';
+import { formatCurrency, formatDateTime } from '../../../Application/Shared/Utilities/FormatUtilities';
+import { IColumn } from '../../Shared/Interfaces/DataGrid/IColumn';
+import { ICrudListScreenProps } from '../../Shared/Interfaces/Screens/ICrudListScreenProps';
+import { DateField } from '../../Shared/Components/DateField';
+import { CrudListScreen } from '../../Shared/Screens/CrudListScreen';
+import { filterActionBarStyles, listScreenStyles, tableStyles } from '../../Shared/Styles';
+import { OperationMode } from '../../../Application/Offline/Services/OperationModeService';
 
-interface CommercialDocumentListState<TListing extends IDocumentListing> {
+interface DocumentListState<TListing extends IDocumentListing> {
   page: number;
   pageSize: number;
   handleSearch: () => void;
@@ -22,12 +21,12 @@ interface CommercialDocumentListState<TListing extends IDocumentListing> {
   closeDeleteConfirm: () => void;
 }
 
-interface CommercialDocumentListScreenProps<TListing extends IDocumentListing> extends ICrudListScreenProps {
+interface DocumentListScreenProps<TListing extends IDocumentListing> extends ICrudListScreenProps {
   title: string;
   listings: TListing[];
   isLoadingList: boolean;
   isDeleting: boolean;
-  listState: CommercialDocumentListState<TListing>;
+  listState: DocumentListState<TListing>;
   startDate: string;
   setStartDate: (value: string) => void;
   endDate: string;
@@ -36,12 +35,11 @@ interface CommercialDocumentListScreenProps<TListing extends IDocumentListing> e
   getDeleteMessage: (item: TListing | null) => string;
   extraColumns?: IColumn<TListing>[];
   extraActions?: (item: TListing) => ReactNode;
-  allowedCrudOperationTypes?: CrudOperationType[];
   canMutateItem?: (item: TListing) => boolean;
   operationMode: OperationMode;
 }
 
-export function CommercialDocumentListScreen<TListing extends IDocumentListing>({
+export function DocumentListScreen<TListing extends IDocumentListing>({
   title,
   listings,
   isLoadingList,
@@ -55,12 +53,11 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
   getDeleteMessage,
   extraColumns = [],
   extraActions,
-  allowedCrudOperationTypes = CrudOperationTypeUtility.getAll(),
   canMutateItem,
   onGoBack,
   onNavigateToForm,
   operationMode,
-}: CommercialDocumentListScreenProps<TListing>) {
+}: DocumentListScreenProps<TListing>) {
   const columns: IColumn<TListing>[] = [
     { key: 'id', label: 'Código', flex: 1, align: 'center' },
     { key: 'custormerName', label: 'Cliente', flex: 2 },
@@ -133,7 +130,6 @@ export function CommercialDocumentListScreen<TListing extends IDocumentListing>(
       onConfirmDelete={listState.confirmDelete}
       onCancelDelete={listState.closeDeleteConfirm}
       extraActions={extraActions}
-      allowedCrudOperationTypes={allowedCrudOperationTypes}
       canMutateItem={canMutateItem}
       emptyGridMessage={operationMode === OperationMode.Offline ? 'Somente registros gerados no modo offline serão exibidos.' : undefined}
     />

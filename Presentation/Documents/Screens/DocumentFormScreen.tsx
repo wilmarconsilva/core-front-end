@@ -1,27 +1,28 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
-import { ScreenScrollView } from '../../../Components/ScreenScrollView';
-import { ICustomerListing } from '../../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
-import { ICustomerListingFilter } from '../../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
-import { IProductListing } from '../../../../Application/Interfaces/DataTransferObjects/Products/IProductListing';
-import { IProductListingFilter } from '../../../../Application/Interfaces/DataTransferObjects/Products/IProductListingFilter';
-import { Breadcrumb } from '../../../Components/Breadcrumb';
-import { EntitySelectField } from '../../../Components/EntitySelectField';
-import { FormField } from '../../../Components/FormField';
-import { CheckboxField } from '../../../Components/CheckboxField';
-import { IntField } from '../../../Components/IntField';
-import { DecimalField } from '../../../Components/DecimalField';
-import { PrimaryButton } from '../../../Components/PrimaryButton';
-import { SecondaryButton } from '../../../Components/SecondaryButton';
-import { SelectField } from '../../../Components/SelectField';
-import { SignatureCanvas } from '../../../Components/SignatureCanvas';
-import { TextAreaField } from '../../../Components/TextAreaField';
-import { colors, documentFormScreenStyles as styles, layoutStyles, typographyStyles } from '../../../Styles';
-import { ICommercialDocumentFormScreenProps } from '../../../Interfaces/Screens/ICommercialDocumentFormScreenProps';
-import { PercentageField } from '../../../Components/PercentageField';
+import { ScreenScrollView } from '../../Shared/Components/ScreenScrollView';
+import { ICustomerListing } from '../../../Application/Persons/Customers/DataTransferObjects/ICustomerListing';
+import { ICustomerListingFilter } from '../../../Application/Persons/Customers/DataTransferObjects/ICustomerListingFilter';
+import { IProductListing } from '../../../Application/Products/DataTransferObjects/IProductListing';
+import { IProductListingFilter } from '../../../Application/Products/DataTransferObjects/IProductListingFilter';
+import { Breadcrumb } from '../../Shared/Components/Breadcrumb';
+import { EntitySelectField } from '../../Shared/Components/EntitySelectField';
+import { FormField } from '../../Shared/Components/FormField';
+import { CheckboxField } from '../../Shared/Components/CheckboxField';
+import { IntField } from '../../Shared/Components/IntField';
+import { DecimalField } from '../../Shared/Components/DecimalField';
+import { PrimaryButton } from '../../Shared/Components/PrimaryButton';
+import { SecondaryButton } from '../../Shared/Components/SecondaryButton';
+import { SelectField } from '../../Shared/Components/SelectField';
+import { SignatureCanvas } from '../../Shared/Components/SignatureCanvas';
+import { TextAreaField } from '../../Shared/Components/TextAreaField';
+import { colors, layoutStyles, typographyStyles } from '../../Shared/Styles';
+import { documentFormScreenStyles as styles } from '../Styles/documentFormScreenStyles';
+import { IDocumentFormScreenProps } from '../Interfaces/IDocumentFormScreenProps';
+import { PercentageField } from '../../Shared/Components/PercentageField';
 
-export function CommercialDocumentFormScreen({
+export function DocumentFormScreen({
   title,
   breadcrumbEntityLabel,
   breadcrumbCurrentLabel,
@@ -77,7 +78,7 @@ export function CommercialDocumentFormScreen({
   setFilterProductDescription,
   handleSave,
   onGeneratePdf,
-}: ICommercialDocumentFormScreenProps) {
+}: IDocumentFormScreenProps) {
   return (
     <View style={layoutStyles.screenWrapper}>
       <ScreenScrollView contentContainerStyle={[layoutStyles.scrollContainer, { justifyContent: 'flex-start' }]}>

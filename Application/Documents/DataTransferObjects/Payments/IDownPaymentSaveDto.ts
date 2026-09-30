@@ -1,4 +1,4 @@
-import { PaymentMethod } from '../../../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
+import { PaymentMethod } from '../../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
 
 export interface IDownPaymentSaveDto {
   value: number;

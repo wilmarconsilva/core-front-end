@@ -1,6 +1,6 @@
 import { APIConsumerService } from './APIConsumerService';
-import { ICrudService } from '../Interfaces/Services/ICrudService';
-import { buildQueryParams } from './Utilities/QueryUtilities';
+import { ICrudService } from './Interfaces/ICrudService';
+import { buildQueryParams } from '../Utilities/QueryUtilities';
 
 export class CrudService<TSaveDto, TDetailDto, TListing, TFilter>
   extends APIConsumerService

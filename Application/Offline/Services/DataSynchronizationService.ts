@@ -1,28 +1,28 @@
-import { IListingFilter } from '../../Interfaces/DataTransferObjects/IListingFilter';
-import { IDocumentSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentSaveDto';
-import { IDocumentProductSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentProductSaveDto';
-import { IOfflineRepository } from '../../../Infrastructure/Persistence/Interfaces/IOfflineRepository';
+import { IListingFilter } from '../../Shared/DataTransferObjects/Listings/IListingFilter';
+import { IDocumentSaveDto } from '../../Documents/DataTransferObjects/IDocumentSaveDto';
+import { IDocumentProductSaveDto } from '../../Documents/DataTransferObjects/IDocumentProductSaveDto';
+import { IOfflineRepository } from '../Repositories/Interfaces/IOfflineRepository';
 import {
   IDataSynchronizationService,
   SynchronizationListener,
   SynchronizationStatus,
-} from '../../Interfaces/Services/IDataSynchronizationService';
-import { IProductListing } from '../../Interfaces/DataTransferObjects/Products/IProductListing';
-import { IProductListingFilter } from '../../Interfaces/DataTransferObjects/Products/IProductListingFilter';
-import { IProductSaveDto } from '../../Interfaces/DataTransferObjects/Products/IProductSaveDto';
-import { ICustomerListing } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
-import { ICustomerListingFilter } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
-import { ICustomerSaveDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerSaveDto';
-import { IOrderSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderSaveDto';
-import { IBudgetSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetSaveDto';
-import { ILocalityOfflineRepository } from '../../../Infrastructure/Persistence/Repositories/Localities/Interfaces/ILocalityOfflineRepository';
-import { ILocalityService } from '../../Interfaces/Services/ILocalityService';
-import { ISynchronizationPendencyService } from '../../Interfaces/Services/ISynchronizationPendencyService';
-import { SynchronizationEntityType } from '../../Interfaces/DataTransferObjects/Offline/SynchronizationEntityType';
-import { IApiError } from '../../Interfaces/DataTransferObjects/APIConsumer/IApiError';
+} from './Interfaces/IDataSynchronizationService';
+import { IProductListing } from '../../Products/DataTransferObjects/IProductListing';
+import { IProductListingFilter } from '../../Products/DataTransferObjects/IProductListingFilter';
+import { IProductSaveDto } from '../../Products/DataTransferObjects/IProductSaveDto';
+import { ICustomerListing } from '../../Persons/Customers/DataTransferObjects/ICustomerListing';
+import { ICustomerListingFilter } from '../../Persons/Customers/DataTransferObjects/ICustomerListingFilter';
+import { ICustomerSaveDto } from '../../Persons/Customers/DataTransferObjects/ICustomerSaveDto';
+import { IOrderSaveDto } from '../../Documents/Orders/DataTransferObjects/IOrderSaveDto';
+import { IBudgetSaveDto } from '../../Documents/Budgets/DataTransferObjects/IBudgetSaveDto';
+import { ILocalityOfflineRepository } from '../../Territories/Localities/Repositories/Interfaces/ILocalityOfflineRepository';
+import { ILocalityService } from '../../Territories/Localities/Services/Interfaces/ILocalityService';
+import { ISynchronizationPendencyService } from './Interfaces/ISynchronizationPendencyService';
+import { SynchronizationEntityType } from '../DataTransferObjects/SynchronizationEntityType';
+import { IApiError } from '../../Shared/DataTransferObjects/APIConsumer/IApiError';
 import { toApiCreatePayload } from '../Utilities/OfflineUtilities';
 import { describeDocument, remapDocumentReferences } from './OfflineMappersService';
-import { APIConsumerUtility } from '../Utilities/APIConsumerUtility';
+import { APIConsumerUtility } from '../../Shared/Utilities/APIConsumerUtility';
 
 const FETCH_PAGE_SIZE = 50;
 

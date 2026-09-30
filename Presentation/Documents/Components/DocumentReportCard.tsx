@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { IDocumentReport } from '../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReport';
-import { formatCurrency } from '../../Application/Services/Utilities/FormatUtilities';
-import { documentReportScreenStyles as styles } from '../Styles';
+import { IDocumentReport } from '../../../Application/Documents/DataTransferObjects/Reports/IDocumentReport';
+import { formatCurrency } from '../../../Application/Shared/Utilities/FormatUtilities';
+import { documentReportScreenStyles as styles } from '../Styles/documentReportScreenStyles';
 
 interface IDocumentReportCardProps {
   report: IDocumentReport;

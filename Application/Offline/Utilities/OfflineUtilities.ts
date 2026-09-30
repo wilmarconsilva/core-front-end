@@ -1,6 +1,6 @@
 import Toast from 'react-native-toast-message';
-import { OperationMode, OperationModeService } from '../Offline/OperationModeService';
-import { blockOfflineOperation } from '../../../Domain/Exceptions/OfflineUnavailableError';
+import { OperationMode, OperationModeService } from '../Services/OperationModeService';
+import { blockOfflineOperation } from '../../../Domain/Offline/Exceptions/OfflineUnavailableError';
 
 export const OFFLINE_SAVED_MESSAGE = 'Registro salvo localmente. Será sincronizado quando houver conexão com a internet.';
 

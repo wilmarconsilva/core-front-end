@@ -1,7 +1,7 @@
-import { IValidationRule } from '../../../../Hooks/UseFormValidation';
-import { PaymentMethod } from '../../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
-import { InstallmentSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Payments/IInstallmentSaveDto';
-import { IPaymentSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Payments/IPaymentSaveDto';
+import { IValidationRule } from '../../../Shared/Hooks/UseFormValidation';
+import { PaymentMethod } from '../../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
+import { InstallmentSaveDto } from '../../DataTransferObjects/Payments/IInstallmentSaveDto';
+import { IPaymentSaveDto } from '../../DataTransferObjects/Payments/IPaymentSaveDto';
 export type DownPaymentSyncSource = 'value' | 'percentage';
 
 export interface DocumentInstallmentFormState {

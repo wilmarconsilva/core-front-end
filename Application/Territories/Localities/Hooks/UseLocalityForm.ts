@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { UseFormValidation } from './UseFormValidation';
+import { UseFormValidation } from '../../../Shared/Hooks/UseFormValidation';
 import { UseLocalities } from './UseLocalities';
-import { LocalityFormService } from '../Services/Localities/LocalityFormService';
+import { LocalityFormService } from '../Services/LocalityFormService';
 
 export function UseLocalityForm(id: number | undefined, onGoBack: () => void) {
   const { currentItem, isLoadingItem, isSaving, loadById, save, clearCurrentItem } = UseLocalities();

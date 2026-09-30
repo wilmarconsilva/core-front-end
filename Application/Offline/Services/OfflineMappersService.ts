@@ -1,31 +1,31 @@
-import { MeasureUnit } from '../../../Domain/ValueObjects/Enums/Products/MeasureUnit';
-import { PersonType } from '../../Interfaces/DataTransferObjects/Persons/PersonType';
-import { IDocumentListing } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentListing';
-import { IDocumentListingFilter } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentListingFilter';
-import { IDocumentProductSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentProductSaveDto';
-import { IDocumentSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentSaveDto';
-import { IPaymentSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Payments/IPaymentSaveDto';
-import { IBudgetDetailDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetDetailDto';
-import { IBudgetListing } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListing';
-import { IBudgetSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetSaveDto';
-import { IOrderDetailDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderDetailDto';
-import { IOrderListing } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderListing';
-import { IOrderSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderSaveDto';
-import { ICustomerDetailDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerDetailDto';
-import { ICustomerListing } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
-import { ICustomerSaveDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerSaveDto';
-import { IProductDetailDto } from '../../Interfaces/DataTransferObjects/Products/IProductDetailDto';
-import { IProductListing } from '../../Interfaces/DataTransferObjects/Products/IProductListing';
-import { IProductSaveDto } from '../../Interfaces/DataTransferObjects/Products/IProductSaveDto';
-import { IProductListingFilter } from '../../Interfaces/DataTransferObjects/Products/IProductListingFilter';
-import { ICustomerListingFilter } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
-import { ILocalityDetailDto } from '../../Interfaces/DataTransferObjects/Localities/ILocalityDetailDto';
-import { ILocalityListing } from '../../Interfaces/DataTransferObjects/Localities/ILocalityListing';
-import { ILocalityListingFilter } from '../../Interfaces/DataTransferObjects/Localities/ILocalityListingFilter';
-import { ILocalitySaveDto } from '../../Interfaces/DataTransferObjects/Localities/ILocalitySaveDto';
-import { IOfflineRepository } from '../../../Infrastructure/Persistence/Interfaces/IOfflineRepository';
-import { CommercialDocumentFormService } from '../Commercial/Documents/CommercialDocumentFormService';
-import { toApiDateTime, toTimestamp } from '../Utilities/DateTimeUtilities';
+import { MeasureUnit } from '../../../Domain/Products/Enums/MeasureUnit';
+import { PersonType } from '../../../Domain/Persons/Enums/PersonType';
+import { IDocumentListing } from '../../Documents/DataTransferObjects/IDocumentListing';
+import { IDocumentListingFilter } from '../../Documents/DataTransferObjects/IDocumentListingFilter';
+import { IDocumentProductSaveDto } from '../../Documents/DataTransferObjects/IDocumentProductSaveDto';
+import { IDocumentSaveDto } from '../../Documents/DataTransferObjects/IDocumentSaveDto';
+import { IPaymentSaveDto } from '../../Documents/DataTransferObjects/Payments/IPaymentSaveDto';
+import { IBudgetDetailDto } from '../../Documents/Budgets/DataTransferObjects/IBudgetDetailDto';
+import { IBudgetListing } from '../../Documents/Budgets/DataTransferObjects/IBudgetListing';
+import { IBudgetSaveDto } from '../../Documents/Budgets/DataTransferObjects/IBudgetSaveDto';
+import { IOrderDetailDto } from '../../Documents/Orders/DataTransferObjects/IOrderDetailDto';
+import { IOrderListing } from '../../Documents/Orders/DataTransferObjects/IOrderListing';
+import { IOrderSaveDto } from '../../Documents/Orders/DataTransferObjects/IOrderSaveDto';
+import { ICustomerDetailDto } from '../../Persons/Customers/DataTransferObjects/ICustomerDetailDto';
+import { ICustomerListing } from '../../Persons/Customers/DataTransferObjects/ICustomerListing';
+import { ICustomerSaveDto } from '../../Persons/Customers/DataTransferObjects/ICustomerSaveDto';
+import { IProductDetailDto } from '../../Products/DataTransferObjects/IProductDetailDto';
+import { IProductListing } from '../../Products/DataTransferObjects/IProductListing';
+import { IProductSaveDto } from '../../Products/DataTransferObjects/IProductSaveDto';
+import { IProductListingFilter } from '../../Products/DataTransferObjects/IProductListingFilter';
+import { ICustomerListingFilter } from '../../Persons/Customers/DataTransferObjects/ICustomerListingFilter';
+import { ILocalityDetailDto } from '../../Territories/Localities/DataTransferObjects/ILocalityDetailDto';
+import { ILocalityListing } from '../../Territories/Localities/DataTransferObjects/ILocalityListing';
+import { ILocalityListingFilter } from '../../Territories/Localities/DataTransferObjects/ILocalityListingFilter';
+import { ILocalitySaveDto } from '../../Territories/Localities/DataTransferObjects/ILocalitySaveDto';
+import { IOfflineRepository } from '../Repositories/Interfaces/IOfflineRepository';
+import { DocumentFormService } from '../../Documents/Services/DocumentFormService';
+import { toApiDateTime, toTimestamp } from '../../Shared/Utilities/DateTimeUtilities';
 
 function containsIgnoreCase(value: string, term?: string): boolean {
   if (!term) return true;
@@ -168,7 +168,7 @@ export async function buildDocumentListing(
     custormerName: customer?.name ?? '',
     customerLocalityState: '',
     creationDateTime: toApiDateTime(dto.creationDateTime),
-    valueTotal: CommercialDocumentFormService.calculateTotal(dto.products, dto.payment.discountValue),
+    valueTotal: DocumentFormService.calculateTotal(dto.products, dto.payment.discountValue),
   };
 }
 

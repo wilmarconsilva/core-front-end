@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Text, View } from 'react-native';
-import { ScreenScrollView } from '../Components/ScreenScrollView';
-import { FormField } from '../Components/FormField';
-import { PasswordField } from '../Components/PasswordField';
-import { PrimaryButton } from '../Components/PrimaryButton';
-import { ILoginScreenProps } from '../Interfaces/Login/ILoginScreenProps';
-import { layoutStyles, typographyStyles } from '../Styles';
+import { ScreenScrollView } from '../../Shared/Components/ScreenScrollView';
+import { FormField } from '../../Shared/Components/FormField';
+import { PasswordField } from '../../Shared/Components/PasswordField';
+import { PrimaryButton } from '../../Shared/Components/PrimaryButton';
+import { ILoginScreenProps } from '../Interfaces/ILoginScreenProps';
+import { layoutStyles, typographyStyles } from '../../Shared/Styles';
 
 export function LoginScreen({
   isLoading,

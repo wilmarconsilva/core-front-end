@@ -1,13 +1,13 @@
-import { getPaymentMethodLabel } from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
-import { IDocumentTemplate } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentTemplate';
-import { ICommercialDocumentDetailDto } from './CommercialDocumentFormService';
+import { getPaymentMethodLabel } from '../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
+import { IDocumentTemplate } from '../DataTransferObjects/IDocumentTemplate';
+import { IDocumentDetailDto } from './DocumentFormService';
 
 const currencyFormat = (value: number) =>
   value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
 export class DocumentTemplateMapper {
   static fromDetail(
-    detail: ICommercialDocumentDetailDto & { id: number },
+    detail: IDocumentDetailDto & { id: number },
     documentTitle: string,
   ): IDocumentTemplate {
     const valueSubtotal = detail.products.reduce((sum, product) => sum + product.valueTotal, 0);

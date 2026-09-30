@@ -1,9 +1,9 @@
-import { CrudService } from '../CrudService';
-import { ICustomerService } from '../../Interfaces/Services/ICustomerService';
-import { ICustomerSaveDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerSaveDto';
-import { ICustomerDetailDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerDetailDto';
-import { ICustomerListing } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
-import { ICustomerListingFilter } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
+import { CrudService } from '../../../Shared/Services/CrudService';
+import { ICustomerService } from './Interfaces/ICustomerService';
+import { ICustomerSaveDto } from '../DataTransferObjects/ICustomerSaveDto';
+import { ICustomerDetailDto } from '../DataTransferObjects/ICustomerDetailDto';
+import { ICustomerListing } from '../DataTransferObjects/ICustomerListing';
+import { ICustomerListingFilter } from '../DataTransferObjects/ICustomerListingFilter';
 
 export class CustomerService
   extends CrudService<ICustomerSaveDto, ICustomerDetailDto, ICustomerListing, ICustomerListingFilter>

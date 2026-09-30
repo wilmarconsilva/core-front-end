@@ -1,11 +1,11 @@
-import { DocumentService } from '../DocumentService';
-import { DocumentTemplateMapper } from '../DocumentTemplateMapper';
-import { IOrderService } from '../../../../Interfaces/Services/IOrderService';
-import { IOrderSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderSaveDto';
-import { IOrderDetailDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderDetailDto';
-import { IOrderListing } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderListing';
-import { IOrderListingFilter } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderListingFilter';
-import { IDocumentTemplate } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentTemplate';
+import { DocumentService } from '../../Services/DocumentService';
+import { DocumentTemplateMapper } from '../../Services/DocumentTemplateMapper';
+import { IOrderService } from './Interfaces/IOrderService';
+import { IOrderSaveDto } from '../DataTransferObjects/IOrderSaveDto';
+import { IOrderDetailDto } from '../DataTransferObjects/IOrderDetailDto';
+import { IOrderListing } from '../DataTransferObjects/IOrderListing';
+import { IOrderListingFilter } from '../DataTransferObjects/IOrderListingFilter';
+import { IDocumentTemplate } from '../../DataTransferObjects/IDocumentTemplate';
 import { OrderTemplateService } from './OrderTemplateService';
 
 export class OrderService

@@ -1,5 +1,5 @@
-import { IDocumentSaveDto } from '../IDocumentSaveDto';
+import { IDocumentSaveDto } from '../../DataTransferObjects/IDocumentSaveDto';
 import { IBudgetPaymentSaveDto } from './IBudgetPaymentSaveDto';
-import { IBudgetProductSaveDto } from '../Budgets/IBudgetProductSaveDto';
+import { IBudgetProductSaveDto } from './IBudgetProductSaveDto';
 
 export interface IBudgetSaveDto extends IDocumentSaveDto<IBudgetProductSaveDto, IBudgetPaymentSaveDto> {}

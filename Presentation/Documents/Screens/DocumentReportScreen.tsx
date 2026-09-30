@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { ScreenScrollView } from '../../../Components/ScreenScrollView';
-import { IDocumentReport } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReport';
-import { IDocumentReportFilter } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportFilter';
-import { IDocumentReportListing } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportListing';
-import { IDocumentReportSummary } from '../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportSummary';
-import { formatCurrency } from '../../../../Application/Services/Utilities/FormatUtilities';
-import { toApiDayEnd, toApiDayStart } from '../../../../Application/Services/Utilities/DateTimeUtilities';
-import { Breadcrumb } from '../../../Components/Breadcrumb';
-import { DateField } from '../../../Components/DateField';
-import { DocumentReportCard } from '../../../Components/DocumentReportCard';
-import { PrimaryButton } from '../../../Components/PrimaryButton';
-import { IDocumentReportScreenProps } from '../../../Interfaces/Screens/IDocumentReportScreenProps';
+import { ScreenScrollView } from '../../Shared/Components/ScreenScrollView';
+import { IDocumentReport } from '../../../Application/Documents/DataTransferObjects/Reports/IDocumentReport';
+import { IDocumentReportFilter } from '../../../Application/Documents/DataTransferObjects/Reports/IDocumentReportFilter';
+import { IDocumentReportListing } from '../../../Application/Documents/DataTransferObjects/Reports/IDocumentReportListing';
+import { IDocumentReportSummary } from '../../../Application/Documents/DataTransferObjects/Reports/IDocumentReportSummary';
+import { formatCurrency } from '../../../Application/Shared/Utilities/FormatUtilities';
+import { toApiDayEnd, toApiDayStart } from '../../../Application/Shared/Utilities/DateTimeUtilities';
+import { Breadcrumb } from '../../Shared/Components/Breadcrumb';
+import { DateField } from '../../Shared/Components/DateField';
+import { DocumentReportCard } from '../Components/DocumentReportCard';
+import { PrimaryButton } from '../../Shared/Components/PrimaryButton';
+import { IDocumentReportScreenProps } from '../Interfaces/IDocumentReportScreenProps';
 import {
   colors,
-  documentReportScreenStyles as styles,
   filterActionBarStyles,
   layoutStyles,
   typographyStyles,
-} from '../../../Styles';
+} from '../../Shared/Styles';
+import { documentReportScreenStyles as styles } from '../Styles/documentReportScreenStyles';
 
 const REGISTERS_START = 0;
 const REGISTERS_END = 50;

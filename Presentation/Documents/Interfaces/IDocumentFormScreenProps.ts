@@ -1,13 +1,13 @@
 import { ReactNode } from "react";
-import { ICustomerListing } from "../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing";
-import { ICustomerListingFilter } from "../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter";
-import { IProductListing } from "../../../Application/Interfaces/DataTransferObjects/Products/IProductListing";
-import { IProductListingFilter } from "../../../Application/Interfaces/DataTransferObjects/Products/IProductListingFilter";
-import { ValidationErrors } from "../../../Application/Hooks/UseFormValidation";
-import { PaymentMethod } from "../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod";
-import { IDocumentProductSaveDto } from "../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/IDocumentProductSaveDto";
+import { ICustomerListing } from "../../../Application/Persons/Customers/DataTransferObjects/ICustomerListing";
+import { ICustomerListingFilter } from "../../../Application/Persons/Customers/DataTransferObjects/ICustomerListingFilter";
+import { IProductListing } from "../../../Application/Products/DataTransferObjects/IProductListing";
+import { IProductListingFilter } from "../../../Application/Products/DataTransferObjects/IProductListingFilter";
+import { ValidationErrors } from "../../../Application/Shared/Hooks/UseFormValidation";
+import { PaymentMethod } from "../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod";
+import { IDocumentProductSaveDto } from "../../../Application/Documents/DataTransferObjects/IDocumentProductSaveDto";
 
-export interface ICommercialDocumentFormScreenProps {
+export interface IDocumentFormScreenProps {
     title: string;
     breadcrumbEntityLabel: string;
     breadcrumbCurrentLabel: string;

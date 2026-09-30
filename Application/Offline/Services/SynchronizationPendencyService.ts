@@ -1,7 +1,7 @@
-import { ISynchronizationPendency } from '../../Interfaces/DataTransferObjects/Offline/ISynchronizationPendency';
-import { SynchronizationEntityType } from '../../Interfaces/DataTransferObjects/Offline/SynchronizationEntityType';
-import { ISynchronizationPendencyService } from '../../Interfaces/Services/ISynchronizationPendencyService';
-import { ISynchronizationPendencyRepository } from '../../../Infrastructure/Persistence/Repositories/SynchronizationPendencies/Interfaces/ISynchronizationPendencyRepository';
+import { ISynchronizationPendency } from '../DataTransferObjects/ISynchronizationPendency';
+import { SynchronizationEntityType } from '../DataTransferObjects/SynchronizationEntityType';
+import { ISynchronizationPendencyService } from './Interfaces/ISynchronizationPendencyService';
+import { ISynchronizationPendencyRepository } from '../Repositories/Interfaces/ISynchronizationPendencyRepository';
 
 export class SynchronizationPendencyService implements ISynchronizationPendencyService {
   constructor(private readonly repository: ISynchronizationPendencyRepository) {}

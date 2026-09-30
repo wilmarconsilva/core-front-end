@@ -1,4 +1,4 @@
-import { IEntityReferenceDto } from '../../../Entities/IEntityReferenceDto';
+import { IEntityReferenceDto } from '../../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
 import { IOrderPaymentSaveDto } from './IOrderPaymentSaveDto';
 import { IOrderProductDetailDto } from './IOrderProductDetailDto';
 

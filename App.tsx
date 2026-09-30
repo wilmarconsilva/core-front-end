@@ -1,21 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { LoginScreen } from './Presentation/Screens/LoginScreen';
-import { HomeScreen } from './Presentation/Screens/HomeScreen';
-import { AppShell } from './Presentation/Components/AppShell';
-import { AppToast } from './Presentation/Components/AppToast';
-import { UseAuthentication } from './Application/Hooks/UseAuthentication';
-import { colors } from './Presentation/Styles';
+import { LoginScreen } from './Presentation/Authentication/Screens/LoginScreen';
+import { HomeScreen } from './Presentation/Home/Screens/HomeScreen';
+import { AppShell } from './Presentation/Shared/Components/AppShell';
+import { AppToast } from './Presentation/Shared/Components/AppToast';
+import { UseAuthentication } from './Application/Authentication/Hooks/UseAuthentication';
+import { ApplicationServicesContext } from './Application/DependencyInjection/ApplicationServicesContext';
+import { ApplicationCompositionRoot } from './Presentation/DependencyInjection/ApplicationCompositionRoot';
+import { colors } from './Presentation/Shared/Styles';
 
 /**
  * O provedor de área segura mede as faixas ocupadas pelo sistema uma única vez
  * e as publica para a árvore inteira; quem as consome é a moldura (AppShell).
+ * O provedor de serviços injeta as implementações concretas (composition root)
+ * nos hooks da camada de aplicação.
  */
 export default function App() {
   return (
     <SafeAreaProvider>
-      <AppContent />
+      <ApplicationServicesContext.Provider value={ApplicationCompositionRoot}>
+        <AppContent />
+      </ApplicationServicesContext.Provider>
     </SafeAreaProvider>
   );
 }

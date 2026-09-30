@@ -1,5 +1,5 @@
-import { Screen } from '../../../Application/Hooks/UseNavigation';
-import { OperationMode } from '../../../Application/Services/Offline/OperationModeService';
+import { Screen } from '../../../Application/Shared/Hooks/UseNavigation';
+import { OperationMode } from '../../../Application/Offline/Services/OperationModeService';
 
 export interface IHomeMenuProps {
   userName: string;

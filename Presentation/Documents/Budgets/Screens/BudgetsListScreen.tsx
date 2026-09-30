@@ -1,19 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useState } from 'react';
 import { Pressable } from 'react-native';
-import { UsePagedCrudList } from '../../../../../Application/Hooks/UsePagedCrudList';
-import { UseBudgets } from '../../../../../Application/Hooks/UseBudgets';
-import { UseOperationMode } from '../../../../../Application/Hooks/UseOperationMode';
-import { isLocalRecord } from '../../../../../Application/Services/Utilities/OfflineUtilities';
-import { toApiDayEnd, toApiDayStart } from '../../../../../Application/Services/Utilities/DateTimeUtilities';
-import { IBudgetListing } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListing';
-import { IBudgetListingFilter } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListingFilter';
-import { IBudgetsListScreenProps } from '../../../../Interfaces/Screens/IBudgetsListScreenProps';
-import { IPressableInteractionState } from '../../../../Interfaces/Pressable/IPressableInteractionState';
-import { ConfirmDialog } from '../../../../Components/ConfirmDialog';
-import { colors, interactionStyles, tableStyles } from '../../../../Styles';
-import { CommercialDocumentListScreen } from '../CommercialDocumentListScreen';
-import { OperationMode } from '../../../../../Application/Services/Offline/OperationModeService';
+import { UsePagedCrudList } from '../../../../Application/Shared/Hooks/UsePagedCrudList';
+import { UseBudgets } from '../../../../Application/Documents/Budgets/Hooks/UseBudgets';
+import { UseOperationMode } from '../../../../Application/Offline/Hooks/UseOperationMode';
+import { isLocalRecord } from '../../../../Application/Offline/Utilities/OfflineUtilities';
+import { toApiDayEnd, toApiDayStart } from '../../../../Application/Shared/Utilities/DateTimeUtilities';
+import { IBudgetListing } from '../../../../Application/Documents/Budgets/DataTransferObjects/IBudgetListing';
+import { IBudgetListingFilter } from '../../../../Application/Documents/Budgets/DataTransferObjects/IBudgetListingFilter';
+import { IBudgetsListScreenProps } from '../Interfaces/IBudgetsListScreenProps';
+import { IPressableInteractionState } from '../../../Shared/Interfaces/Pressable/IPressableInteractionState';
+import { ConfirmDialog } from '../../../Shared/Components/ConfirmDialog';
+import { colors, interactionStyles, tableStyles } from '../../../Shared/Styles';
+import { DocumentListScreen } from '../../Screens/DocumentListScreen';
+import { OperationMode } from '../../../../Application/Offline/Services/OperationModeService';
 
 export function BudgetsListScreen({ onGoBack, onNavigateToForm, onNavigateToOrderForm }: IBudgetsListScreenProps) {
   const { listings, isLoadingList, isDeleting, loadAll, remove } = UseBudgets();
@@ -54,7 +54,7 @@ export function BudgetsListScreen({ onGoBack, onNavigateToForm, onNavigateToOrde
 
   return (
     <>
-    <CommercialDocumentListScreen<IBudgetListing>
+    <DocumentListScreen<IBudgetListing>
       title="Orçamentos"
       listings={listings}
       isLoadingList={isLoadingList}

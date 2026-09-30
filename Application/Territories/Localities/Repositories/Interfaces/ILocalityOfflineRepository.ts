@@ -1,7 +1,7 @@
-import { IOfflineRepository } from '../../../Interfaces/IOfflineRepository';
-import { ILocalitySaveDto } from '../../../../../Application/Interfaces/DataTransferObjects/Localities/ILocalitySaveDto';
-import { ILocalityListing } from '../../../../../Application/Interfaces/DataTransferObjects/Localities/ILocalityListing';
-import { ILocalityListingFilter } from '../../../../../Application/Interfaces/DataTransferObjects/Localities/ILocalityListingFilter';
+import { IOfflineRepository } from '../../../../Offline/Repositories/Interfaces/IOfflineRepository';
+import { ILocalitySaveDto } from '../../DataTransferObjects/ILocalitySaveDto';
+import { ILocalityListing } from '../../DataTransferObjects/ILocalityListing';
+import { ILocalityListingFilter } from '../../DataTransferObjects/ILocalityListingFilter';
 
 export interface ILocalityOfflineRepository extends IOfflineRepository<ILocalitySaveDto, ILocalityListing, ILocalityListingFilter> {
     getQuantity(): Promise<number>

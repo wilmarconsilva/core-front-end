@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import { Text } from 'react-native';
-import { UsePagedCrudList } from '../../../../../Application/Hooks/UsePagedCrudList';
-import { UseOrders } from '../../../../../Application/Hooks/UseOrders';
-import { UseOperationMode } from '../../../../../Application/Hooks/UseOperationMode';
-import { isLocalRecord } from '../../../../../Application/Services/Utilities/OfflineUtilities';
-import { toApiDayEnd, toApiDayStart } from '../../../../../Application/Services/Utilities/DateTimeUtilities';
-import { IOrderListing } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderListing';
-import { IOrderListingFilter } from '../../../../../Application/Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderListingFilter';
-import { ICrudListScreenProps } from '../../../../Interfaces/Screens/ICrudListScreenProps';
-import { tableStyles } from '../../../../Styles';
-import { CommercialDocumentListScreen } from '../CommercialDocumentListScreen';
-import { OperationMode } from '../../../../../Application/Services/Offline/OperationModeService';
+import { UsePagedCrudList } from '../../../../Application/Shared/Hooks/UsePagedCrudList';
+import { UseOrders } from '../../../../Application/Documents/Orders/Hooks/UseOrders';
+import { UseOperationMode } from '../../../../Application/Offline/Hooks/UseOperationMode';
+import { isLocalRecord } from '../../../../Application/Offline/Utilities/OfflineUtilities';
+import { toApiDayEnd, toApiDayStart } from '../../../../Application/Shared/Utilities/DateTimeUtilities';
+import { IOrderListing } from '../../../../Application/Documents/Orders/DataTransferObjects/IOrderListing';
+import { IOrderListingFilter } from '../../../../Application/Documents/Orders/DataTransferObjects/IOrderListingFilter';
+import { ICrudListScreenProps } from '../../../Shared/Interfaces/Screens/ICrudListScreenProps';
+import { tableStyles } from '../../../Shared/Styles';
+import { DocumentListScreen } from '../../Screens/DocumentListScreen';
+import { OperationMode } from '../../../../Application/Offline/Services/OperationModeService';
 
 export function OrdersListScreen({ onGoBack, onNavigateToForm }: ICrudListScreenProps) {
   const { listings, isLoadingList, isDeleting, loadAll, remove } = UseOrders();
@@ -32,7 +32,7 @@ export function OrdersListScreen({ onGoBack, onNavigateToForm }: ICrudListScreen
   });
 
   return (
-    <CommercialDocumentListScreen<IOrderListing>
+    <DocumentListScreen<IOrderListing>
       title="Pedidos"
       listings={listings}
       isLoadingList={isLoadingList}

@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
-import { FormField } from '../../Components/FormField';
-import { UsePagedCrudList } from '../../../Application/Hooks/UsePagedCrudList';
-import { UseProducts } from '../../../Application/Hooks/UseProducts';
-import { UseOperationMode } from '../../../Application/Hooks/UseOperationMode';
-import { IProductListing } from '../../../Application/Interfaces/DataTransferObjects/Products/IProductListing';
-import { IProductListingFilter } from '../../../Application/Interfaces/DataTransferObjects/Products/IProductListingFilter';
-import { ICrudListScreenProps } from '../../Interfaces/Screens/ICrudListScreenProps';
-import { filterActionBarStyles } from '../../Styles';
-import { CrudListScreen } from '../CrudListScreen';
-import { isLocalRecord } from '../../../Application/Services/Utilities/OfflineUtilities';
-import { OperationMode } from '../../../Application/Services/Offline/OperationModeService';
+import { FormField } from '../../Shared/Components/FormField';
+import { UsePagedCrudList } from '../../../Application/Shared/Hooks/UsePagedCrudList';
+import { UseProducts } from '../../../Application/Products/Hooks/UseProducts';
+import { UseOperationMode } from '../../../Application/Offline/Hooks/UseOperationMode';
+import { IProductListing } from '../../../Application/Products/DataTransferObjects/IProductListing';
+import { IProductListingFilter } from '../../../Application/Products/DataTransferObjects/IProductListingFilter';
+import { ICrudListScreenProps } from '../../Shared/Interfaces/Screens/ICrudListScreenProps';
+import { filterActionBarStyles } from '../../Shared/Styles';
+import { CrudListScreen } from '../../Shared/Screens/CrudListScreen';
+import { isLocalRecord } from '../../../Application/Offline/Utilities/OfflineUtilities';
+import { OperationMode } from '../../../Application/Offline/Services/OperationModeService';
 
 export function ProductsListScreen({ onGoBack, onNavigateToForm }: ICrudListScreenProps) {
   const { listings, isLoadingList, isDeleting, loadAll, remove } = UseProducts();

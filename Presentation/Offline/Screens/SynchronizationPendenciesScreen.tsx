@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
-import { ScreenScrollView } from '../../Components/ScreenScrollView';
-import { Breadcrumb } from '../../Components/Breadcrumb';
-import { DataGrid } from '../../Components/DataGrid';
-import { layoutStyles, tableStyles, typographyStyles } from '../../Styles';
-import { UseSynchronizationPendencies } from '../../../Application/Hooks/UseSynchronizationPendencies';
-import { ISynchronizationPendency } from '../../../Application/Interfaces/DataTransferObjects/Offline/ISynchronizationPendency';
-import { SynchronizationEntityTypeUtility } from '../../../Application/Interfaces/DataTransferObjects/Offline/SynchronizationEntityType';
-import { ISynchronizationPendenciesScreenProps } from '../../Interfaces/Screens/ISynchronizationPendenciesScreenProps';
+import { ScreenScrollView } from '../../Shared/Components/ScreenScrollView';
+import { Breadcrumb } from '../../Shared/Components/Breadcrumb';
+import { DataGrid } from '../../Shared/Components/DataGrid';
+import { layoutStyles, tableStyles, typographyStyles } from '../../Shared/Styles';
+import { UseSynchronizationPendencies } from '../../../Application/Offline/Hooks/UseSynchronizationPendencies';
+import { ISynchronizationPendency } from '../../../Application/Offline/DataTransferObjects/ISynchronizationPendency';
+import { SynchronizationEntityTypeUtility } from '../../../Application/Offline/DataTransferObjects/SynchronizationEntityType';
+import { ISynchronizationPendenciesScreenProps } from '../Interfaces/ISynchronizationPendenciesScreenProps';
 
 const PAGE_SIZE = 10;
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { ScreenScrollView } from '../Components/ScreenScrollView';
-import { Breadcrumb } from '../Components/Breadcrumb';
-import { MenuItem } from '../Components/MenuItem';
-import { IReportsScreenProps } from '../Interfaces/Reports/IReportsScreenProps';
-import { gridStyles, layoutStyles, typographyStyles } from '../Styles';
+import { ScreenScrollView } from '../../Shared/Components/ScreenScrollView';
+import { Breadcrumb } from '../../Shared/Components/Breadcrumb';
+import { MenuItem } from '../../Shared/Components/MenuItem';
+import { IReportsScreenProps } from '../Interfaces/IReportsScreenProps';
+import { gridStyles, layoutStyles, typographyStyles } from '../../Shared/Styles';
 
 export function ReportsScreen({ onGoBack, onNavigateToBudgetReport, onNavigateToOrderReport }: IReportsScreenProps) {
   return (

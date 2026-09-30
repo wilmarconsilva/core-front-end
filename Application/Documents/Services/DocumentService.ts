@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
-import { CrudService } from '../../CrudService';
-import { DocumentPrintFn } from '../../../Hooks/UseDocumentPrint';
-import { ITemplateService } from '../../../Interfaces/DataTransferObjects/Templates/ITemplateService';
-import { IDocumentTemplate } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentTemplate';
+import { CrudService } from '../../Shared/Services/CrudService';
+import { DocumentPrintFn } from '../Hooks/UseDocumentPrint';
+import { ITemplateService } from './Interfaces/ITemplateService';
+import { IDocumentTemplate } from '../DataTransferObjects/IDocumentTemplate';
 
 export abstract class DocumentService<
   TSaveDto,

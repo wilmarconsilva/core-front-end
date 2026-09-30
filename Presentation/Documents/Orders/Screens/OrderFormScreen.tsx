@@ -1,11 +1,11 @@
 import React from 'react';
 import { View } from 'react-native';
-import { UseOrderForm } from '../../../../../Application/Hooks/UseOrderForm';
-import { UseDocumentPrint } from '../../../../../Application/Hooks/UseDocumentPrint';
-import { OrderService } from '../../../../../Application/Services/Commercial/Documents/Orders/OrderService';
-import { IOrderFormScreenProps } from '../../../../Interfaces/Screens/IOrderFormScreenProps';
-import { IntField } from '../../../../Components/IntField';
-import { CommercialDocumentFormScreen } from '../CommercialDocumentFormScreen';
+import { UseOrderForm } from '../../../../Application/Documents/Orders/Hooks/UseOrderForm';
+import { UseDocumentPrint } from '../../../../Application/Documents/Hooks/UseDocumentPrint';
+import { OrderService } from '../../../../Application/Documents/Orders/Services/OrderService';
+import { IOrderFormScreenProps } from '../Interfaces/IOrderFormScreenProps';
+import { IntField } from '../../../Shared/Components/IntField';
+import { DocumentFormScreen } from '../../Screens/DocumentFormScreen';
 
 const orderService = new OrderService();
 
@@ -24,7 +24,7 @@ export function OrderFormScreen({ id, budgetId, onGoBack }: IOrderFormScreenProp
 
   return (
     <View style={{ flex: 1 }}>
-      <CommercialDocumentFormScreen
+      <DocumentFormScreen
         {...form}
         title={form.isEditing ? 'Editar Pedido' : newOrderLabel}
         breadcrumbEntityLabel="Pedidos"

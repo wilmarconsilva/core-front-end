@@ -1,4 +1,4 @@
-import { PersonType } from '../PersonType';
+import { PersonType } from '../../../../Domain/Persons/Enums/PersonType';
 import { ICustomerAddressSaveDto } from './ICustomerAddressSaveDto';
 
 export interface ICustomerSaveDto {

@@ -1,5 +1,5 @@
-import { ICrudService } from '../../Interfaces/Services/ICrudService';
-import { IOfflineRepository } from '../../../Infrastructure/Persistence/Interfaces/IOfflineRepository';
+import { ICrudService } from '../../Shared/Services/Interfaces/ICrudService';
+import { IOfflineRepository } from '../Repositories/Interfaces/IOfflineRepository';
 import { OperationMode, OperationModeService } from './OperationModeService';
 import {
   assignLocalId,
@@ -8,7 +8,7 @@ import {
   notifyOfflineSaved,
   toApiCreatePayload,
 } from '../Utilities/OfflineUtilities';
-import { blockOfflineOperation } from '../../../Domain/Exceptions/OfflineUnavailableError';
+import { blockOfflineOperation } from '../../../Domain/Offline/Exceptions/OfflineUnavailableError';
 
 export type OfflineListingMapper<TSaveDto, TListing> = (
   dto: TSaveDto,

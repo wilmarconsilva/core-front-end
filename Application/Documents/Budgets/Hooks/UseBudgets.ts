@@ -1,17 +1,14 @@
-import { useMemo } from 'react';
-import { OfflineCompositionRoot } from '../../Infrastructure/Persistence/OfflineCompositionRoot';
-import { IBudgetSaveDto } from '../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetSaveDto';
-import { IBudgetDetailDto } from '../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetDetailDto';
-import { IBudgetListing } from '../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListing';
-import { IBudgetListingFilter } from '../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListingFilter';
-import { UseCrud, UseCrudResult } from './UseCrud';
-
-const budgetService = OfflineCompositionRoot.createBudgetService();
+import { UseApplicationServices } from '../../../DependencyInjection/UseApplicationServices';
+import { IBudgetSaveDto } from '../DataTransferObjects/IBudgetSaveDto';
+import { IBudgetDetailDto } from '../DataTransferObjects/IBudgetDetailDto';
+import { IBudgetListing } from '../DataTransferObjects/IBudgetListing';
+import { IBudgetListingFilter } from '../DataTransferObjects/IBudgetListingFilter';
+import { UseCrud, UseCrudResult } from '../../../Shared/Hooks/UseCrud';
 
 export type UseBudgetsResult = UseCrudResult<IBudgetSaveDto, IBudgetDetailDto, IBudgetListing, IBudgetListingFilter>;
 
 export function UseBudgets(): UseBudgetsResult {
-  const service = useMemo(() => budgetService, []);
+  const { budgetService } = UseApplicationServices();
 
-  return UseCrud(service);
+  return UseCrud(budgetService);
 }

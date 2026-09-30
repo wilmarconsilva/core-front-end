@@ -25,7 +25,7 @@ ENV EXPO_PUBLIC_WEB_API_REST_URL=$EXPO_PUBLIC_WEB_API_REST_URL \
     EXPO_PUBLIC_OPERATION_MODE=$EXPO_PUBLIC_OPERATION_MODE
 
 # Falha cedo e com mensagem clara: sem a URL da API o app quebra no primeiro import
-# (Application/Services/HttpClientService.ts).
+# (Application/Shared/Services/HttpClientService.ts).
 RUN test -n "$EXPO_PUBLIC_WEB_API_REST_URL" \
     || (echo "ERRO: build arg EXPO_PUBLIC_WEB_API_REST_URL é obrigatório." && exit 1)
 

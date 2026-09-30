@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
-import { FormField } from '../../Components/FormField';
-import { UseCustomers } from '../../../Application/Hooks/UseCustomers';
-import { UsePagedCrudList } from '../../../Application/Hooks/UsePagedCrudList';
-import { UseOperationMode } from '../../../Application/Hooks/UseOperationMode';
-import { ICustomerListing } from '../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
-import { ICustomerListingFilter } from '../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
-import { ICrudListScreenProps } from '../../Interfaces/Screens/ICrudListScreenProps';
-import { filterActionBarStyles } from '../../Styles';
-import { CrudListScreen } from '../CrudListScreen';
-import { isLocalRecord } from '../../../Application/Services/Utilities/OfflineUtilities';
-import { OperationMode } from '../../../Application/Services/Offline/OperationModeService';
+import { FormField } from '../../../Shared/Components/FormField';
+import { UseCustomers } from '../../../../Application/Persons/Customers/Hooks/UseCustomers';
+import { UsePagedCrudList } from '../../../../Application/Shared/Hooks/UsePagedCrudList';
+import { UseOperationMode } from '../../../../Application/Offline/Hooks/UseOperationMode';
+import { ICustomerListing } from '../../../../Application/Persons/Customers/DataTransferObjects/ICustomerListing';
+import { ICustomerListingFilter } from '../../../../Application/Persons/Customers/DataTransferObjects/ICustomerListingFilter';
+import { ICrudListScreenProps } from '../../../Shared/Interfaces/Screens/ICrudListScreenProps';
+import { filterActionBarStyles } from '../../../Shared/Styles';
+import { CrudListScreen } from '../../../Shared/Screens/CrudListScreen';
+import { isLocalRecord } from '../../../../Application/Offline/Utilities/OfflineUtilities';
+import { OperationMode } from '../../../../Application/Offline/Services/OperationModeService';
 
 export function CustomersListScreen({ onGoBack, onNavigateToForm }: ICrudListScreenProps) {
   const { listings, isLoadingList, isDeleting, loadAll, remove } = UseCustomers();

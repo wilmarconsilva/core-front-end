@@ -1,4 +1,4 @@
-import { ILoginRequest } from '../../../Application/Interfaces/DataTransferObjects/Authentication/ILoginRequest';
+import { ILoginRequest } from '../../../Application/Authentication/DataTransferObjects/ILoginRequest';
 
 export interface ILoginScreenProps {
   isLoading: boolean;

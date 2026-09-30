@@ -1,9 +1,9 @@
 import Toast from 'react-native-toast-message';
-import { IApiError } from '../Interfaces/DataTransferObjects/APIConsumer/IApiError';
+import { IApiError } from '../DataTransferObjects/APIConsumer/IApiError';
 import { WEB_SERVICE_REST_URL, fetchWithAuth, SessionExpiredError } from './HttpClientService';
-import { TokenStorageService } from './TokenStorageService';
-import { IRequestOptions } from '../Interfaces/DataTransferObjects/APIConsumer/IRequestOptions';
-import { APIConsumerUtility } from './Utilities/APIConsumerUtility';
+import { TokenStorageService } from '../../Authentication/Services/TokenStorageService';
+import { IRequestOptions } from '../DataTransferObjects/APIConsumer/IRequestOptions';
+import { APIConsumerUtility } from '../Utilities/APIConsumerUtility';
 
 type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 

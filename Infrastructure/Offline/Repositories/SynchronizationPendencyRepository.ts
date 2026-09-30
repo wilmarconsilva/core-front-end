@@ -1,7 +1,7 @@
-import { ISynchronizationPendency } from '../../../../Application/Interfaces/DataTransferObjects/Offline/ISynchronizationPendency';
-import { IIndexedDbContext } from '../../IndexedDb/IIndexedDbContext';
-import { SYNCHRONIZATION_PENDENCIES_STORE_NAME } from '../../IndexedDb/IndexedDbSchema';
-import { ISynchronizationPendencyRepository } from './Interfaces/ISynchronizationPendencyRepository';
+import { ISynchronizationPendency } from '../../../Application/Offline/DataTransferObjects/ISynchronizationPendency';
+import { IIndexedDbContext } from '../../Shared/Persistence/IndexedDb/IIndexedDbContext';
+import { SYNCHRONIZATION_PENDENCIES_STORE_NAME } from '../../Shared/Persistence/IndexedDb/IndexedDbSchema';
+import { ISynchronizationPendencyRepository } from '../../../Application/Offline/Repositories/Interfaces/ISynchronizationPendencyRepository';
 
 export class SynchronizationPendencyRepository implements ISynchronizationPendencyRepository {
   constructor(private readonly context: IIndexedDbContext) {}

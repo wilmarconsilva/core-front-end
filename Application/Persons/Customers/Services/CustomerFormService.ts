@@ -1,9 +1,9 @@
 import { formatWithMask, Masks } from 'react-native-mask-input';
-import { IValidationRule } from '../../Hooks/UseFormValidation';
-import { ICustomerAddressSaveDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerAddressSaveDto';
-import { ICustomerDetailDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerDetailDto';
-import { ICustomerSaveDto } from '../../Interfaces/DataTransferObjects/Persons/Customers/ICustomerSaveDto';
-import { PersonType, PersonTypeLabels } from '../../Interfaces/DataTransferObjects/Persons/PersonType';
+import { IValidationRule } from '../../../Shared/Hooks/UseFormValidation';
+import { ICustomerAddressSaveDto } from '../DataTransferObjects/ICustomerAddressSaveDto';
+import { ICustomerDetailDto } from '../DataTransferObjects/ICustomerDetailDto';
+import { ICustomerSaveDto } from '../DataTransferObjects/ICustomerSaveDto';
+import { PersonType, PersonTypeLabels } from '../../../../Domain/Persons/Enums/PersonType';
 
 export interface CustomerFormState {
   name: string;

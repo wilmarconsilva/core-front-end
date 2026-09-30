@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../colors';
+import { colors } from '../../Shared/Styles/colors';
 
 /** Relatórios de Orçamentos e Pedidos (filtros, resumo, linhas). */
 export const documentReportScreenStyles = StyleSheet.create({

@@ -1,10 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
-import { UseBudgetForm } from '../../../../../Application/Hooks/UseBudgetForm';
-import { UseDocumentPrint } from '../../../../../Application/Hooks/UseDocumentPrint';
-import { BudgetService } from '../../../../../Application/Services/Commercial/Documents/Budgets/BudgetService';
-import { IEntityFormScreenProps } from '../../../../Interfaces/Screens/IEntityFormScreenProps';
-import { CommercialDocumentFormScreen } from '../CommercialDocumentFormScreen';
+import { UseBudgetForm } from '../../../../Application/Documents/Budgets/Hooks/UseBudgetForm';
+import { UseDocumentPrint } from '../../../../Application/Documents/Hooks/UseDocumentPrint';
+import { BudgetService } from '../../../../Application/Documents/Budgets/Services/BudgetService';
+import { IEntityFormScreenProps } from '../../../Shared/Interfaces/Screens/IEntityFormScreenProps';
+import { DocumentFormScreen } from '../../Screens/DocumentFormScreen';
 
 const budgetService = new BudgetService();
 
@@ -16,7 +16,7 @@ export function BudgetFormScreen({ id, onGoBack }: IEntityFormScreenProps) {
 
   return (
     <View style={{ flex: 1 }}>
-      <CommercialDocumentFormScreen
+      <DocumentFormScreen
         {...form}
         title={form.isEditing ? 'Editar Orçamento' : 'Novo Orçamento'}
         breadcrumbEntityLabel="Orçamentos"

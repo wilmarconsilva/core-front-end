@@ -1,6 +1,6 @@
-import { ITemplateService } from '../../../../Interfaces/DataTransferObjects/Templates/ITemplateService';
-import { IDocumentTemplate } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentTemplate';
-import { get } from '../../../../../Presentation/Templates/DocumentHtmlTemplate';
+import { ITemplateService } from '../../Services/Interfaces/ITemplateService';
+import { IDocumentTemplate } from '../../DataTransferObjects/IDocumentTemplate';
+import { get } from '../../Templates/DocumentHtmlTemplate';
 
 export class BudgetTemplateService implements ITemplateService {
   render(data: IDocumentTemplate): string {

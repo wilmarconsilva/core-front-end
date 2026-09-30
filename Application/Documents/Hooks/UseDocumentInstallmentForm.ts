@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { PaymentMethod } from '../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
+import { PaymentMethod } from '../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
 import {
   DocumentInstallmentFormState,
   InstallmentFormService,
-} from '../Services/Commercial/Documents/Payments/InstallmentFormService';
+} from '../Services/Payments/InstallmentFormService';
 export function UseDocumentInstallmentForm(
   valueTotal: number,
   installment: DocumentInstallmentFormState,

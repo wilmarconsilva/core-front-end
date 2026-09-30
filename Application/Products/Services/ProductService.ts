@@ -1,9 +1,9 @@
-import { CrudService } from '../CrudService';
-import { IProductService } from '../../Interfaces/Services/IProductService';
-import { IProductSaveDto } from '../../Interfaces/DataTransferObjects/Products/IProductSaveDto';
-import { IProductDetailDto } from '../../Interfaces/DataTransferObjects/Products/IProductDetailDto';
-import { IProductListing } from '../../Interfaces/DataTransferObjects/Products/IProductListing';
-import { IProductListingFilter } from '../../Interfaces/DataTransferObjects/Products/IProductListingFilter';
+import { CrudService } from '../../Shared/Services/CrudService';
+import { IProductService } from './Interfaces/IProductService';
+import { IProductSaveDto } from '../DataTransferObjects/IProductSaveDto';
+import { IProductDetailDto } from '../DataTransferObjects/IProductDetailDto';
+import { IProductListing } from '../DataTransferObjects/IProductListing';
+import { IProductListingFilter } from '../DataTransferObjects/IProductListingFilter';
 
 export class ProductService
   extends CrudService<IProductSaveDto, IProductDetailDto, IProductListing, IProductListingFilter>

@@ -1,4 +1,4 @@
-import { ISynchronizationPendency } from '../../../../../Application/Interfaces/DataTransferObjects/Offline/ISynchronizationPendency';
+import { ISynchronizationPendency } from '../../DataTransferObjects/ISynchronizationPendency';
 
 export interface ISynchronizationPendencyRepository {
   getAll(): Promise<ISynchronizationPendency[]>;

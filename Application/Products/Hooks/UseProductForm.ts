@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { UseFormValidation } from './UseFormValidation';
+import { UseFormValidation } from '../../Shared/Hooks/UseFormValidation';
 import { UseProducts } from './UseProducts';
-import { ProductFormService } from '../Services/Products/ProductFormService';
-import { MeasureUnit } from '../../Domain/ValueObjects/Enums/Products/MeasureUnit';
+import { ProductFormService } from '../Services/ProductFormService';
+import { MeasureUnit } from '../../../Domain/Products/Enums/MeasureUnit';
 
 export function UseProductForm(id: number | undefined, onGoBack: () => void) {
   const { currentItem, isLoadingItem, isSaving, loadById, save, clearCurrentItem } = UseProducts();

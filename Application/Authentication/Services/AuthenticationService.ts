@@ -1,7 +1,7 @@
-import { IAuthenticationService } from '../Interfaces/Services/IAuthenticationService';
-import { IAccessToken } from '../Interfaces/DataTransferObjects/Authentication/IAccessToken';
-import { ILoginRequest } from '../Interfaces/DataTransferObjects/Authentication/ILoginRequest';
-import { APIConsumerService } from './APIConsumerService';
+import { IAuthenticationService } from './Interfaces/IAuthenticationService';
+import { IAccessToken } from '../DataTransferObjects/IAccessToken';
+import { ILoginRequest } from '../DataTransferObjects/ILoginRequest';
+import { APIConsumerService } from '../../Shared/Services/APIConsumerService';
 
 export class AuthenticationService extends APIConsumerService implements IAuthenticationService {
 

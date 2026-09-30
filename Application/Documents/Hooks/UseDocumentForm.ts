@@ -1,23 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-import { UseCustomers } from './UseCustomers';
-import { UseFormValidation } from './UseFormValidation';
-import { UseProducts } from './UseProducts';
-import { PaymentMethod } from '../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
-import { ICustomerListing } from '../Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
-import { IDocumentProductSaveDto } from '../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentProductSaveDto';
-import { IPaymentSaveDto } from '../Interfaces/DataTransferObjects/Commercial/Documents/Payments/IPaymentSaveDto';
+import { UseCustomers } from '../../Persons/Customers/Hooks/UseCustomers';
+import { UseFormValidation } from '../../Shared/Hooks/UseFormValidation';
+import { UseProducts } from '../../Products/Hooks/UseProducts';
+import { PaymentMethod } from '../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
+import { ICustomerListing } from '../../Persons/Customers/DataTransferObjects/ICustomerListing';
+import { IDocumentProductSaveDto } from '../DataTransferObjects/IDocumentProductSaveDto';
+import { IPaymentSaveDto } from '../DataTransferObjects/Payments/IPaymentSaveDto';
 import {
-  CommercialDocumentFormService,
-  CommercialDocumentFormState,
+  DocumentFormService,
+  DocumentFormState,
   PaymentMethodPolicy,
-} from '../Services/Commercial/Documents/CommercialDocumentFormService';
-import { DocumentInstallmentFormState } from '../Services/Commercial/Documents/Payments/InstallmentFormService';
+} from '../Services/DocumentFormService';
+import { DocumentInstallmentFormState } from '../Services/Payments/InstallmentFormService';
 import { UseDocumentInstallmentForm } from './UseDocumentInstallmentForm';
-import { IValidationRule } from './UseFormValidation';
+import { IValidationRule } from '../../Shared/Hooks/UseFormValidation';
 
 const PAGE_SIZE = 50;
 
-interface ICommercialDocumentCrud<TDetail, TSaveDto> {
+interface IDocumentCrud<TDetail, TSaveDto> {
   currentItem: TDetail | null;
   isLoadingItem: boolean;
   isSaving: boolean;
@@ -26,9 +26,9 @@ interface ICommercialDocumentCrud<TDetail, TSaveDto> {
   clearCurrentItem: () => void;
 }
 
-interface ICommercialDocumentFormService<
+interface IDocumentFormService<
   TProduct extends IDocumentProductSaveDto,
-  TFormState extends CommercialDocumentFormState<TProduct>,
+  TFormState extends DocumentFormState<TProduct>,
   TDetail extends { payment: IPaymentSaveDto },
   TSaveDto,
 > {
@@ -40,16 +40,16 @@ interface ICommercialDocumentFormService<
   formToDetail: (id: number | undefined, form: TFormState) => TDetail;
 }
 
-interface UseCommercialDocumentFormConfig<
+interface UseDocumentFormConfig<
   TProduct extends IDocumentProductSaveDto,
-  TFormState extends CommercialDocumentFormState<TProduct>,
+  TFormState extends DocumentFormState<TProduct>,
   TDetail extends { payment: IPaymentSaveDto },
   TSaveDto,
 > {
   id: number | undefined;
   onGoBack: () => void;
-  useDocument: () => ICommercialDocumentCrud<TDetail, TSaveDto>;
-  formService: ICommercialDocumentFormService<TProduct, TFormState, TDetail, TSaveDto>;
+  useDocument: () => IDocumentCrud<TDetail, TSaveDto>;
+  formService: IDocumentFormService<TProduct, TFormState, TDetail, TSaveDto>;
   applyExtraFormState?: (form: TFormState) => void;
   getExtraFormState?: () => Partial<TFormState>;
   /** Estado inicial de um documento novo, copiado de outra origem (ex.: pedido a partir de orçamento). */
@@ -57,9 +57,9 @@ interface UseCommercialDocumentFormConfig<
   isLoadingSeed?: boolean;
 }
 
-export function UseCommercialDocumentForm<
+export function UseDocumentForm<
   TProduct extends IDocumentProductSaveDto,
-  TFormState extends CommercialDocumentFormState<TProduct>,
+  TFormState extends DocumentFormState<TProduct>,
   TDetail extends { payment: IPaymentSaveDto },
   TSaveDto,
 >({
@@ -71,7 +71,7 @@ export function UseCommercialDocumentForm<
   getExtraFormState,
   seedForm,
   isLoadingSeed,
-}: UseCommercialDocumentFormConfig<TProduct, TFormState, TDetail, TSaveDto>) {
+}: UseDocumentFormConfig<TProduct, TFormState, TDetail, TSaveDto>) {
   const { currentItem, isLoadingItem, isSaving, loadById, save, clearCurrentItem } = useDocument();
   const { listings: customers, isLoadingList: isLoadingCustomers, loadAll: loadCustomers } = UseCustomers();
   const { listings: products, isLoadingList: isLoadingProducts, loadAll: loadProducts } = UseProducts();
@@ -91,7 +91,7 @@ export function UseCommercialDocumentForm<
   const [filterProductDescription, setFilterProductDescription] = useState('');
   const isSeedApplied = useRef(false);
 
-  const valueTotal = CommercialDocumentFormService.calculateTotal(productLines, discountValue);
+  const valueTotal = DocumentFormService.calculateTotal(productLines, discountValue);
   const installmentFields = UseDocumentInstallmentForm(
     valueTotal,
     installment,
@@ -108,7 +108,7 @@ export function UseCommercialDocumentForm<
   }, [id]);
 
   const applyForm = (form: TFormState) => {
-    CommercialDocumentFormService.applyBaseFormState(form, {
+    DocumentFormService.applyBaseFormState(form, {
       setCustomerId,
       setCustomerDisplayLabel,
       setObservations,
@@ -156,20 +156,20 @@ export function UseCommercialDocumentForm<
 
   const updateProductLine = (index: number, field: keyof TProduct, value: number) => {
     setProductLines((previous) =>
-      CommercialDocumentFormService.updateProductLine(previous, index, field, value),
+      DocumentFormService.updateProductLine(previous, index, field, value),
     );
   };
 
   const selectProductLine = (index: number, product: { id: number; description: string }) => {
     setProductLines((previous) =>
-      CommercialDocumentFormService.selectProductLine(previous, index, product),
+      DocumentFormService.selectProductLine(previous, index, product),
     );
   };
 
   const addProductLine = () => {
     setProductLines((previous) => [
       ...previous,
-      CommercialDocumentFormService.createEmptyProductLine<TProduct>(),
+      DocumentFormService.createEmptyProductLine<TProduct>(),
     ]);
   };
 
@@ -209,8 +209,8 @@ export function UseCommercialDocumentForm<
     paymentMethod,
     setPaymentMethod,
     isPaymentMethodRequired: formService.paymentMethodPolicy.isRequired,
-    paymentMethodOptions: CommercialDocumentFormService.paymentMethodOptionsFor(formService.paymentMethodPolicy),
-    downPaymentMethodOptions: CommercialDocumentFormService.paymentMethodOptions,
+    paymentMethodOptions: DocumentFormService.paymentMethodOptionsFor(formService.paymentMethodPolicy),
+    downPaymentMethodOptions: DocumentFormService.paymentMethodOptions,
     discountValue,
     setDiscountValue,
     ...installmentFields,

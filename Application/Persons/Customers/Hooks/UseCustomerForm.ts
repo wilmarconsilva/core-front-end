@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Masks } from 'react-native-mask-input';
 import { UseCustomers } from './UseCustomers';
-import { UseFormValidation } from './UseFormValidation';
-import { UseLocalities } from './UseLocalities';
-import { CustomerFormService } from '../Services/Customers/CustomerFormService';
-import { ICustomerAddressSaveDto } from '../Interfaces/DataTransferObjects/Persons/Customers/ICustomerAddressSaveDto';
-import { PersonType } from '../Interfaces/DataTransferObjects/Persons/PersonType';
+import { UseFormValidation } from '../../../Shared/Hooks/UseFormValidation';
+import { UseLocalities } from '../../../Territories/Localities/Hooks/UseLocalities';
+import { CustomerFormService } from '../Services/CustomerFormService';
+import { ICustomerAddressSaveDto } from '../DataTransferObjects/ICustomerAddressSaveDto';
+import { PersonType } from '../../../../Domain/Persons/Enums/PersonType';
 
 const PAGE_SIZE = 50;
 

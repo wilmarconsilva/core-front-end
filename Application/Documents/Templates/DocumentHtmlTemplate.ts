@@ -1,4 +1,4 @@
-import { IDocumentTemplate } from '../../Application/Interfaces/DataTransferObjects/Commercial/Documents/IDocumentTemplate';
+import { IDocumentTemplate } from '../DataTransferObjects/IDocumentTemplate';
 
 export function get(data: IDocumentTemplate): string {
   const observationsBlock = data.observations

@@ -1,8 +1,8 @@
-import { IListingFilter } from '../../../Application/Interfaces/DataTransferObjects/IListingFilter';
-import { IOfflineRepository } from '../Interfaces/IOfflineRepository';
-import { isLocalRecord } from '../../../Application/Services/Utilities/OfflineUtilities';
-import { IIndexedDbContext } from '../IndexedDb/IIndexedDbContext';
-import { OfflineStoreName } from '../IndexedDb/IndexedDbSchema';
+import { IListingFilter } from '../../../Application/Shared/DataTransferObjects/Listings/IListingFilter';
+import { IOfflineRepository } from '../../../Application/Offline/Repositories/Interfaces/IOfflineRepository';
+import { isLocalRecord } from '../../../Application/Offline/Utilities/OfflineUtilities';
+import { IIndexedDbContext } from '../../Shared/Persistence/IndexedDb/IIndexedDbContext';
+import { OfflineStoreName } from '../../Shared/Persistence/IndexedDb/IndexedDbSchema';
 
 export type OfflineListingMapper<TSaveDto, TListing> = (
   dto: TSaveDto,

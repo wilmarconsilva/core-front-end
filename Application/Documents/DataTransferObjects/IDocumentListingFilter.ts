@@ -1,4 +1,4 @@
-import { IEntityListingFilter } from '../../IEntityListingFilter';
+import { IEntityListingFilter } from '../../Shared/DataTransferObjects/Listings/IEntityListingFilter';
 
 export interface IDocumentListingFilter extends IEntityListingFilter {
   creationDateTimeStart?: string;

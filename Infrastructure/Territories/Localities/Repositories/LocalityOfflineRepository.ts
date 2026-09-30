@@ -1,11 +1,11 @@
-import { IndexedDbOfflineRepository } from '../IndexedDbOfflineRepository';
-import { ILocalitySaveDto } from '../../../../Application/Interfaces/DataTransferObjects/Localities/ILocalitySaveDto';
-import { ILocalityListing } from '../../../../Application/Interfaces/DataTransferObjects/Localities/ILocalityListing';
-import { ILocalityListingFilter } from '../../../../Application/Interfaces/DataTransferObjects/Localities/ILocalityListingFilter';
-import { IIndexedDbContext } from '../../IndexedDb/IIndexedDbContext';
-import { ILocalityOfflineRepository } from './Interfaces/ILocalityOfflineRepository';
-import { OfflineStoreName } from '../../IndexedDb/IndexedDbSchema';
-import { OfflineListingMapper, OfflineFilterPredicate } from '../IndexedDbOfflineRepository';
+import { IndexedDbOfflineRepository } from '../../../Offline/Repositories/IndexedDbOfflineRepository';
+import { ILocalitySaveDto } from '../../../../Application/Territories/Localities/DataTransferObjects/ILocalitySaveDto';
+import { ILocalityListing } from '../../../../Application/Territories/Localities/DataTransferObjects/ILocalityListing';
+import { ILocalityListingFilter } from '../../../../Application/Territories/Localities/DataTransferObjects/ILocalityListingFilter';
+import { IIndexedDbContext } from '../../../Shared/Persistence/IndexedDb/IIndexedDbContext';
+import { ILocalityOfflineRepository } from '../../../../Application/Territories/Localities/Repositories/Interfaces/ILocalityOfflineRepository';
+import { OfflineStoreName } from '../../../Shared/Persistence/IndexedDb/IndexedDbSchema';
+import { OfflineListingMapper, OfflineFilterPredicate } from '../../../Offline/Repositories/IndexedDbOfflineRepository';
 
 export class LocalityOfflineRepository 
     extends IndexedDbOfflineRepository<ILocalitySaveDto, ILocalityListing, ILocalityListingFilter>

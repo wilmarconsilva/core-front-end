@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../colors';
-import { formScreenCommonStyles } from '../formScreenCommonStyles';
+import { colors } from '../../../Shared/Styles/colors';
+import { formScreenCommonStyles } from '../../../Shared/Styles/formScreenCommonStyles';
 
 const customerOnly = StyleSheet.create({
   addressCard: {

@@ -1,9 +1,9 @@
-import { CrudService } from '../CrudService';
-import { ILocalityService } from '../../Interfaces/Services/ILocalityService';
-import { ILocalitySaveDto } from '../../Interfaces/DataTransferObjects/Localities/ILocalitySaveDto';
-import { ILocalityDetailDto } from '../../Interfaces/DataTransferObjects/Localities/ILocalityDetailDto';
-import { ILocalityListing } from '../../Interfaces/DataTransferObjects/Localities/ILocalityListing';
-import { ILocalityListingFilter } from '../../Interfaces/DataTransferObjects/Localities/ILocalityListingFilter';
+import { CrudService } from '../../../Shared/Services/CrudService';
+import { ILocalityService } from './Interfaces/ILocalityService';
+import { ILocalitySaveDto } from '../DataTransferObjects/ILocalitySaveDto';
+import { ILocalityDetailDto } from '../DataTransferObjects/ILocalityDetailDto';
+import { ILocalityListing } from '../DataTransferObjects/ILocalityListing';
+import { ILocalityListingFilter } from '../DataTransferObjects/ILocalityListingFilter';
 
 export class LocalityService
   extends CrudService<ILocalitySaveDto, ILocalityDetailDto, ILocalityListing, ILocalityListingFilter>

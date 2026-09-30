@@ -1,9 +1,9 @@
 import React from 'react';
-import { FormField } from '../../Components/FormField';
-import { SelectField } from '../../Components/SelectField';
-import { UseProductForm } from '../../../Application/Hooks/UseProductForm';
-import { IEntityFormScreenProps } from '../../Interfaces/Screens/IEntityFormScreenProps';
-import { CrudFormScreen } from '../CrudFormScreen';
+import { FormField } from '../../Shared/Components/FormField';
+import { SelectField } from '../../Shared/Components/SelectField';
+import { UseProductForm } from '../../../Application/Products/Hooks/UseProductForm';
+import { IEntityFormScreenProps } from '../../Shared/Interfaces/Screens/IEntityFormScreenProps';
+import { CrudFormScreen } from '../../Shared/Screens/CrudFormScreen';
 
 export function ProductFormScreen({ id, onGoBack }: IEntityFormScreenProps) {
   const {

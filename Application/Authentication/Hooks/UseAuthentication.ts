@@ -1,21 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AuthenticationService } from '../Services/AuthenticationService';
 import { TokenStorageService } from '../Services/TokenStorageService';
-import { setTokenRefreshFunction } from '../Services/HttpClientService';
-import { ConnectivityProbe } from '../Services/Offline/ConnectivityProbe';
-import { OperationMode, OperationModeService } from '../Services/Offline/OperationModeService';
-import { APIConsumerUtility } from '../Services/Utilities/APIConsumerUtility';
-import { OfflineCompositionRoot } from '../../Infrastructure/Persistence/OfflineCompositionRoot';
-import { IAccessToken } from '../Interfaces/DataTransferObjects/Authentication/IAccessToken';
-import { ILoginRequest } from '../Interfaces/DataTransferObjects/Authentication/ILoginRequest';
+import { setTokenRefreshFunction } from '../../Shared/Services/HttpClientService';
+import { ConnectivityProbe } from '../../Offline/Services/ConnectivityProbe';
+import { OperationMode, OperationModeService } from '../../Offline/Services/OperationModeService';
+import { APIConsumerUtility } from '../../Shared/Utilities/APIConsumerUtility';
+import { UseApplicationServices } from '../../DependencyInjection/UseApplicationServices';
+import { IAccessToken } from '../DataTransferObjects/IAccessToken';
+import { ILoginRequest } from '../DataTransferObjects/ILoginRequest';
 
 const authenticationService = new AuthenticationService();
 const connectivityProbe = new ConnectivityProbe();
-
-/** Fire-and-forget so the UI never freezes waiting for synchronization. */
-function startSynchronization(): void {
-  void OfflineCompositionRoot.dataSynchronizationService.synchronize();
-}
 
 interface AuthenticationState {
   accessToken: IAccessToken | null;
@@ -33,6 +28,12 @@ export function UseAuthentication(): UseAuthenticationResult {
   const [accessToken, setAccessToken] = useState<IAccessToken | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const { dataSynchronizationService } = UseApplicationServices();
+
+  /** Fire-and-forget so the UI never freezes waiting for synchronization. */
+  const startSynchronization = useCallback(() => {
+    void dataSynchronizationService.synchronize();
+  }, [dataSynchronizationService]);
 
   const storeToken = useCallback((token: IAccessToken) => {
     TokenStorageService.setToken(token);
@@ -102,7 +103,7 @@ export function UseAuthentication(): UseAuthenticationResult {
     };
 
     initialize().finally(() => setIsInitializing(false));
-  }, [storeToken, restoreStoredToken]);
+  }, [storeToken, restoreStoredToken, startSynchronization]);
 
   const login = useCallback(async (request: ILoginRequest) => {
     setIsLoading(true);
@@ -121,7 +122,7 @@ export function UseAuthentication(): UseAuthenticationResult {
     {
       setIsLoading(false);
     }
-  }, [storeToken]);
+  }, [storeToken, startSynchronization]);
 
   return { accessToken, isLoading, isInitializing, login };
 }

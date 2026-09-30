@@ -7,7 +7,6 @@ import { ConfirmDialog } from '../Components/ConfirmDialog';
 import { DataGrid } from '../Components/DataGrid';
 import { FilterActionBar } from '../Components/FilterActionBar';
 import { layoutStyles, typographyStyles } from '../Styles';
-import { CrudOperationType, CrudOperationTypeUtility } from '../../Infrastructure/Persistence/Enums/CrudOperationType';
 
 interface CrudListScreenProps<TListing extends { id: number }> {
   title: string;
@@ -32,7 +31,6 @@ interface CrudListScreenProps<TListing extends { id: number }> {
   keyExtractor?: (item: TListing) => string;
   newLabel?: string;
   extraActions?: (item: TListing) => ReactNode;
-  allowedCrudOperationTypes?: CrudOperationType[];
   canMutateItem?: (item: TListing) => boolean;
   emptyGridMessage?: string;
 }
@@ -60,7 +58,6 @@ export function CrudListScreen<TListing extends { id: number }>({
   keyExtractor = (item) => String(item.id),
   newLabel,
   extraActions,
-  allowedCrudOperationTypes = CrudOperationTypeUtility.getAll(),
   canMutateItem,
   emptyGridMessage = 'Nenhum registro encontrado.',
 }: CrudListScreenProps<TListing>) {
@@ -73,7 +70,7 @@ export function CrudListScreen<TListing extends { id: number }>({
         <View style={layoutStyles.sectionCard}>
           <FilterActionBar
             onSearch={onSearch}
-            onNew={allowedCrudOperationTypes.includes(CrudOperationType.Create) ? () => onNavigateToForm() : undefined}
+            onNew={() => onNavigateToForm()}
             newLabel={newLabel}
           >
             {filterContent}
@@ -86,8 +83,8 @@ export function CrudListScreen<TListing extends { id: number }>({
             page={page}
             pageSize={pageSize}
             onPageChange={onPageChange}
-            onEdit={allowedCrudOperationTypes.includes(CrudOperationType.Update) ? (item) => onNavigateToForm(item.id) : undefined}
-            onDelete={allowedCrudOperationTypes.includes(CrudOperationType.Delete) ? onDelete : undefined}
+            onEdit={(item) => onNavigateToForm(item.id)}
+            onDelete={onDelete}
             canMutateItem={canMutateItem}
             keyExtractor={keyExtractor}
             extraActions={extraActions}

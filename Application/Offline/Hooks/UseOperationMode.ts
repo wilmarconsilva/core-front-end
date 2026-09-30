@@ -1,4 +1,4 @@
-import { OperationMode, OperationModeService } from '../Services/Offline/OperationModeService';
+import { OperationMode, OperationModeService } from '../Services/OperationModeService';
 
 /**
  * Exposes the operation mode resolved at startup to the presentation layer.

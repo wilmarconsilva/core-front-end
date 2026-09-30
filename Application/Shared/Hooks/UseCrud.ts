@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { ICrudService } from '../Interfaces/Services/ICrudService';
+import { ICrudService } from '../Services/Interfaces/ICrudService';
 
 interface CrudState<TDetailDto, TListing> {
   listings: TListing[];

@@ -1,6 +1,6 @@
-import { IValidationRule } from '../../Hooks/UseFormValidation';
-import { ILocalityDetailDto } from '../../Interfaces/DataTransferObjects/Localities/ILocalityDetailDto';
-import { ILocalitySaveDto } from '../../Interfaces/DataTransferObjects/Localities/ILocalitySaveDto';
+import { IValidationRule } from '../../../Shared/Hooks/UseFormValidation';
+import { ILocalityDetailDto } from '../DataTransferObjects/ILocalityDetailDto';
+import { ILocalitySaveDto } from '../DataTransferObjects/ILocalitySaveDto';
 
 export interface LocalityFormState {
   description: string;

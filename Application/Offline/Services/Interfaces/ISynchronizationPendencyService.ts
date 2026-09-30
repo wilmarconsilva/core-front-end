@@ -1,5 +1,5 @@
-import { ISynchronizationPendency } from '../DataTransferObjects/Offline/ISynchronizationPendency';
-import { SynchronizationEntityType } from '../DataTransferObjects/Offline/SynchronizationEntityType';
+import { ISynchronizationPendency } from '../../DataTransferObjects/ISynchronizationPendency';
+import { SynchronizationEntityType } from '../../DataTransferObjects/SynchronizationEntityType';
 
 /**
  * Tracks local records rejected by the back-end during synchronization so the

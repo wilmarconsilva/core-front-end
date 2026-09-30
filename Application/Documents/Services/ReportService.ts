@@ -1,8 +1,8 @@
-import { IDocumentReport } from "../../Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReport";
-import { IDocumentReportListing } from "../../Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportListing";
-import { IDocumentReportSummary } from "../../Interfaces/DataTransferObjects/Commercial/Documents/Reports/IDocumentReportSummary";
-import { buildQueryParams } from '../Utilities/QueryUtilities';
-import { APIConsumerService } from '../APIConsumerService';
+import { IDocumentReport } from "../DataTransferObjects/Reports/IDocumentReport";
+import { IDocumentReportListing } from "../DataTransferObjects/Reports/IDocumentReportListing";
+import { IDocumentReportSummary } from "../DataTransferObjects/Reports/IDocumentReportSummary";
+import { buildQueryParams } from '../../Shared/Utilities/QueryUtilities';
+import { APIConsumerService } from '../../Shared/Services/APIConsumerService';
 
 export class ReportService extends APIConsumerService {
     async get(filter: any, url: string): Promise<IDocumentReportListing<IDocumentReport, IDocumentReportSummary>> {

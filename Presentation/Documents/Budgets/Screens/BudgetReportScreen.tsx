@@ -1,7 +1,7 @@
 import React from 'react';
-import { BudgetReportService } from '../../../../../Application/Services/Commercial/Documents/Budgets/BudgetReportService';
-import { IBackOnlyScreenProps } from '../../../../Interfaces/Screens/IBackOnlyScreenProps';
-import { DocumentReportScreen } from '../DocumentReportScreen';
+import { BudgetReportService } from '../../../../Application/Documents/Budgets/Services/BudgetReportService';
+import { IBackOnlyScreenProps } from '../../../Shared/Interfaces/Screens/IBackOnlyScreenProps';
+import { DocumentReportScreen } from '../../Screens/DocumentReportScreen';
 
 const budgetReportService = new BudgetReportService();
 

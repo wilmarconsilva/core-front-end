@@ -1,4 +1,4 @@
-import { ISynchronizationPendency } from '../../../Application/Interfaces/DataTransferObjects/Offline/ISynchronizationPendency';
+import { ISynchronizationPendency } from '../../../Application/Offline/DataTransferObjects/ISynchronizationPendency';
 
 export interface ISynchronizationPendenciesScreenProps {
   onGoBack: () => void;

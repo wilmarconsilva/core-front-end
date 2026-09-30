@@ -1,12 +1,12 @@
 import { UseBudgets } from './UseBudgets';
-import { IBudgetProductSaveDto } from '../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetProductSaveDto';
-import { IBudgetDetailDto } from '../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetDetailDto';
-import { IBudgetSaveDto } from '../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetSaveDto';
-import { BudgetFormService, BudgetFormState } from '../Services/Commercial/Documents/Budgets/BudgetFormService';
-import { UseCommercialDocumentForm } from './UseCommercialDocumentForm';
+import { IBudgetProductSaveDto } from '../DataTransferObjects/IBudgetProductSaveDto';
+import { IBudgetDetailDto } from '../DataTransferObjects/IBudgetDetailDto';
+import { IBudgetSaveDto } from '../DataTransferObjects/IBudgetSaveDto';
+import { BudgetFormService, BudgetFormState } from '../Services/BudgetFormService';
+import { UseDocumentForm } from '../../Hooks/UseDocumentForm';
 
 export function UseBudgetForm(id: number | undefined, onGoBack: () => void) {
-  return UseCommercialDocumentForm<
+  return UseDocumentForm<
     IBudgetProductSaveDto,
     BudgetFormState,
     IBudgetDetailDto,

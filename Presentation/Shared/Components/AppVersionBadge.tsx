@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { AppVersion } from '../../Configuration/Versions/AppVersion';
+import { AppVersion } from '../../../Configuration/Versions/AppVersion';
 import { colors } from '../Styles';
 
 /**

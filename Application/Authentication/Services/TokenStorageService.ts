@@ -1,4 +1,4 @@
-import { IAccessToken } from '../Interfaces/DataTransferObjects/Authentication/IAccessToken';
+import { IAccessToken } from '../DataTransferObjects/IAccessToken';
 
 const TOKEN_KEY = 'core_access_token';
 

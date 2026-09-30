@@ -1,3 +1,3 @@
-import { IDocumentListingFilter } from '../IDocumentListingFilter';
+import { IDocumentListingFilter } from '../../DataTransferObjects/IDocumentListingFilter';
 
 export interface IBudgetListingFilter extends IDocumentListingFilter {}

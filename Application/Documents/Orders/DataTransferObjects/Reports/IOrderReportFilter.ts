@@ -1,3 +1,3 @@
-import { IDocumentReportFilter } from '../../Reports/IDocumentReportFilter';
+import { IDocumentReportFilter } from '../../../DataTransferObjects/Reports/IDocumentReportFilter';
 
 export interface IOrderReportFilter extends IDocumentReportFilter {}

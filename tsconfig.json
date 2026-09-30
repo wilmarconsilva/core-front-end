@@ -10,9 +10,11 @@
     "Application/**/*.ts",
     "Application/**/*.tsx",
     "Configuration/**/*.ts",
+    "Domain/**/*.ts",
+    "Infrastructure/**/*.ts",
     "Presentation/**/*.ts",
     "Presentation/**/*.tsx",
     "scripts/**/*.ts"
-, "Domain/Exceptions/OfflineUnavailableError.ts", "Infrastructure/Persistence/Interfaces/IOfflineRepository.ts", "Infrastructure/Persistence/OfflineCompositionRoot.ts"  ],
+  ],
   "exclude": ["node_modules", "bin", "obj"]
 }

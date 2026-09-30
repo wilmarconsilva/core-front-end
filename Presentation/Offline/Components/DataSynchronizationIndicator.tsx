@@ -2,11 +2,11 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, LayoutChangeEvent, StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { UseDataSynchronization } from '../../Application/Hooks/UseDataSynchronization';
-import { UseOperationMode } from '../../Application/Hooks/UseOperationMode';
-import { SynchronizationStatus } from '../../Application/Interfaces/Services/IDataSynchronizationService';
-import { colors, FLOATING_INDICATOR_BOTTOM } from '../Styles';
-import { OperationMode } from '../../Application/Services/Offline/OperationModeService';
+import { UseDataSynchronization } from '../../../Application/Offline/Hooks/UseDataSynchronization';
+import { UseOperationMode } from '../../../Application/Offline/Hooks/UseOperationMode';
+import { SynchronizationStatus } from '../../../Application/Offline/Services/Interfaces/IDataSynchronizationService';
+import { colors, FLOATING_INDICATOR_BOTTOM } from '../../Shared/Styles';
+import { OperationMode } from '../../../Application/Offline/Services/OperationModeService';
 
 type IndicatorAppearance = {
   icon: keyof typeof Ionicons.glyphMap;

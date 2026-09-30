@@ -1,4 +1,4 @@
-import { IApiError } from '../../Interfaces/DataTransferObjects/APIConsumer/IApiError';
+import { IApiError } from '../DataTransferObjects/APIConsumer/IApiError';
 
 export class APIConsumerUtility 
 {
