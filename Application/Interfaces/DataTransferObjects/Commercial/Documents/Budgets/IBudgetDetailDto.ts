@@ -1,12 +1,12 @@
 import { IEntityReferenceDto } from '../../../Entities/IEntityReferenceDto';
-import { IPaymentSaveDto } from '../Payments/IPaymentSaveDto';
+import { IBudgetPaymentSaveDto } from './IBudgetPaymentSaveDto';
 import { IBudgetProductDetailDto } from './IBudgetProductDetailDto';
 
 export interface IBudgetDetailDto {
   id: number;
   userId: number;
   customer: IEntityReferenceDto;
-  payment: IPaymentSaveDto;
+  payment: IBudgetPaymentSaveDto;
   observations?: string;
   customerSignatureImage?: string;
   products: IBudgetProductDetailDto[];

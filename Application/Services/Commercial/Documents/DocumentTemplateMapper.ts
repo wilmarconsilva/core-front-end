@@ -1,4 +1,4 @@
-import { PaymentMethodLabels } from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
+import { getPaymentMethodLabel } from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
 import { IDocumentTemplate } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentTemplate';
 import { ICommercialDocumentDetailDto } from './CommercialDocumentFormService';
 
@@ -21,7 +21,7 @@ export class DocumentTemplateMapper {
       observations: detail.observations,
       valueSubtotal: currencyFormat(valueSubtotal),
       valueTotal: currencyFormat(valueTotal),
-      paymentMethod: PaymentMethodLabels[detail.payment.method],
+      paymentMethod: getPaymentMethodLabel(detail.payment.method),
       customerSignatureImage: detail.customerSignatureImage,
     };
   }

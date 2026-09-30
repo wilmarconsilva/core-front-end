@@ -17,3 +17,9 @@ export const PaymentMethodLabels: Record<PaymentMethod, string> = {
   [PaymentMethod.Check]: 'Cheque',
   [PaymentMethod.PIX]: 'PIX',
 };
+
+export const PaymentMethodNotDefinedLabel = 'Não definida';
+
+export function getPaymentMethodLabel(method: PaymentMethod | null): string {
+  return method === null ? PaymentMethodNotDefinedLabel : PaymentMethodLabels[method];
+}

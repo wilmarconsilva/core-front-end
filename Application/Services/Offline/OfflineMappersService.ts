@@ -4,6 +4,7 @@ import { IDocumentListing } from '../../Interfaces/DataTransferObjects/Commercia
 import { IDocumentListingFilter } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentListingFilter';
 import { IDocumentProductSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentProductSaveDto';
 import { IDocumentSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentSaveDto';
+import { IPaymentSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Payments/IPaymentSaveDto';
 import { IBudgetDetailDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetDetailDto';
 import { IBudgetListing } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetListing';
 import { IBudgetSaveDto } from '../../Interfaces/DataTransferObjects/Commercial/Documents/Budgets/IBudgetSaveDto';
@@ -186,11 +187,11 @@ export async function buildBudgetListing(
   return buildDocumentListing(dto, customerRepository);
 }
 
-export async function buildDocumentDetail(
-  dto: IDocumentSaveDto<IDocumentProductSaveDto>,
+export async function buildDocumentDetail<TPayment extends IPaymentSaveDto>(
+  dto: IDocumentSaveDto<IDocumentProductSaveDto, TPayment>,
   customerRepository: IOfflineRepository<ICustomerSaveDto, ICustomerListing, unknown>,
   productRepository: IOfflineRepository<IProductSaveDto, IProductListing, unknown>,
-): Promise<IOrderDetailDto> {
+): Promise<Omit<IOrderDetailDto, 'payment'> & { payment: TPayment }> {
   const customer = await customerRepository.getById(dto.customerId);
 
   const products = await Promise.all(

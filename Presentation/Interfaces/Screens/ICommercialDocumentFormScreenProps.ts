@@ -32,9 +32,11 @@ export interface ICommercialDocumentFormScreenProps {
     setObservations: (value: string) => void;
     signature: string | null;
     setSignature: (value: string | null) => void;
-    paymentMethod: PaymentMethod;
-    setPaymentMethod: (value: PaymentMethod) => void;
-    paymentMethodOptions: { label: string; value: PaymentMethod }[];
+    isPaymentMethodRequired: boolean;
+    paymentMethod: PaymentMethod | null;
+    setPaymentMethod: (value: PaymentMethod | null) => void;
+    paymentMethodOptions: { label: string; value: PaymentMethod | null }[];
+    downPaymentMethodOptions: { label: string; value: PaymentMethod }[];
     discountValue: number;
     setDiscountValue: (value: number) => void;
     hasInstallment: boolean;

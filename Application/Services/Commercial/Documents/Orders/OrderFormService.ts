@@ -2,9 +2,11 @@ import { IBudgetDetailDto } from '../../../../Interfaces/DataTransferObjects/Com
 import { IOrderDetailDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderDetailDto';
 import { IOrderProductSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderProductSaveDto';
 import { IOrderSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderSaveDto';
+import { IOrderPaymentSaveDto } from '../../../../Interfaces/DataTransferObjects/Commercial/Documents/Orders/IOrderPaymentSaveDto';
 import {
   CommercialDocumentFormService,
   CommercialDocumentFormState,
+  IDocumentPaymentDto,
 } from '../CommercialDocumentFormService';
 
 export interface OrderFormState extends CommercialDocumentFormState<IOrderProductSaveDto> {
@@ -12,9 +14,13 @@ export interface OrderFormState extends CommercialDocumentFormState<IOrderProduc
 }
 
 export class OrderFormService {
+  static readonly paymentMethodPolicy = CommercialDocumentFormService.requiredPaymentMethodPolicy;
+
   static createInitialForm(): OrderFormState {
     return {
-      ...CommercialDocumentFormService.createInitialFormState<IOrderProductSaveDto>(),
+      ...CommercialDocumentFormService.createInitialFormState<IOrderProductSaveDto>(
+        OrderFormService.paymentMethodPolicy,
+      ),
       budgetId: '',
     };
   }
@@ -43,14 +49,17 @@ export class OrderFormService {
   }
 
   static buildSaveDto(id: number | undefined, form: OrderFormState): IOrderSaveDto {
+    const fields = CommercialDocumentFormService.buildSaveDtoFields(id, form);
+
     return {
-      ...CommercialDocumentFormService.buildSaveDtoFields(id, form),
+      ...fields,
+      payment: OrderFormService.toOrderPayment(fields.payment),
       budgetId: form.budgetId ? parseInt(form.budgetId, 10) : undefined,
     };
   }
 
   static buildValidationRules(form: OrderFormState) {
-    return CommercialDocumentFormService.buildValidationRules(form);
+    return CommercialDocumentFormService.buildValidationRules(form, OrderFormService.paymentMethodPolicy);
   }
 
   static formToDetail(id: number | undefined, form: OrderFormState): IOrderDetailDto {
@@ -58,5 +67,12 @@ export class OrderFormService {
       ...(CommercialDocumentFormService.formToDetailDto(id, form) as IOrderDetailDto),
       budgetId: form.budgetId ? parseInt(form.budgetId, 10) : undefined,
     };
+  }
+
+  /** O pedido exige método de pagamento: a validação do formulário garante que ele foi informado. */
+  private static toOrderPayment(payment: IDocumentPaymentDto): IOrderPaymentSaveDto {
+    if (payment.method === null) throw new Error('O método de pagamento do pedido é obrigatório.');
+
+    return { ...payment, method: payment.method };
   }
 }

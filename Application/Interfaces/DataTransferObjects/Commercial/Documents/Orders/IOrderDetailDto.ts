@@ -1,5 +1,5 @@
 import { IEntityReferenceDto } from '../../../Entities/IEntityReferenceDto';
-import { IPaymentSaveDto } from '../Payments/IPaymentSaveDto';
+import { IOrderPaymentSaveDto } from './IOrderPaymentSaveDto';
 import { IOrderProductDetailDto } from './IOrderProductDetailDto';
 
 export interface IOrderDetailDto {
@@ -7,7 +7,7 @@ export interface IOrderDetailDto {
   userId: number;
   customer: IEntityReferenceDto;
   budgetId?: number;
-  payment: IPaymentSaveDto;
+  payment: IOrderPaymentSaveDto;
   observations?: string;
   customerSignatureImage?: string;
   products: IOrderProductDetailDto[];

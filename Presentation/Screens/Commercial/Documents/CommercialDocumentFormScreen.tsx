@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { ScreenScrollView } from '../../../Components/ScreenScrollView';
-import { PaymentMethod } from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
 import { ICustomerListing } from '../../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListing';
 import { ICustomerListingFilter } from '../../../../Application/Interfaces/DataTransferObjects/Persons/Customers/ICustomerListingFilter';
 import { IProductListing } from '../../../../Application/Interfaces/DataTransferObjects/Products/IProductListing';
@@ -46,9 +45,11 @@ export function CommercialDocumentFormScreen({
   setObservations,
   signature,
   setSignature,
+  isPaymentMethodRequired,
   paymentMethod,
   setPaymentMethod,
   paymentMethodOptions,
+  downPaymentMethodOptions,
   discountValue,
   setDiscountValue,
   hasInstallment,
@@ -184,7 +185,7 @@ export function CommercialDocumentFormScreen({
               </View>
               <View style={styles.productSmallField}>
                 <DecimalField
-                  label="Vl. Unit."
+                  label="Vl. Unit. (R$)"
                   placeholder="0,00"
                   value={line.valueUnit}
                   onChangeValue={(value) => updateProductLine(index, 'valueUnit', value)}
@@ -216,11 +217,11 @@ export function CommercialDocumentFormScreen({
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Pagamento</Text>
           <SelectField
-            label="Método de Pagamento *"
+            label={isPaymentMethodRequired ? 'Forma de Pagamento *' : 'Forma de Pagamento'}
             value={paymentMethod}
             options={paymentMethodOptions}
             error={errors.paymentMethod}
-            onValueChange={(value) => setPaymentMethod(value as PaymentMethod)}
+            onValueChange={setPaymentMethod}
             disabled={isSaving}
           />
           <DecimalField
@@ -263,9 +264,9 @@ export function CommercialDocumentFormScreen({
                   <SelectField
                     label="Forma de pagamento da entrada *"
                     value={downPaymentMethod}
-                    options={paymentMethodOptions}
+                    options={downPaymentMethodOptions}
                     error={errors.downPaymentMethod}
-                    onValueChange={(value) => setDownPaymentMethod(value as PaymentMethod)}
+                    onValueChange={setDownPaymentMethod}
                     disabled={isSaving}
                   />
                   <DecimalField

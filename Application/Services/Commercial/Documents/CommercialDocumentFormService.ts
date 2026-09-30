@@ -1,5 +1,9 @@
 import { IValidationRule } from '../../../Hooks/UseFormValidation';
-import { PaymentMethod, PaymentMethodLabels } from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
+import {
+  PaymentMethod,
+  PaymentMethodLabels,
+  PaymentMethodNotDefinedLabel,
+} from '../../../../Domain/ValueObjects/Enums/Commercial/Documents/Payments/PaymentMethod';
 import { IDocumentProductSaveDto } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentProductSaveDto';
 import { IDocumentSaveDto } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/IDocumentSaveDto';
 import { IPaymentSaveDto } from '../../../Interfaces/DataTransferObjects/Commercial/Documents/Payments/IPaymentSaveDto';
@@ -21,15 +25,26 @@ export interface CommercialDocumentFormState<TProduct extends IDocumentProductSa
   customerDisplayLabel: string;
   observations: string;
   signature: string | null;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethod | null;
   discountValue: number;
   installment: DocumentInstallmentFormState;
   productLines: TProduct[];
 }
 
+/** Pagamento comum aos documentos: cada documento restringe o método no seu próprio DTO. */
+export interface IDocumentPaymentDto extends IPaymentSaveDto {
+  method: PaymentMethod | null;
+}
+
+/** Define se o documento exige método de pagamento e com qual valor o formulário nasce. */
+export interface PaymentMethodPolicy {
+  isRequired: boolean;
+  initialValue: PaymentMethod | null;
+}
+
 export interface ICommercialDocumentDetailDto {
   customer: IEntityReferenceDto;
-  payment: IPaymentSaveDto;
+  payment: IDocumentPaymentDto;
   observations?: string;
   customerSignatureImage?: string;
   products: DocumentProductDetail[];
@@ -40,7 +55,7 @@ export interface CommercialDocumentFormBaseSetters<TProduct extends IDocumentPro
   setCustomerDisplayLabel: (value: string) => void;
   setObservations: (value: string) => void;
   setSignature: (value: string | null) => void;
-  setPaymentMethod: (value: PaymentMethod) => void;
+  setPaymentMethod: (value: PaymentMethod | null) => void;
   setDiscountValue: (value: number) => void;
   setInstallment: (value: DocumentInstallmentFormState) => void;
   setProductLines: (value: TProduct[]) => void;
@@ -51,17 +66,38 @@ export class CommercialDocumentFormService {
     .filter((v) => typeof v === 'number')
     .map((v) => ({ label: PaymentMethodLabels[v as PaymentMethod], value: v as PaymentMethod }));
 
+  static readonly requiredPaymentMethodPolicy: PaymentMethodPolicy = {
+    isRequired: true,
+    initialValue: PaymentMethod.Check,
+  };
+
+  static readonly optionalPaymentMethodPolicy: PaymentMethodPolicy = {
+    isRequired: false,
+    initialValue: null,
+  };
+
+  static paymentMethodOptionsFor(policy: PaymentMethodPolicy): { label: string; value: PaymentMethod | null }[] {
+    if (policy.isRequired) return CommercialDocumentFormService.paymentMethodOptions;
+
+    return [
+      { label: PaymentMethodNotDefinedLabel, value: null },
+      ...CommercialDocumentFormService.paymentMethodOptions,
+    ];
+  }
+
   static entitySelectLabel(entity: IEntityReferenceDto): string {
     return entity.description;
   }
 
-  static createInitialFormState<TProduct extends IDocumentProductSaveDto>(): CommercialDocumentFormState<TProduct> {
+  static createInitialFormState<TProduct extends IDocumentProductSaveDto>(
+    paymentMethodPolicy: PaymentMethodPolicy,
+  ): CommercialDocumentFormState<TProduct> {
     return {
       customerId: 0,
       customerDisplayLabel: '',
       observations: '',
       signature: null,
-      paymentMethod: PaymentMethod.Check,
+      paymentMethod: paymentMethodPolicy.initialValue,
       discountValue: 0,
       installment: InstallmentFormService.createInitialState(),
       productLines: [CommercialDocumentFormService.createEmptyProductLine<TProduct>()],
@@ -101,7 +137,7 @@ export class CommercialDocumentFormService {
     id: number | undefined,
     form: CommercialDocumentFormState<TProduct>,
   ): Pick<
-    IDocumentSaveDto<TProduct>,
+    IDocumentSaveDto<TProduct, IDocumentPaymentDto>,
     'id' | 'creationDateTime' | 'customerId' | 'payment' | 'observations' | 'customerSignatureImage' | 'products'
   > {
     return {
@@ -119,11 +155,14 @@ export class CommercialDocumentFormService {
     };
   }
 
-  static buildValidationRules(form: CommercialDocumentFormState<IDocumentProductSaveDto>): IValidationRule[] {
+  static buildValidationRules(
+    form: CommercialDocumentFormState<IDocumentProductSaveDto>,
+    paymentMethodPolicy: PaymentMethodPolicy,
+  ): IValidationRule[] {
     return [
       { key: 'customerId', isValid: !!form.customerId },
       { key: 'productLines', isValid: form.productLines.length > 0 },
-      { key: 'paymentMethod', isValid: !!form.paymentMethod },
+      { key: 'paymentMethod', isValid: !paymentMethodPolicy.isRequired || form.paymentMethod !== null },
       ...InstallmentFormService.buildValidationRules(form.installment),
     ];
   }
@@ -190,10 +229,10 @@ export class CommercialDocumentFormService {
   }
 
   static buildPayment(
-    paymentMethod: PaymentMethod,
+    paymentMethod: PaymentMethod | null,
     discountValue: number,
     installment: DocumentInstallmentFormState,
-  ): IPaymentSaveDto {
+  ): IDocumentPaymentDto {
     return {
       method: paymentMethod,
       discountValue,

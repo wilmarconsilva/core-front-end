@@ -9,6 +9,7 @@ import { IPaymentSaveDto } from '../Interfaces/DataTransferObjects/Commercial/Do
 import {
   CommercialDocumentFormService,
   CommercialDocumentFormState,
+  PaymentMethodPolicy,
 } from '../Services/Commercial/Documents/CommercialDocumentFormService';
 import { DocumentInstallmentFormState } from '../Services/Commercial/Documents/Payments/InstallmentFormService';
 import { UseDocumentInstallmentForm } from './UseDocumentInstallmentForm';
@@ -31,6 +32,7 @@ interface ICommercialDocumentFormService<
   TDetail extends { payment: IPaymentSaveDto },
   TSaveDto,
 > {
+  paymentMethodPolicy: PaymentMethodPolicy;
   createInitialForm: () => TFormState;
   detailToForm: (detail: TDetail) => TFormState;
   buildValidationRules: (form: TFormState) => IValidationRule[];
@@ -81,7 +83,7 @@ export function UseCommercialDocumentForm<
   const [customerDisplayLabel, setCustomerDisplayLabel] = useState(initialForm.customerDisplayLabel);
   const [observations, setObservations] = useState(initialForm.observations);
   const [signature, setSignature] = useState<string | null>(initialForm.signature);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(initialForm.paymentMethod);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(initialForm.paymentMethod);
   const [discountValue, setDiscountValue] = useState(initialForm.discountValue);
   const [installment, setInstallment] = useState<DocumentInstallmentFormState>(initialForm.installment);
   const [productLines, setProductLines] = useState<TProduct[]>(initialForm.productLines);
@@ -206,7 +208,9 @@ export function UseCommercialDocumentForm<
     setSignature,
     paymentMethod,
     setPaymentMethod,
-    paymentMethodOptions: CommercialDocumentFormService.paymentMethodOptions,
+    isPaymentMethodRequired: formService.paymentMethodPolicy.isRequired,
+    paymentMethodOptions: CommercialDocumentFormService.paymentMethodOptionsFor(formService.paymentMethodPolicy),
+    downPaymentMethodOptions: CommercialDocumentFormService.paymentMethodOptions,
     discountValue,
     setDiscountValue,
     ...installmentFields,

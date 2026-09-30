@@ -6,7 +6,7 @@ export interface IDocumentReport {
   lastUpdateDateTime: string;
   valueSubtotal: number;
   valueTotal: number;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethod | null;
   paymentMethodDescription: string;
   paymentDiscountValue: number;
   paymentInstallmentQuantity?: number;
