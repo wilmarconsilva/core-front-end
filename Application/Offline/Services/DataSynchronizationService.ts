@@ -23,6 +23,7 @@ import { IApiError } from '../../Shared/DataTransferObjects/APIConsumer/IApiErro
 import { toApiCreatePayload } from '../Utilities/OfflineUtilities';
 import { describeDocument, remapDocumentReferences } from './OfflineMappersService';
 import { APIConsumerUtility } from '../../Shared/Utilities/APIConsumerUtility';
+import { ICurrentUserService } from '../../Persons/Users/Services/Interfaces/ICurrentUserService';
 
 const FETCH_PAGE_SIZE = 50;
 
@@ -46,6 +47,7 @@ interface DataSynchronizationDependencies {
   budgetRepository: IOfflineRepository<IBudgetSaveDto, unknown, unknown>;
   localityRepository: ILocalityOfflineRepository;
   synchronizationPendencyService: ISynchronizationPendencyService;
+  currentUserService: ICurrentUserService;
 }
 
 /**
@@ -54,6 +56,7 @@ interface DataSynchronizationDependencies {
  *   3. remap FKs              4. push local Orders
  *   5. push local Budgets     6. refresh Products
  *   7. refresh Customers      8. refresh Localities
+ *   9. refresh current User
  */
 export class DataSynchronizationService implements IDataSynchronizationService {
   private status: SynchronizationStatus = 'idle';
@@ -127,6 +130,7 @@ export class DataSynchronizationService implements IDataSynchronizationService {
     await runStep(() => this.refreshProducts());
     await runStep(() => this.refreshCustomers());
     await runStep(() => this.refreshLocalitiesIfQuantityIsNotEqual());
+    await runStep(() => this.dependencies.currentUserService.synchronize());
 
     this.setStatus(this.hadFailure ? 'error' : 'success');
   }

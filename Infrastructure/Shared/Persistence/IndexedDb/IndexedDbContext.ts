@@ -53,6 +53,10 @@ export class IndexedDbContext implements IIndexedDbContext {
           if (!database.objectStoreNames.contains(SYNCHRONIZATION_PENDENCIES_STORE_NAME)) {
             database.createObjectStore(SYNCHRONIZATION_PENDENCIES_STORE_NAME, { keyPath: 'key' });
           }
+
+          if (!database.objectStoreNames.contains(OfflineStoreNames.currentUser)) {
+            database.createObjectStore(OfflineStoreNames.currentUser, { keyPath: 'key' });
+          }
         },
       });
     }

@@ -1,18 +1,18 @@
 import React from 'react';
 import { View } from 'react-native';
 import { UseBudgetForm } from '../../../../Application/Documents/Budgets/Hooks/UseBudgetForm';
-import { UseDocumentPrint } from '../../../../Application/Documents/Hooks/UseDocumentPrint';
-import { BudgetService } from '../../../../Application/Documents/Budgets/Services/BudgetService';
+import { UseDocumentPdf } from '../../../../Application/Documents/Hooks/UseDocumentPdf';
+import { BudgetTemplateService } from '../../../../Application/Documents/Budgets/Services/BudgetTemplateService';
 import { IEntityFormScreenProps } from '../../../Shared/Interfaces/Screens/IEntityFormScreenProps';
 import { DocumentFormScreen } from '../../Screens/DocumentFormScreen';
 
-const budgetService = new BudgetService();
+const budgetTemplateService = new BudgetTemplateService();
 
 export function BudgetFormScreen({ id, onGoBack }: IEntityFormScreenProps) {
   const form = UseBudgetForm(id, onGoBack);
-  const { printHtml } = UseDocumentPrint();
+  const { generatePdf } = UseDocumentPdf(budgetTemplateService);
 
-  const handleGeneratePdf = () => budgetService.generatePdf(form.buildDetailFromForm(), printHtml);
+  const handleGeneratePdf = () => generatePdf(form.buildDetailFromForm());
 
   return (
     <View style={{ flex: 1 }}>

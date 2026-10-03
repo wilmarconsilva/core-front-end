@@ -4,6 +4,6 @@ import { get } from '../../Templates/DocumentHtmlTemplate';
 
 export class OrderTemplateService implements ITemplateService {
   render(data: IDocumentTemplate): string {
-    return get({ ...data, documentTitle: 'Pedido' });
+    return get('Pedido', data);
   }
 }

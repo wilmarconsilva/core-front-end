@@ -1,19 +1,19 @@
 import React from 'react';
 import { View } from 'react-native';
 import { UseOrderForm } from '../../../../Application/Documents/Orders/Hooks/UseOrderForm';
-import { UseDocumentPrint } from '../../../../Application/Documents/Hooks/UseDocumentPrint';
-import { OrderService } from '../../../../Application/Documents/Orders/Services/OrderService';
+import { UseDocumentPdf } from '../../../../Application/Documents/Hooks/UseDocumentPdf';
+import { OrderTemplateService } from '../../../../Application/Documents/Orders/Services/OrderTemplateService';
 import { IOrderFormScreenProps } from '../Interfaces/IOrderFormScreenProps';
 import { IntField } from '../../../Shared/Components/IntField';
 import { DocumentFormScreen } from '../../Screens/DocumentFormScreen';
 
-const orderService = new OrderService();
+const orderTemplateService = new OrderTemplateService();
 
 export function OrderFormScreen({ id, budgetId, onGoBack }: IOrderFormScreenProps) {
   const form = UseOrderForm(id, budgetId, onGoBack);
-  const { printHtml } = UseDocumentPrint();
+  const { generatePdf } = UseDocumentPdf(orderTemplateService);
 
-  const handleGeneratePdf = () => orderService.generatePdf(form.buildDetailFromForm(), printHtml);
+  const handleGeneratePdf = () => generatePdf(form.buildDetailFromForm());
 
   const newOrderLabel = 'Novo Pedido';
 

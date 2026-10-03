@@ -58,6 +58,12 @@ import { ILocalityOfflineRepository } from '../../Application/Territories/Locali
 import { LocalityOfflineRepository } from '../../Infrastructure/Territories/Localities/Repositories/LocalityOfflineRepository';
 import { ISynchronizationPendencyRepository } from '../../Application/Offline/Repositories/Interfaces/ISynchronizationPendencyRepository';
 import { SynchronizationPendencyRepository } from '../../Infrastructure/Offline/Repositories/SynchronizationPendencyRepository';
+import { ICurrentUserService } from '../../Application/Persons/Users/Services/Interfaces/ICurrentUserService';
+import { CurrentUserService } from '../../Application/Persons/Users/Services/CurrentUserService';
+import { CurrentUserApiService } from '../../Application/Persons/Users/Services/CurrentUserApiService';
+import { CurrentUserOfflineRepository } from '../../Infrastructure/Persons/Users/Repositories/CurrentUserOfflineRepository';
+import { IDocumentPdfService } from '../../Application/Documents/Services/Interfaces/IDocumentPdfService';
+import { DocumentPdfService } from '../../Application/Documents/Services/DocumentPdfService';
 
 /**
  * Composition root (the only place that knows Infrastructure): wires the
@@ -124,6 +130,9 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
   readonly synchronizationPendencyService: ISynchronizationPendencyService =
     new SynchronizationPendencyService(this.synchronizationPendencyRepository);
 
+  private readonly currentUserService: ICurrentUserService =
+    new CurrentUserService(new CurrentUserApiService(), new CurrentUserOfflineRepository(this.context));
+
   readonly dataSynchronizationService: IDataSynchronizationService =
     new DataSynchronizationService({
       productApi: new ProductService(),
@@ -137,6 +146,7 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
       budgetRepository: this.budgetRepository,
       localityRepository: this.localityRepository,
       synchronizationPendencyService: this.synchronizationPendencyService,
+      currentUserService: this.currentUserService,
     });
 
   readonly productService = this.createProductService();
@@ -144,6 +154,12 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
   readonly orderService = this.createOrderService();
   readonly budgetService = this.createBudgetService();
   readonly localityService = this.createLocalityService();
+
+  readonly documentPdfService: IDocumentPdfService = new DocumentPdfService({
+    customerService: this.customerService,
+    localityService: this.localityService,
+    currentUserService: this.currentUserService,
+  });
 
   private createProductService(): ICrudService<IProductSaveDto, IProductDetailDto, IProductListing, IProductListingFilter> {
     return new OfflineCrudService(new ProductService(), {
