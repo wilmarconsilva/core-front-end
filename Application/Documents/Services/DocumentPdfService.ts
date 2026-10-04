@@ -24,6 +24,9 @@ export class DocumentPdfService implements IDocumentPdfService {
   constructor(private readonly dependencies: DocumentPdfDependencies) {}
 
   async render(detail: DocumentPdfDetail, templateService: ITemplateService): Promise<string> {
+    detail.products.forEach((product) => {
+      console.log(`Product: ${product.product.description}`);
+    });
     const [customer, seller] = await Promise.all([
       this.tryGet(() => this.dependencies.customerService.getById(detail.customer.id)),
       this.tryGet<ICurrentUserDto | undefined>(() => this.dependencies.currentUserService.get()),

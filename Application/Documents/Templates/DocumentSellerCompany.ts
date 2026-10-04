@@ -1,5 +1,5 @@
 /** Dados do emitente impressos no rodapé institucional dos documentos comerciais. */
-export const DocumentIssuer = {
+export const DocumentSellerCompany = {
   name: 'WS IMPERMEABILIZAÇÕES LTDA',
   shortName: 'WS',
   city: 'Chapecó',

@@ -5,8 +5,8 @@ import {
   IDocumentTemplateProduct,
   IDocumentTemplateSignature,
 } from '../DataTransferObjects/IDocumentTemplate';
-import { DocumentIssuer } from './DocumentIssuer';
-import { DOCUMENT_LOGO_DATA_URI } from './DocumentLogo';
+import { DocumentSellerCompany } from './DocumentSellerCompany';
+import { DOCUMENT_SELLER_COMPANY_LOGO } from './DocumentSellerCompanyLogo';
 
 /**
  * Layout A4 do papel timbrado (orcamento_WS.docx). Grade geométrica, em mm:
@@ -16,7 +16,7 @@ import { DOCUMENT_LOGO_DATA_URI } from './DocumentLogo';
  * em todas as páginas impressas.
  */
 export function get(documentTitle: string, data: IDocumentTemplate): string {
-  const title = data.number ? `${documentTitle} Nº ${data.number}` : documentTitle;
+  const title = data.number ? `${documentTitle} ${data.number}` : documentTitle;
 
   return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -34,10 +34,10 @@ export function get(documentTitle: string, data: IDocumentTemplate): string {
       <header class="document-header">
         <div>
           <h1>${escapeHtml(title)}</h1>
-          <p class="document-subtitle">${escapeHtml(DocumentIssuer.city)}, ${escapeHtml(data.issueDate)}.</p>
-          ${data.budgetNumber ? `<p class="document-subtitle">Originado do orçamento Nº ${data.budgetNumber}</p>` : ''}
+          <p class="document-subtitle">${escapeHtml(DocumentSellerCompany.city)}, ${escapeHtml(data.issueDate)}.</p>
+          ${data.budgetNumber ? `<p class="document-subtitle">Originado do orçamento ${data.budgetNumber}</p>` : ''}
         </div>
-        <img class="logo" src="${DOCUMENT_LOGO_DATA_URI}" alt="${escapeHtml(DocumentIssuer.name)}" />
+        <img class="logo" src="${DOCUMENT_SELLER_COMPANY_LOGO}" alt="${escapeHtml(DocumentSellerCompany.name)}" />
       </header>
       ${buildCustomerSection(data.customer)}
       ${buildProductsTable(data)}
@@ -115,25 +115,25 @@ function buildPaymentSection(payment: IDocumentTemplatePayment, observations?: s
 
 function buildIssuerSection(contactName?: string): string {
   const contacts = [
-    detailItem('Endereço', DocumentIssuer.address, 'detail-wide'),
-    detailItem('Telefones', DocumentIssuer.phones),
-    detailItem('Site', DocumentIssuer.site),
-    detailItem('E-mail', DocumentIssuer.email),
-    detailItem('Instagram', DocumentIssuer.instagram),
+    detailItem('Endereço', DocumentSellerCompany.address, 'detail-wide'),
+    detailItem('Telefones', DocumentSellerCompany.phones),
+    detailItem('Site', DocumentSellerCompany.site),
+    detailItem('E-mail', DocumentSellerCompany.email),
+    detailItem('Instagram', DocumentSellerCompany.instagram),
     detailItem('Contato', contactName),
   ].join('');
 
   return `<section class="issuer">
-        <p class="issuer-name">${escapeHtml(DocumentIssuer.name)}</p>
+        <p class="issuer-name">${escapeHtml(DocumentSellerCompany.name)}</p>
         <dl class="details">${contacts}</dl>
-        <p class="issuer-presentation">${escapeHtml(DocumentIssuer.presentation)}</p>
+        <p class="issuer-presentation">${escapeHtml(DocumentSellerCompany.presentation)}</p>
       </section>`;
 }
 
 /** Cada assinatura só é impressa se existir, mas mantém sua coluna (vendedor à esquerda, cliente à direita). */
 function buildSignatures(seller: IDocumentTemplateSignature, customer: IDocumentTemplateSignature): string {
   const signatures = [
-    buildSignature(seller, `Vendedor da ${DocumentIssuer.shortName}`, 'signature-seller'),
+    buildSignature(seller, `Vendedor da ${DocumentSellerCompany.shortName}`, 'signature-seller'),
     buildSignature(customer, 'Cliente', 'signature-customer'),
   ].join('');
 
@@ -166,7 +166,7 @@ const PAGE_BACKGROUND = `<div class="page-background" aria-hidden="true">
       <polygon class="shade" points="1414,1795 1265,1918 1414,1975"/>
       <polygon class="tone" points="1005,2000 1165,1882 1414,1975 1414,2000"/>
     </svg>
-    <img class="watermark" src="${DOCUMENT_LOGO_DATA_URI}" alt="" />
+    <img class="watermark" src="${DOCUMENT_SELLER_COMPANY_LOGO}" alt="" />
   </div>`;
 
 const STYLES = `
