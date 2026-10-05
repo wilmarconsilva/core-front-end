@@ -17,6 +17,7 @@ export interface IDocumentTemplatePayment {
   method: string;
   installments?: string;
   downPayment?: string;
+  downPaymentMethod?: string;
 }
 
 export interface IDocumentTemplateSignature {

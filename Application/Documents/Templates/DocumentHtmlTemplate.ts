@@ -107,6 +107,7 @@ function buildPaymentSection(payment: IDocumentTemplatePayment, observations?: s
   return `<section class="payment">
         <p><span class="label">FORMA DE PAGAMENTO:</span> ${escapeHtml(payment.method)}</p>
         ${payment.downPayment ? `<p><span class="label">ENTRADA:</span> ${escapeHtml(payment.downPayment)}</p>` : ''}
+        ${payment.downPaymentMethod ? `<p><span class="label">FORMA DE PAGAMENTO DA ENTRADA:</span> ${escapeHtml(payment.downPaymentMethod)}</p>` : ''}
         ${payment.installments ? `<p><span class="label">PARCELAMENTO:</span> ${escapeHtml(payment.installments)}</p>` : ''}
         ${observations ? `<p class="observations"><span class="label">Observações:</span> ${escapeHtml(observations)}</p>` : ''}
       </section>`;

@@ -90,8 +90,9 @@ export class DocumentTemplateMapper {
       method: getPaymentMethodLabel(payment.method),
       installments: `${installment.quantity}x de ${formatCurrency(installmentValue)}`,
       downPayment: downPayment
-        ? `${formatCurrency(downPayment.value)} (${downPayment.percentage.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%) em ${getPaymentMethodLabel(downPayment.method)}`
+        ? `${formatCurrency(downPayment.value)} (${downPayment.percentage.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%)`
         : undefined,
+      downPaymentMethod: downPayment ? getPaymentMethodLabel(downPayment.method) : undefined,
     };
   }
 
