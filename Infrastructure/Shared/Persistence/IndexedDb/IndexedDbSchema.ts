@@ -2,7 +2,7 @@ import { DBSchema } from 'idb';
 import { ICurrentUserDto } from '../../../../Application/Persons/Users/DataTransferObjects/ICurrentUserDto';
 
 export const INDEXED_DB_NAME = 'core-offline-db';
-export const INDEXED_DB_VERSION = 6;
+export const INDEXED_DB_VERSION = 7;
 
 export const OfflineStoreNames = {
   products: 'products',

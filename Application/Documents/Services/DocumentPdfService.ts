@@ -1,5 +1,5 @@
+import { RequiredDataUnavailableError } from '../../../Domain/Shared/Exceptions/RequiredDataUnavailableError';
 import { ICustomerDetailDto } from '../../Persons/Customers/DataTransferObjects/ICustomerDetailDto';
-import { ICurrentUserDto } from '../../Persons/Users/DataTransferObjects/ICurrentUserDto';
 import { ICurrentUserService } from '../../Persons/Users/Services/Interfaces/ICurrentUserService';
 import { ILocalityDetailDto } from '../../Territories/Localities/DataTransferObjects/ILocalityDetailDto';
 import { DocumentTemplateMapper } from './DocumentTemplateMapper';
@@ -17,36 +17,25 @@ interface DocumentPdfDependencies {
 }
 
 /**
- * Facade da impressão: os dados complementares são opcionais, então qualquer falha
- * (ex.: offline sem o snapshot completo) apenas omite a informação no documento.
+ * Facade da impressão: reúne o cliente, a localidade do cliente e o vendedor. Todos estão
+ * disponíveis online (API) e offline (snapshot da sincronização); uma falha interrompe a impressão.
  */
 export class DocumentPdfService implements IDocumentPdfService {
   constructor(private readonly dependencies: DocumentPdfDependencies) {}
 
   async render(detail: DocumentPdfDetail, templateService: ITemplateService): Promise<string> {
-    detail.products.forEach((product) => {
-      console.log(`Product: ${product.product.description}`);
-    });
     const [customer, seller] = await Promise.all([
-      this.tryGet(() => this.dependencies.customerService.getById(detail.customer.id)),
-      this.tryGet<ICurrentUserDto | undefined>(() => this.dependencies.currentUserService.get()),
+      this.dependencies.customerService.getById(detail.customer.id),
+      this.dependencies.currentUserService.get(),
     ]);
 
-    const localityId = customer?.addresses[0]?.locality.id;
-    const customerLocality = localityId
-      ? await this.tryGet(() => this.dependencies.localityService.getById(localityId))
-      : undefined;
+    const address = customer.addresses[0];
+    if (!address) throw new RequiredDataUnavailableError(`O cliente ${customer.name} não possui endereço.`);
+
+    const customerLocality = await this.dependencies.localityService.getById(address.locality.id);
 
     return templateService.render(
       DocumentTemplateMapper.fromDetail(detail, { customer, customerLocality, seller }),
     );
-  }
-
-  private async tryGet<T>(read: () => Promise<T>): Promise<T | undefined> {
-    try {
-      return await read();
-    } catch {
-      return undefined;
-    }
   }
 }

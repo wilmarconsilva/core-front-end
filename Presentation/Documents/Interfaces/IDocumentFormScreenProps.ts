@@ -6,6 +6,7 @@ import { IProductListingFilter } from "../../../Application/Products/DataTransfe
 import { ValidationErrors } from "../../../Application/Shared/Hooks/UseFormValidation";
 import { PaymentMethod } from "../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod";
 import { IDocumentProductSaveDto } from "../../../Application/Documents/DataTransferObjects/IDocumentProductSaveDto";
+import { DocumentProductFormLine } from "../../../Application/Documents/Services/DocumentFormService";
 
 export interface IDocumentFormScreenProps {
     title: string;
@@ -52,7 +53,7 @@ export interface IDocumentFormScreenProps {
     setDownPaymentValue: (value: number) => void;
     downPaymentPercentage: number;
     setDownPaymentPercentage: (value: number) => void;
-    productLines: IDocumentProductSaveDto[];
+    productLines: DocumentProductFormLine<IDocumentProductSaveDto>[];
     updateProductLine: (index: number, field: 'quantity' | 'valueUnit', value: number) => void;
     selectProductLine: (index: number, product: { id: number; description: string }) => void;
     addProductLine: () => void;

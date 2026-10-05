@@ -18,7 +18,8 @@ export class IndexedDbOfflineRepository<
   TSaveDto extends { id: number },
   TListing extends { id: number },
   TFilter extends IListingFilter,
-> implements IOfflineRepository<TSaveDto, TListing, TFilter> 
+  TSynced = TListing,
+> implements IOfflineRepository<TSaveDto, TListing, TFilter, TSynced>
 {
   
   constructor(
@@ -27,7 +28,7 @@ export class IndexedDbOfflineRepository<
 
     private readonly toListing: OfflineListingMapper<TSaveDto, TListing>,
     private readonly matches: OfflineFilterPredicate<TListing, TFilter>,
-    private readonly listingToSaveDto: (listing: TListing) => TSaveDto,
+    private readonly syncedToSaveDto: (item: TSynced) => TSaveDto,
   ) {}
 
   async getAll(filter: TFilter): Promise<TListing[]> {
@@ -69,14 +70,14 @@ export class IndexedDbOfflineRepository<
     await database.delete(this.storeName, id);
   }
 
-  async replaceSynced(items: TListing[]): Promise<void> {
+  async replaceSynced(items: TSynced[]): Promise<void> {
     const existing = await this.getAllRecords();
     const database = await this.context.getDatabase();
     const transaction = database.transaction(this.storeName, 'readwrite');
 
     await Promise.all([
       ...existing.filter((record) => record.id > 0).map((record) => transaction.store.delete(record.id)),
-      ...items.map((item) => transaction.store.put(this.listingToSaveDto(item) as never)),
+      ...items.map((item) => transaction.store.put(this.syncedToSaveDto(item) as never)),
       transaction.done,
     ]);
   }

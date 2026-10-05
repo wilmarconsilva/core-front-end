@@ -1,4 +1,4 @@
-import { IDocumentDetailDto } from '../DocumentFormService';
+import { IDocumentDetailDto } from '../../DataTransferObjects/IDocumentDetailDto';
 import { ITemplateService } from './ITemplateService';
 
 /** Documento a imprimir: o detalhe montado a partir do formulário (pode ainda não estar salvo). */

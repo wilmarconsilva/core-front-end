@@ -1,6 +1,5 @@
 import { getPaymentMethodLabel } from '../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
 import { PersonType } from '../../../Domain/Persons/Enums/PersonType';
-import { ICustomerAddressDetailDto } from '../../Persons/Customers/DataTransferObjects/ICustomerAddressDetailDto';
 import { ICustomerDetailDto } from '../../Persons/Customers/DataTransferObjects/ICustomerDetailDto';
 import { CustomerFormService } from '../../Persons/Customers/Services/CustomerFormService';
 import { ICurrentUserDto } from '../../Persons/Users/DataTransferObjects/ICurrentUserDto';
@@ -11,15 +10,14 @@ import {
   IDocumentTemplateCustomer,
   IDocumentTemplatePayment,
 } from '../DataTransferObjects/IDocumentTemplate';
-import { IDocumentPaymentDto } from './DocumentFormService';
+import { IDocumentPaymentDto } from '../DataTransferObjects/Payments/IDocumentPaymentDto';
 import { DocumentPdfDetail } from './Interfaces/IDocumentPdfService';
 
-/** Dados complementares ao documento, obtidos de outros módulos; todos opcionais (offline podem faltar). */
+/** Dados complementares ao documento, obtidos de outros módulos (online pela API, offline pelo snapshot). */
 export interface IDocumentTemplateSources {
-  customer?: ICustomerDetailDto;
-  customerLocality?: ILocalityDetailDto;
-  seller?: ICurrentUserDto;
-  issueDateTime?: Date;
+  customer: ICustomerDetailDto;
+  customerLocality: ILocalityDetailDto;
+  seller: ICurrentUserDto;
 }
 
 const IMAGE_MIME_TYPES_BY_BASE64_PREFIX: Record<string, string> = {
@@ -30,18 +28,18 @@ const IMAGE_MIME_TYPES_BY_BASE64_PREFIX: Record<string, string> = {
 };
 
 export class DocumentTemplateMapper {
-  static fromDetail(detail: DocumentPdfDetail, sources: IDocumentTemplateSources = {}): IDocumentTemplate {
+  static fromDetail(detail: DocumentPdfDetail, sources: IDocumentTemplateSources): IDocumentTemplate {
     const valueSubtotal = detail.products.reduce((sum, product) => sum + product.valueTotal, 0);
     const valueTotal = Math.max(0, valueSubtotal - detail.payment.discountValue);
 
     return {
       number: DocumentTemplateMapper.positiveOrUndefined(detail.id),
-      budgetNumber: DocumentTemplateMapper.positiveOrUndefined(detail.budgetId),
-      issueDate: (sources.issueDateTime ?? new Date())
+      budgetId: DocumentTemplateMapper.positiveOrUndefined(detail.budgetId),
+      issueDate: new Date(detail.creationDateTime)
         .toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }),
       customer: DocumentTemplateMapper.toCustomer(detail, sources),
       products: detail.products.map((product) => ({
-        description: product.product.description ?? '',
+        description: product.product.description,
         quantity: product.quantity.toLocaleString('pt-BR', { maximumFractionDigits: 3 }),
         valueUnit: formatCurrency(product.valueUnit),
         valueTotal: formatCurrency(product.valueTotal),
@@ -52,8 +50,8 @@ export class DocumentTemplateMapper {
       payment: DocumentTemplateMapper.toPayment(detail.payment, valueTotal),
       observations: detail.observations?.trim() || undefined,
       sellerSignature: {
-        name: sources.seller?.name,
-        image: DocumentTemplateMapper.toImageDataUri(sources.seller?.signatureImage),
+        name: sources.seller.name,
+        image: DocumentTemplateMapper.toImageDataUri(sources.seller.signatureImage),
       },
       customerSignature: {
         name: detail.customer.description,
@@ -64,41 +62,17 @@ export class DocumentTemplateMapper {
 
   private static toCustomer(detail: DocumentPdfDetail, sources: IDocumentTemplateSources): IDocumentTemplateCustomer {
     const { customer, customerLocality } = sources;
-    const address = customer?.addresses[0];
 
     return {
-      name: customer?.name || detail.customer.description,
-      city: DocumentTemplateMapper.toCity(address, customerLocality),
-      documentLabel: customer?.document ? DocumentTemplateMapper.toDocumentLabel(customer.personType) : undefined,
-      document: customer?.document
-        ? CustomerFormService.formatDocumentForPersonType(customer.personType, customer.document)
-        : undefined,
-      stateRegistration: customer?.stateRegistration || undefined,
-      address: DocumentTemplateMapper.toAddress(address),
-      email: customer?.email || undefined,
+      name: detail.customer.description,
+      city: `${customerLocality.description} - ${customerLocality.state.acronym}`,
+      documentLabel: DocumentTemplateMapper.toDocumentLabel(customer.personType),
+      document: CustomerFormService.formatDocumentForPersonType(customer.personType, customer.document),
     };
   }
 
   private static toDocumentLabel(personType: PersonType): string {
     return personType === PersonType.Natural ? 'CPF' : 'CNPJ';
-  }
-
-  private static toCity(address?: ICustomerAddressDetailDto, locality?: ILocalityDetailDto): string | undefined {
-    const city = locality?.description || address?.locality.description;
-    if (!city) return undefined;
-
-    const state = locality?.state?.description;
-    return state ? `${city} - ${state}` : city;
-  }
-
-  private static toAddress(address?: ICustomerAddressDetailDto): string | undefined {
-    if (!address) return undefined;
-
-    const street = address.number ? `${address.street}, ${address.number}` : address.street;
-
-    return [street, address.complement, address.neighborhood, address.postalCode && `CEP ${address.postalCode}`]
-      .filter(Boolean)
-      .join(' | ');
   }
 
   private static toPayment(payment: IDocumentPaymentDto, valueTotal: number): IDocumentTemplatePayment {

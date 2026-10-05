@@ -4,21 +4,19 @@ import {
   PaymentMethodLabels,
   PaymentMethodNotDefinedLabel,
 } from '../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
+import { IDocumentDetailDto } from '../DataTransferObjects/IDocumentDetailDto';
+import { IDocumentProductDetailDto } from '../DataTransferObjects/IDocumentProductDetailDto';
 import { IDocumentProductSaveDto } from '../DataTransferObjects/IDocumentProductSaveDto';
 import { IDocumentSaveDto } from '../DataTransferObjects/IDocumentSaveDto';
-import { IPaymentSaveDto } from '../DataTransferObjects/Payments/IPaymentSaveDto';
+import { IDocumentPaymentDto } from '../DataTransferObjects/Payments/IDocumentPaymentDto';
 import { IEntityReferenceDto } from '../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
+import { toApiDateTime } from '../../Shared/Utilities/DateTimeUtilities';
 import { DocumentInstallmentFormState, InstallmentFormService } from './Payments/InstallmentFormService';
-interface DocumentProductDetail {
-  id: number;
-  product: {
-    id: number;
-    description?: string;
-  };
-  quantity: number;
-  valueUnit: number;
-  valueTotal: number;
-}
+
+/** Linha de produto no formulário: o DTO de salvamento mais a descrição, usada só para exibição. */
+export type DocumentProductFormLine<TProduct extends IDocumentProductSaveDto> = TProduct & {
+  productDescription: string;
+};
 
 export interface DocumentFormState<TProduct extends IDocumentProductSaveDto> {
   customerId: number;
@@ -28,26 +26,13 @@ export interface DocumentFormState<TProduct extends IDocumentProductSaveDto> {
   paymentMethod: PaymentMethod | null;
   discountValue: number;
   installment: DocumentInstallmentFormState;
-  productLines: TProduct[];
-}
-
-/** Pagamento comum aos documentos: cada documento restringe o método no seu próprio DTO. */
-export interface IDocumentPaymentDto extends IPaymentSaveDto {
-  method: PaymentMethod | null;
+  productLines: DocumentProductFormLine<TProduct>[];
 }
 
 /** Define se o documento exige método de pagamento e com qual valor o formulário nasce. */
 export interface PaymentMethodPolicy {
   isRequired: boolean;
   initialValue: PaymentMethod | null;
-}
-
-export interface IDocumentDetailDto {
-  customer: IEntityReferenceDto;
-  payment: IDocumentPaymentDto;
-  observations?: string;
-  customerSignatureImage?: string;
-  products: DocumentProductDetail[];
 }
 
 export interface DocumentFormBaseSetters<TProduct extends IDocumentProductSaveDto> {
@@ -58,7 +43,7 @@ export interface DocumentFormBaseSetters<TProduct extends IDocumentProductSaveDt
   setPaymentMethod: (value: PaymentMethod | null) => void;
   setDiscountValue: (value: number) => void;
   setInstallment: (value: DocumentInstallmentFormState) => void;
-  setProductLines: (value: TProduct[]) => void;
+  setProductLines: (value: DocumentProductFormLine<TProduct>[]) => void;
 }
 
 export class DocumentFormService {
@@ -167,19 +152,20 @@ export class DocumentFormService {
     ];
   }
 
-  static createEmptyProductLine<TProduct extends IDocumentProductSaveDto>(): TProduct {
+  static createEmptyProductLine<TProduct extends IDocumentProductSaveDto>(): DocumentProductFormLine<TProduct> {
     return {
       id: 0,
       productId: 0,
+      productDescription: '',
       quantity: 0,
       valueUnit: 0,
       valueTotal: 0,
-    } as TProduct;
+    } as DocumentProductFormLine<TProduct>;
   }
 
   static detailProductsToForm<TProduct extends IDocumentProductSaveDto>(
-    products: DocumentProductDetail[] | undefined,
-  ): TProduct[] {
+    products: IDocumentProductDetailDto[] | undefined,
+  ): DocumentProductFormLine<TProduct>[] {
     return products?.length
       ? products.map((product) => ({
         id: product.id,
@@ -188,21 +174,23 @@ export class DocumentFormService {
         quantity: product.quantity,
         valueUnit: product.valueUnit,
         valueTotal: product.valueTotal,
-      } as TProduct))
+      } as DocumentProductFormLine<TProduct>))
       : [DocumentFormService.createEmptyProductLine<TProduct>()];
   }
 
   /** Desvincula as linhas de um documento de origem: os ids pertencem ao documento copiado. */
-  static detachProductLines<TProduct extends IDocumentProductSaveDto>(productLines: TProduct[]): TProduct[] {
+  static detachProductLines<TProduct extends IDocumentProductSaveDto>(
+    productLines: DocumentProductFormLine<TProduct>[],
+  ): DocumentProductFormLine<TProduct>[] {
     return productLines.map((productLine) => ({ ...productLine, id: 0 }));
   }
 
   static updateProductLine<TProduct extends IDocumentProductSaveDto>(
-    productLines: TProduct[],
+    productLines: DocumentProductFormLine<TProduct>[],
     index: number,
     field: keyof TProduct,
     value: number,
-  ): TProduct[] {
+  ): DocumentProductFormLine<TProduct>[] {
     return productLines.map((productLine, currentIndex) => {
       if (currentIndex !== index) return productLine;
 
@@ -217,10 +205,10 @@ export class DocumentFormService {
   }
 
   static selectProductLine<TProduct extends IDocumentProductSaveDto>(
-    productLines: TProduct[],
+    productLines: DocumentProductFormLine<TProduct>[],
     index: number,
-    product: { id: number; description: string },
-  ): TProduct[] {
+    product: IEntityReferenceDto,
+  ): DocumentProductFormLine<TProduct>[] {
     return productLines.map((productLine, currentIndex) =>
       currentIndex === index
         ? { ...productLine, productId: product.id, productDescription: product.description }
@@ -246,23 +234,33 @@ export class DocumentFormService {
     return Math.max(0, valueSubtotal - discountValue);
   }
 
-  static saveProductLines<TProduct extends IDocumentProductSaveDto>(productLines: TProduct[]): TProduct[] {
-    return productLines
-      .filter((productLine) => productLine.productId > 0)
-      .map((productLine) => {
-        const { productDescription: _productDescription, ...saveProductLine } = productLine;
-
-        return saveProductLine as TProduct;
-      });
+  /** Linhas com produto escolhido; as vazias são descartadas. */
+  static selectedProductLines<TProduct extends IDocumentProductSaveDto>(
+    productLines: DocumentProductFormLine<TProduct>[],
+  ): DocumentProductFormLine<TProduct>[] {
+    return productLines.filter((productLine) => productLine.productId > 0);
   }
 
+  static saveProductLines<TProduct extends IDocumentProductSaveDto>(
+    productLines: DocumentProductFormLine<TProduct>[],
+  ): TProduct[] {
+    return DocumentFormService.selectedProductLines(productLines).map((productLine) => {
+      const { productDescription: _productDescription, ...saveProductLine } = productLine;
+
+      return saveProductLine as unknown as TProduct;
+    });
+  }
+
+  /** `creationDateTime` ausente = documento ainda não salvo, criado agora. */
   static formToDetailDto(
     id: number | undefined,
     form: DocumentFormState<IDocumentProductSaveDto>,
+    creationDateTime?: string,
   ): IDocumentDetailDto & { id: number; userId: number } {
     return {
       id: id ?? 0,
       userId: 0,
+      creationDateTime: creationDateTime ?? toApiDateTime(new Date()),
       customer: { id: form.customerId, description: form.customerDisplayLabel },
       payment: DocumentFormService.buildPayment(
         form.paymentMethod,
@@ -271,11 +269,11 @@ export class DocumentFormService {
       ),
       observations: form.observations.trim() || undefined,
       customerSignatureImage: form.signature ?? undefined,
-      products: DocumentFormService.saveProductLines(form.productLines).map((line) => ({
+      products: DocumentFormService.selectedProductLines(form.productLines).map((line) => ({
         id: line.id,
         product: {
           id: line.productId,
-          description: line.productDescription ?? '',
+          description: line.productDescription,
         },
         quantity: line.quantity,
         valueUnit: line.valueUnit,

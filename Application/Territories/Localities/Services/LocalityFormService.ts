@@ -16,7 +16,7 @@ export class LocalityFormService {
   }
 
   static detailToForm(detail: ILocalityDetailDto): LocalityFormState {
-    const stateId = detail.state?.id;
+    const stateId = detail.state.id;
 
     return {
       description: detail.description ?? '',

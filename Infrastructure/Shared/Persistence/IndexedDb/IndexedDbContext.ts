@@ -28,7 +28,7 @@ export class IndexedDbContext implements IIndexedDbContext {
   getDatabase(): Promise<IDBPDatabase<CoreDbSchema>> {
     if (!this.databasePromise) {
       this.databasePromise = openDB<CoreDbSchema>(INDEXED_DB_NAME, INDEXED_DB_VERSION, {
-        upgrade(database) 
+        upgrade(database, oldVersion, _newVersion, transaction)
         {
           if (!database.objectStoreNames.contains(OfflineStoreNames.products)) {
             database.createObjectStore(OfflineStoreNames.products, { keyPath: 'id' });
@@ -56,6 +56,12 @@ export class IndexedDbContext implements IIndexedDbContext {
 
           if (!database.objectStoreNames.contains(OfflineStoreNames.currentUser)) {
             database.createObjectStore(OfflineStoreNames.currentUser, { keyPath: 'key' });
+          }
+
+          // v7: localities gained the state acronym. Emptying the store makes its count differ
+          // from the API, so the next synchronization downloads them again.
+          if (oldVersion > 0 && oldVersion < 7) {
+            void transaction.objectStore(OfflineStoreNames.localities).clear();
           }
         },
       });

@@ -1,4 +1,5 @@
 import { CrudService } from '../../../Shared/Services/CrudService';
+import { buildQueryParams } from '../../../Shared/Utilities/QueryUtilities';
 import { ILocalityService } from './Interfaces/ILocalityService';
 import { ILocalitySaveDto } from '../DataTransferObjects/ILocalitySaveDto';
 import { ILocalityDetailDto } from '../DataTransferObjects/ILocalityDetailDto';
@@ -11,6 +12,13 @@ export class LocalityService
 {
   constructor() {
     super('/localities');
+  }
+
+  async getSynchronization(filter: ILocalityListingFilter): Promise<ILocalitySaveDto[]> {
+    return this.request<ILocalitySaveDto[]>(`${this.basePath}/synchronization?${buildQueryParams(filter)}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }, { toastsConfiguration: { doNotShowSuccess: true } });
   }
 
   async getQuantity(): Promise<number> {

@@ -70,7 +70,7 @@ export function DocumentReportCard({ report, isAlternate }: IDocumentReportCardP
         <Text style={styles.reportObservations}>{report.observations}</Text>
       )}
 
-      <Text style={styles.reportFooter}>Vendedor: {report.userName}</Text>
+      <Text style={styles.reportFooter}>Vendedor: {report.sellerName}</Text>
     </View>
   );
 }

@@ -19,6 +19,12 @@ export interface OfflineCrudConfig<TSaveDto extends { id: number }, TDetailDto, 
   toListing: OfflineListingMapper<TSaveDto, TListing>;
   toDetail: (dto: TSaveDto) => Promise<TDetailDto>;
   listingScope: 'snapshot' | 'localOnly';
+  /**
+   * Offline, also reads the server snapshot (id > 0) by id. The snapshot may be partial, so this
+   * is meant for read-only consumers (e.g. document printing), never for the CRUD screens;
+   * writes to snapshot records stay blocked offline.
+   */
+  readSyncedOffline?: boolean;
   /** Invoked after a local record is resubmitted online with success (e.g. to resolve its synchronization pendency). */
   onLocalRecordSynchronized?: (localId: number, serverId: number) => Promise<void>;
 }
@@ -46,7 +52,9 @@ export class OfflineCrudService<TSaveDto extends { id: number }, TDetailDto, TLi
     // Local records only exist in IndexedDB, so they are read locally even online
     // (e.g. when editing a synchronization pendency).
     if (OperationModeService.getMode() === OperationMode.Offline || isLocalRecord(id)) {
-      blockIfNotLocalWhenOffline(id);
+      if (!this.config.readSyncedOffline) {
+        blockIfNotLocalWhenOffline(id);
+      }
       const record = await this.config.repository.getById(id);
       if (!record) {
         blockOfflineOperation();

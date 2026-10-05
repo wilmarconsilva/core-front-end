@@ -1,9 +1,3 @@
-import { IEntityReferenceDto } from '../../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
+import { IDocumentProductDetailDto } from '../../DataTransferObjects/IDocumentProductDetailDto';
 
-export interface IOrderProductDetailDto {
-  id: number;
-  product: IEntityReferenceDto;
-  quantity: number;
-  valueUnit: number;
-  valueTotal: number;
-}
+export interface IOrderProductDetailDto extends IDocumentProductDetailDto {}

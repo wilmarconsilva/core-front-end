@@ -35,14 +35,14 @@ export function get(documentTitle: string, data: IDocumentTemplate): string {
         <div>
           <h1>${escapeHtml(title)}</h1>
           <p class="document-subtitle">${escapeHtml(DocumentSellerCompany.city)}, ${escapeHtml(data.issueDate)}.</p>
-          ${data.budgetNumber ? `<p class="document-subtitle">Originado do orçamento ${data.budgetNumber}</p>` : ''}
+          ${data.budgetId ? `<p class="document-subtitle">Originado através do orçamento ${data.budgetId}</p>` : ''}
         </div>
         <img class="logo" src="${DOCUMENT_SELLER_COMPANY_LOGO}" alt="${escapeHtml(DocumentSellerCompany.name)}" />
       </header>
       ${buildCustomerSection(data.customer)}
       ${buildProductsTable(data)}
       ${buildPaymentSection(data.payment, data.observations)}
-      ${buildIssuerSection(data.sellerSignature.name)}
+      ${buildIssuerSection()}
       ${buildSignatures(data.sellerSignature, data.customerSignature)}
     </td></tr></tbody>
   </table>
@@ -52,10 +52,7 @@ export function get(documentTitle: string, data: IDocumentTemplate): string {
 
 function buildCustomerSection(customer: IDocumentTemplateCustomer): string {
   const details = [
-    detailItem(customer.documentLabel ?? 'Documento', customer.document),
-    detailItem('Inscrição estadual', customer.stateRegistration),
-    detailItem('E-mail', customer.email),
-    detailItem('Endereço', customer.address, 'detail-wide'),
+    detailItem(customer.documentLabel ?? 'Documento', customer.document)
   ].join('');
 
   return `<section class="customer">
@@ -65,10 +62,12 @@ function buildCustomerSection(customer: IDocumentTemplateCustomer): string {
       </section>`;
 }
 
-function detailItem(label: string, value?: string, className = ''): string {
+function detailItem(label: string, value?: string, className = '', href?: string): string {
   if (!value) return '';
 
-  return `<div class="detail ${className}"><dt>${escapeHtml(label)}:</dt><dd>${escapeHtml(value)}</dd></div>`;
+  const content = href ? `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>` : escapeHtml(value);
+
+  return `<div class="detail ${className}"><dt>${escapeHtml(label)}:</dt><dd>${content}</dd></div>`;
 }
 
 function buildProductsTable(data: IDocumentTemplate): string {
@@ -113,14 +112,13 @@ function buildPaymentSection(payment: IDocumentTemplatePayment, observations?: s
       </section>`;
 }
 
-function buildIssuerSection(contactName?: string): string {
+function buildIssuerSection(): string {
   const contacts = [
     detailItem('Endereço', DocumentSellerCompany.address, 'detail-wide'),
     detailItem('Telefones', DocumentSellerCompany.phones),
-    detailItem('Site', DocumentSellerCompany.site),
-    detailItem('E-mail', DocumentSellerCompany.email),
-    detailItem('Instagram', DocumentSellerCompany.instagram),
-    detailItem('Contato', contactName),
+    detailItem('Site', DocumentSellerCompany.site.label, '', DocumentSellerCompany.site.url),
+    detailItem('E-mail', DocumentSellerCompany.email.label, '', DocumentSellerCompany.email.url),
+    detailItem('Instagram', DocumentSellerCompany.instagram.label, '', DocumentSellerCompany.instagram.url)
   ].join('');
 
   return `<section class="issuer">
@@ -207,6 +205,7 @@ const STYLES = `
     .detail-wide { grid-column: 1 / -1; }
     .detail dt { font-weight: bold; white-space: nowrap; }
     .detail dd { margin: 0; overflow-wrap: anywhere; }
+    .detail dd a { color: inherit; text-decoration: none; }
 
     .products { width: 100%; margin-top: 5mm; border-collapse: collapse; table-layout: fixed; }
     .products .col-quantity { width: 22mm; }

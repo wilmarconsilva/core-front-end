@@ -3,11 +3,8 @@ import { IOrderDetailDto } from '../DataTransferObjects/IOrderDetailDto';
 import { IOrderProductSaveDto } from '../DataTransferObjects/IOrderProductSaveDto';
 import { IOrderSaveDto } from '../DataTransferObjects/IOrderSaveDto';
 import { IOrderPaymentSaveDto } from '../DataTransferObjects/IOrderPaymentSaveDto';
-import {
-  DocumentFormService,
-  DocumentFormState,
-  IDocumentPaymentDto,
-} from '../../Services/DocumentFormService';
+import { IDocumentPaymentDto } from '../../DataTransferObjects/Payments/IDocumentPaymentDto';
+import { DocumentFormService, DocumentFormState } from '../../Services/DocumentFormService';
 
 export interface OrderFormState extends DocumentFormState<IOrderProductSaveDto> {
   budgetId: string;
@@ -62,9 +59,9 @@ export class OrderFormService {
     return DocumentFormService.buildValidationRules(form, OrderFormService.paymentMethodPolicy);
   }
 
-  static formToDetail(id: number | undefined, form: OrderFormState): IOrderDetailDto {
+  static formToDetail(id: number | undefined, form: OrderFormState, creationDateTime?: string): IOrderDetailDto {
     return {
-      ...(DocumentFormService.formToDetailDto(id, form) as IOrderDetailDto),
+      ...(DocumentFormService.formToDetailDto(id, form, creationDateTime) as IOrderDetailDto),
       budgetId: form.budgetId ? parseInt(form.budgetId, 10) : undefined,
     };
   }

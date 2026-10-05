@@ -8,7 +8,7 @@ import { OfflineStoreName } from '../../../Shared/Persistence/IndexedDb/IndexedD
 import { OfflineListingMapper, OfflineFilterPredicate } from '../../../Offline/Repositories/IndexedDbOfflineRepository';
 
 export class LocalityOfflineRepository 
-    extends IndexedDbOfflineRepository<ILocalitySaveDto, ILocalityListing, ILocalityListingFilter>
+    extends IndexedDbOfflineRepository<ILocalitySaveDto, ILocalityListing, ILocalityListingFilter, ILocalitySaveDto>
     implements ILocalityOfflineRepository 
 {
 
@@ -17,10 +17,10 @@ export class LocalityOfflineRepository
     storeName: OfflineStoreName,
     toListing: OfflineListingMapper<ILocalitySaveDto, ILocalityListing>,
     matches: OfflineFilterPredicate<ILocalityListing, ILocalityListingFilter>,
-    listingToSaveDto: (listing: ILocalityListing) => ILocalitySaveDto,
+    syncedToSaveDto: (item: ILocalitySaveDto) => ILocalitySaveDto,
     ) 
     {
-        super(context, storeName, toListing, matches, listingToSaveDto);
+        super(context, storeName, toListing, matches, syncedToSaveDto);
     }
 
     async getQuantity(): Promise<number> {

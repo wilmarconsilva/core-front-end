@@ -7,4 +7,6 @@ import { ILocalityListingFilter } from '../../DataTransferObjects/ILocalityListi
 export interface ILocalityService extends ICrudService<ILocalitySaveDto, ILocalityDetailDto, ILocalityListing, ILocalityListingFilter> 
 {
     getQuantity(): Promise<number>;
+    /** Localidades com a sigla do estado para o snapshot offline. */
+    getSynchronization(filter: ILocalityListingFilter): Promise<ILocalitySaveDto[]>;
 }

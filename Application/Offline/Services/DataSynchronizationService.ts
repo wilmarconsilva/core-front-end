@@ -13,10 +13,12 @@ import { IProductSaveDto } from '../../Products/DataTransferObjects/IProductSave
 import { ICustomerListing } from '../../Persons/Customers/DataTransferObjects/ICustomerListing';
 import { ICustomerListingFilter } from '../../Persons/Customers/DataTransferObjects/ICustomerListingFilter';
 import { ICustomerSaveDto } from '../../Persons/Customers/DataTransferObjects/ICustomerSaveDto';
+import { ICustomerSynchronizationDto } from '../../Persons/Customers/DataTransferObjects/ICustomerSynchronizationDto';
 import { IOrderSaveDto } from '../../Documents/Orders/DataTransferObjects/IOrderSaveDto';
 import { IBudgetSaveDto } from '../../Documents/Budgets/DataTransferObjects/IBudgetSaveDto';
 import { ILocalityOfflineRepository } from '../../Territories/Localities/Repositories/Interfaces/ILocalityOfflineRepository';
 import { ILocalityService } from '../../Territories/Localities/Services/Interfaces/ILocalityService';
+import { ILocalityListingFilter } from '../../Territories/Localities/DataTransferObjects/ILocalityListingFilter';
 import { ISynchronizationPendencyService } from './Interfaces/ISynchronizationPendencyService';
 import { SynchronizationEntityType } from '../DataTransferObjects/SynchronizationEntityType';
 import { IApiError } from '../../Shared/DataTransferObjects/APIConsumer/IApiError';
@@ -31,18 +33,24 @@ interface ICreatePushService<TSaveDto> {
   create(dto: TSaveDto): Promise<TSaveDto>;
 }
 
-interface IListingFetchService<TListing, IListingFilter> {
-  getAll(filter: IListingFilter): Promise<TListing[]>;
+interface IListingFetchService<TListing, TFilter> {
+  getAll(filter: TFilter): Promise<TListing[]>;
 }
+
+interface ISynchronizationFetchService<TSynced, TFilter> {
+  getSynchronization(filter: TFilter): Promise<TSynced[]>;
+}
+
+type PageFetcher<T, TFilter> = (filter: TFilter) => Promise<T[]>;
 
 interface DataSynchronizationDependencies {
   productApi: IListingFetchService<IProductListing, IProductListingFilter> & ICreatePushService<IProductSaveDto>;
-  customerApi: IListingFetchService<ICustomerListing, ICustomerListingFilter> & ICreatePushService<ICustomerSaveDto>;
+  customerApi: ISynchronizationFetchService<ICustomerSynchronizationDto, ICustomerListingFilter> & ICreatePushService<ICustomerSaveDto>;
   orderApi: ICreatePushService<IOrderSaveDto>;
   budgetApi: ICreatePushService<IBudgetSaveDto>;
   localityApi: ILocalityService;
   productRepository: IOfflineRepository<IProductSaveDto, IProductListing, IProductListingFilter>;
-  customerRepository: IOfflineRepository<ICustomerSaveDto, ICustomerListing, ICustomerListingFilter>;
+  customerRepository: IOfflineRepository<ICustomerSaveDto, ICustomerListing, ICustomerListingFilter, ICustomerSynchronizationDto>;
   orderRepository: IOfflineRepository<IOrderSaveDto, unknown, unknown>;
   budgetRepository: IOfflineRepository<IBudgetSaveDto, unknown, unknown>;
   localityRepository: ILocalityOfflineRepository;
@@ -205,12 +213,12 @@ export class DataSynchronizationService implements IDataSynchronizationService {
   }
 
   private async refreshProducts(): Promise<void> {
-    const products = await this.fetchAll(this.dependencies.productApi);
+    const products = await this.fetchAll((filter: IProductListingFilter) => this.dependencies.productApi.getAll(filter));
     await this.dependencies.productRepository.replaceSynced(products);
   }
 
   private async refreshCustomers(): Promise<void> {
-    const customers = await this.fetchAll(this.dependencies.customerApi);
+    const customers = await this.fetchAll((filter: ICustomerListingFilter) => this.dependencies.customerApi.getSynchronization(filter));
     await this.dependencies.customerRepository.replaceSynced(customers);
   }
 
@@ -220,20 +228,20 @@ export class DataSynchronizationService implements IDataSynchronizationService {
 
     if (localitiesOfflineQuantity !== localitiesApiQuantity) 
     {
-      const localities = await this.fetchAll(this.dependencies.localityApi);
+      const localities = await this.fetchAll((filter: ILocalityListingFilter) => this.dependencies.localityApi.getSynchronization(filter));
       await this.dependencies.localityRepository.replaceSynced(localities);
     }
   }
 
-  private async fetchAll<TListing, TFilter extends IListingFilter>(
-    service: IListingFetchService<TListing, TFilter>,
-  ): Promise<TListing[]> {
-    const all: TListing[] = [];
+  private async fetchAll<T, TFilter extends IListingFilter>(
+    fetchPage: PageFetcher<T, TFilter>,
+  ): Promise<T[]> {
+    const all: T[] = [];
     let start = 0;
-    let page: TListing[] | null = null;
+    let page: T[] | null = null;
 
     while(page === null || page.length === FETCH_PAGE_SIZE) {
-      page = await service.getAll({
+      page = await fetchPage({
         registersStart: start,
         registersEnd: start + FETCH_PAGE_SIZE,
       } as TFilter);

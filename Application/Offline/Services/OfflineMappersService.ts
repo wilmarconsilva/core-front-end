@@ -1,5 +1,4 @@
 import { MeasureUnit } from '../../../Domain/Products/Enums/MeasureUnit';
-import { PersonType } from '../../../Domain/Persons/Enums/PersonType';
 import { IDocumentListing } from '../../Documents/DataTransferObjects/IDocumentListing';
 import { IDocumentListingFilter } from '../../Documents/DataTransferObjects/IDocumentListingFilter';
 import { IDocumentProductSaveDto } from '../../Documents/DataTransferObjects/IDocumentProductSaveDto';
@@ -81,15 +80,16 @@ export function localitySaveToDetail(dto: ILocalitySaveDto): ILocalityDetailDto 
   return {
     id: dto.id,
     description: dto.description,
-    state: dto.stateId !== undefined ? { id: dto.stateId, description: '' } : undefined,
+    // The snapshot keeps only the state id and acronym (the synchronization carries no state name).
+    state: { id: dto.stateId ?? 0, description: '', acronym: dto.stateAcronym ?? '' },
   };
 }
 
-export function listingToLocalitySaveDto(listing: ILocalityListing): ILocalitySaveDto {
+export function localitySaveToListing(dto: ILocalitySaveDto): ILocalityListing {
   return {
-    id: listing.id,
-    description: listing.description,
-    stateId: listing.stateId,
+    id: dto.id,
+    description: dto.description,
+    stateId: dto.stateId,
   };
 }
 
@@ -129,16 +129,6 @@ export function listingToProductSaveDto(listing: IProductListing): IProductSaveD
     id: listing.id,
     description: listing.description,
     measureUnit: MeasureUnit.Meters,
-  };
-}
-
-export function listingToCustomerSaveDto(listing: ICustomerListing): ICustomerSaveDto {
-  return {
-    id: listing.id,
-    name: listing.name,
-    personType: PersonType.Natural,
-    document: '',
-    addresses: [],
   };
 }
 
@@ -214,6 +204,7 @@ export async function buildDocumentDetail<TPayment extends IPaymentSaveDto>(
   return {
     id: dto.id,
     userId: 0,
+    creationDateTime: toApiDateTime(dto.creationDateTime),
     customer: {
       id: dto.customerId,
       description: customer?.name ?? '',

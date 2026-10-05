@@ -1,3 +1,4 @@
+import { RequiredDataUnavailableError } from '../../../../Domain/Shared/Exceptions/RequiredDataUnavailableError';
 import { OperationMode, OperationModeService } from '../../../Offline/Services/OperationModeService';
 import { ICurrentUserDto } from '../DataTransferObjects/ICurrentUserDto';
 import { ICurrentUserOfflineRepository } from '../Repositories/Interfaces/ICurrentUserOfflineRepository';
@@ -14,7 +15,7 @@ export class CurrentUserService implements ICurrentUserService {
     private readonly repository: ICurrentUserOfflineRepository,
   ) {}
 
-  async get(): Promise<ICurrentUserDto | undefined> {
+  async get(): Promise<ICurrentUserDto> {
     if (OperationModeService.getMode() === OperationMode.Online) {
       try {
         return await this.fetchAndStore();
@@ -23,7 +24,10 @@ export class CurrentUserService implements ICurrentUserService {
       }
     }
 
-    return this.repository.get();
+    const user = await this.repository.get();
+    if (!user) throw new RequiredDataUnavailableError('Usuário atual não sincronizado. Conecte-se à internet e sincronize os dados.');
+
+    return user;
   }
 
   async synchronize(): Promise<void> {

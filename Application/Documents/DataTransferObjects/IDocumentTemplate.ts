@@ -8,12 +8,9 @@ export interface IDocumentTemplateProduct {
 
 export interface IDocumentTemplateCustomer {
   name: string;
-  city?: string;
-  documentLabel?: string;
-  document?: string;
-  stateRegistration?: string;
-  address?: string;
-  email?: string;
+  city: string;
+  documentLabel: string;
+  document: string;
 }
 
 export interface IDocumentTemplatePayment {
@@ -31,7 +28,7 @@ export interface IDocumentTemplateSignature {
 export interface IDocumentTemplate {
   /** Ausente enquanto o documento não foi salvo no servidor. */
   number?: number;
-  budgetNumber?: number;
+  budgetId?: number;
   issueDate: string;
   customer: IDocumentTemplateCustomer;
   products: IDocumentTemplateProduct[];
