@@ -1,7 +1,7 @@
-import { IEntityReferenceDto } from '../../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
+import { IStateReferenceDto } from '../../States/DataTransferObjects/IStateReferenceDto';
 
 export interface ILocalityDetailDto {
   id: number;
   description: string;
-  state?: IEntityReferenceDto;
+  state: IStateReferenceDto;
 }

@@ -10,10 +10,9 @@ import {
   buildOrderDetail,
   buildOrderListing,
   customerSaveToDetail,
-  listingToCustomerSaveDto,
-  listingToLocalitySaveDto,
   listingToProductSaveDto,
   localitySaveToDetail,
+  localitySaveToListing,
   matchesCustomerFilter,
   matchesDocumentListingFilter,
   matchesLocalityFilter,
@@ -33,6 +32,7 @@ import { IProductDetailDto } from '../../Application/Products/DataTransferObject
 import { ICustomerListing } from '../../Application/Persons/Customers/DataTransferObjects/ICustomerListing';
 import { ICustomerListingFilter } from '../../Application/Persons/Customers/DataTransferObjects/ICustomerListingFilter';
 import { ICustomerSaveDto } from '../../Application/Persons/Customers/DataTransferObjects/ICustomerSaveDto';
+import { ICustomerSynchronizationDto } from '../../Application/Persons/Customers/DataTransferObjects/ICustomerSynchronizationDto';
 import { ICustomerDetailDto } from '../../Application/Persons/Customers/DataTransferObjects/ICustomerDetailDto';
 import { IOrderSaveDto } from '../../Application/Documents/Orders/DataTransferObjects/IOrderSaveDto';
 import { IOrderDetailDto } from '../../Application/Documents/Orders/DataTransferObjects/IOrderDetailDto';
@@ -58,6 +58,12 @@ import { ILocalityOfflineRepository } from '../../Application/Territories/Locali
 import { LocalityOfflineRepository } from '../../Infrastructure/Territories/Localities/Repositories/LocalityOfflineRepository';
 import { ISynchronizationPendencyRepository } from '../../Application/Offline/Repositories/Interfaces/ISynchronizationPendencyRepository';
 import { SynchronizationPendencyRepository } from '../../Infrastructure/Offline/Repositories/SynchronizationPendencyRepository';
+import { ICurrentUserService } from '../../Application/Persons/Users/Services/Interfaces/ICurrentUserService';
+import { CurrentUserService } from '../../Application/Persons/Users/Services/CurrentUserService';
+import { CurrentUserApiService } from '../../Application/Persons/Users/Services/CurrentUserApiService';
+import { CurrentUserOfflineRepository } from '../../Infrastructure/Persons/Users/Repositories/CurrentUserOfflineRepository';
+import { IDocumentPdfService } from '../../Application/Documents/Services/Interfaces/IDocumentPdfService';
+import { DocumentPdfService } from '../../Application/Documents/Services/DocumentPdfService';
 
 /**
  * Composition root (the only place that knows Infrastructure): wires the
@@ -78,13 +84,14 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
       listingToProductSaveDto,
     );
 
-  private readonly customerRepository: IOfflineRepository<ICustomerSaveDto, ICustomerListing, ICustomerListingFilter> =
+  private readonly customerRepository:
+    IOfflineRepository<ICustomerSaveDto, ICustomerListing, ICustomerListingFilter, ICustomerSynchronizationDto> =
     new IndexedDbOfflineRepository(
       this.context,
       OfflineStoreNames.customers,
       (dto) => ({ id: dto.id, name: dto.name }),
       matchesCustomerFilter,
-      listingToCustomerSaveDto,
+      (dto: ICustomerSynchronizationDto): ICustomerSaveDto => dto,
     );
 
   private readonly orderRepository: IOfflineRepository<IOrderSaveDto, IOrderListing, IOrderListingFilter> =
@@ -113,9 +120,9 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
     new LocalityOfflineRepository(
       this.context,
       OfflineStoreNames.localities,
-      (dto) => ({ id: dto.id, description: dto.description, stateId: dto.stateId }),
+      (dto) => localitySaveToListing(dto),
       matchesLocalityFilter,
-      listingToLocalitySaveDto,
+      (dto: ILocalitySaveDto) => dto,
     );
 
   private readonly synchronizationPendencyRepository: ISynchronizationPendencyRepository =
@@ -123,6 +130,9 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
 
   readonly synchronizationPendencyService: ISynchronizationPendencyService =
     new SynchronizationPendencyService(this.synchronizationPendencyRepository);
+
+  private readonly currentUserService: ICurrentUserService =
+    new CurrentUserService(new CurrentUserApiService(), new CurrentUserOfflineRepository(this.context));
 
   readonly dataSynchronizationService: IDataSynchronizationService =
     new DataSynchronizationService({
@@ -137,6 +147,7 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
       budgetRepository: this.budgetRepository,
       localityRepository: this.localityRepository,
       synchronizationPendencyService: this.synchronizationPendencyService,
+      currentUserService: this.currentUserService,
     });
 
   readonly productService = this.createProductService();
@@ -144,6 +155,13 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
   readonly orderService = this.createOrderService();
   readonly budgetService = this.createBudgetService();
   readonly localityService = this.createLocalityService();
+
+  // Printing reads the offline snapshot of server records, which the CRUD screens keep blocked.
+  readonly documentPdfService: IDocumentPdfService = new DocumentPdfService({
+    customerService: this.createCustomerService(true),
+    localityService: this.createLocalityService(true),
+    currentUserService: this.currentUserService,
+  });
 
   private createProductService(): ICrudService<IProductSaveDto, IProductDetailDto, IProductListing, IProductListingFilter> {
     return new OfflineCrudService(new ProductService(), {
@@ -158,12 +176,13 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
     });
   }
 
-  private createCustomerService(): ICrudService<ICustomerSaveDto, ICustomerDetailDto, ICustomerListing, ICustomerListingFilter> {
+  private createCustomerService(readSyncedOffline = false): ICrudService<ICustomerSaveDto, ICustomerDetailDto, ICustomerListing, ICustomerListingFilter> {
     return new OfflineCrudService(new CustomerService(), {
       repository: this.customerRepository,
       toListing: (dto) => ({ id: dto.id, name: dto.name }),
       toDetail: async (dto) => customerSaveToDetail(dto),
       listingScope: 'snapshot',
+      readSyncedOffline,
       onLocalRecordSynchronized: async (localId, serverId) => {
         await this.synchronizationPendencyService.resolve(SynchronizationEntityType.Customer, localId);
         await this.remapStoredDocumentReferences(new Map([[localId, serverId]]), new Map());
@@ -193,12 +212,13 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
     });
   }
 
-  private createLocalityService(): ICrudService<ILocalitySaveDto, ILocalityDetailDto, ILocalityListing, ILocalityListingFilter> {
+  private createLocalityService(readSyncedOffline = false): ICrudService<ILocalitySaveDto, ILocalityDetailDto, ILocalityListing, ILocalityListingFilter> {
     return new OfflineCrudService(new LocalityService(), {
       repository: this.localityRepository,
-      toListing: (dto) => ({ id: dto.id, description: dto.description, stateId: dto.stateId }),
+      toListing: (dto) => localitySaveToListing(dto),
       toDetail: async (dto) => localitySaveToDetail(dto),
       listingScope: 'snapshot',
+      readSyncedOffline,
     });
   }
 

@@ -21,6 +21,7 @@ import { ILocalityListing } from '../Territories/Localities/DataTransferObjects/
 import { ILocalityListingFilter } from '../Territories/Localities/DataTransferObjects/ILocalityListingFilter';
 import { IDataSynchronizationService } from '../Offline/Services/Interfaces/IDataSynchronizationService';
 import { ISynchronizationPendencyService } from '../Offline/Services/Interfaces/ISynchronizationPendencyService';
+import { IDocumentPdfService } from '../Documents/Services/Interfaces/IDocumentPdfService';
 
 /**
  * Contract of the services the application layer needs at runtime.
@@ -35,4 +36,5 @@ export interface IApplicationServices {
   readonly localityService: ICrudService<ILocalitySaveDto, ILocalityDetailDto, ILocalityListing, ILocalityListingFilter>;
   readonly dataSynchronizationService: IDataSynchronizationService;
   readonly synchronizationPendencyService: ISynchronizationPendencyService;
+  readonly documentPdfService: IDocumentPdfService;
 }

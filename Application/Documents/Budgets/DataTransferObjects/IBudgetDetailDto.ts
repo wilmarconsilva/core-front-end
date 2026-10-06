@@ -5,6 +5,7 @@ import { IBudgetProductDetailDto } from './IBudgetProductDetailDto';
 export interface IBudgetDetailDto {
   id: number;
   userId: number;
+  creationDateTime: string;
   customer: IEntityReferenceDto;
   payment: IBudgetPaymentSaveDto;
   observations?: string;

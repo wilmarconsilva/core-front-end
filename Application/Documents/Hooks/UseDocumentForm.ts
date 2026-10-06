@@ -9,8 +9,10 @@ import { IPaymentSaveDto } from '../DataTransferObjects/Payments/IPaymentSaveDto
 import {
   DocumentFormService,
   DocumentFormState,
+  DocumentProductFormLine,
   PaymentMethodPolicy,
 } from '../Services/DocumentFormService';
+import { IEntityReferenceDto } from '../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
 import { DocumentInstallmentFormState } from '../Services/Payments/InstallmentFormService';
 import { UseDocumentInstallmentForm } from './UseDocumentInstallmentForm';
 import { IValidationRule } from '../../Shared/Hooks/UseFormValidation';
@@ -29,7 +31,7 @@ interface IDocumentCrud<TDetail, TSaveDto> {
 interface IDocumentFormService<
   TProduct extends IDocumentProductSaveDto,
   TFormState extends DocumentFormState<TProduct>,
-  TDetail extends { payment: IPaymentSaveDto },
+  TDetail extends { payment: IPaymentSaveDto; creationDateTime: string },
   TSaveDto,
 > {
   paymentMethodPolicy: PaymentMethodPolicy;
@@ -37,13 +39,13 @@ interface IDocumentFormService<
   detailToForm: (detail: TDetail) => TFormState;
   buildValidationRules: (form: TFormState) => IValidationRule[];
   buildSaveDto: (id: number | undefined, form: TFormState) => TSaveDto;
-  formToDetail: (id: number | undefined, form: TFormState) => TDetail;
+  formToDetail: (id: number | undefined, form: TFormState, creationDateTime?: string) => TDetail;
 }
 
 interface UseDocumentFormConfig<
   TProduct extends IDocumentProductSaveDto,
   TFormState extends DocumentFormState<TProduct>,
-  TDetail extends { payment: IPaymentSaveDto },
+  TDetail extends { payment: IPaymentSaveDto; creationDateTime: string },
   TSaveDto,
 > {
   id: number | undefined;
@@ -60,7 +62,7 @@ interface UseDocumentFormConfig<
 export function UseDocumentForm<
   TProduct extends IDocumentProductSaveDto,
   TFormState extends DocumentFormState<TProduct>,
-  TDetail extends { payment: IPaymentSaveDto },
+  TDetail extends { payment: IPaymentSaveDto; creationDateTime: string },
   TSaveDto,
 >({
   id,
@@ -86,7 +88,7 @@ export function UseDocumentForm<
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(initialForm.paymentMethod);
   const [discountValue, setDiscountValue] = useState(initialForm.discountValue);
   const [installment, setInstallment] = useState<DocumentInstallmentFormState>(initialForm.installment);
-  const [productLines, setProductLines] = useState<TProduct[]>(initialForm.productLines);
+  const [productLines, setProductLines] = useState<DocumentProductFormLine<TProduct>[]>(initialForm.productLines);
   const [filterCustomerName, setFilterCustomerName] = useState('');
   const [filterProductDescription, setFilterProductDescription] = useState('');
   const isSeedApplied = useRef(false);
@@ -160,7 +162,7 @@ export function UseDocumentForm<
     );
   };
 
-  const selectProductLine = (index: number, product: { id: number; description: string }) => {
+  const selectProductLine = (index: number, product: IEntityReferenceDto) => {
     setProductLines((previous) =>
       DocumentFormService.selectProductLine(previous, index, product),
     );
@@ -225,6 +227,6 @@ export function UseDocumentForm<
     filterProductDescription,
     setFilterProductDescription,
     handleSave,
-    buildDetailFromForm: () => formService.formToDetail(id, currentForm()),
+    buildDetailFromForm: () => formService.formToDetail(id, currentForm(), id ? currentItem?.creationDateTime : undefined),
   };
 }

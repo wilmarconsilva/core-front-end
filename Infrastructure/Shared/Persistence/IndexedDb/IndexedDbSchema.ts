@@ -1,7 +1,8 @@
 import { DBSchema } from 'idb';
+import { ICurrentUserDto } from '../../../../Application/Persons/Users/DataTransferObjects/ICurrentUserDto';
 
 export const INDEXED_DB_NAME = 'core-offline-db';
-export const INDEXED_DB_VERSION = 5;
+export const INDEXED_DB_VERSION = 7;
 
 export const OfflineStoreNames = {
   products: 'products',
@@ -9,6 +10,7 @@ export const OfflineStoreNames = {
   orders: 'orders',
   budgets: 'budgets',
   localities: 'localities',
+  currentUser: 'currentUser',
 } as const;
 
 export type OfflineStoreName =
@@ -16,7 +18,8 @@ export type OfflineStoreName =
   | typeof OfflineStoreNames.customers
   | typeof OfflineStoreNames.orders
   | typeof OfflineStoreNames.budgets
-  | typeof OfflineStoreNames.localities;
+  | typeof OfflineStoreNames.localities
+  | typeof OfflineStoreNames.currentUser;
 
 /** String-keyed store, kept out of OfflineStoreName (which is number-keyed). */
 export const SYNCHRONIZATION_PENDENCIES_STORE_NAME = 'synchronizationPendencies';
@@ -28,4 +31,5 @@ export interface CoreDbSchema extends DBSchema {
   budgets: { key: number; value: { id: number } & Record<string, unknown> };
   localities: { key: number; value: { id: number } & Record<string, unknown> };
   synchronizationPendencies: { key: string; value: { key: string } & Record<string, unknown> };
+  currentUser: { key: string; value: { key: string } & ICurrentUserDto };
 }

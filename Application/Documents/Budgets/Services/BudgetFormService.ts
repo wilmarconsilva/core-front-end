@@ -29,7 +29,7 @@ export class BudgetFormService {
     return DocumentFormService.buildValidationRules(form, BudgetFormService.paymentMethodPolicy);
   }
 
-  static formToDetail(id: number | undefined, form: BudgetFormState): IBudgetDetailDto {
-    return DocumentFormService.formToDetailDto(id, form) as IBudgetDetailDto;
+  static formToDetail(id: number | undefined, form: BudgetFormState, creationDateTime?: string): IBudgetDetailDto {
+    return DocumentFormService.formToDetailDto(id, form, creationDateTime) as IBudgetDetailDto;
   }
 }

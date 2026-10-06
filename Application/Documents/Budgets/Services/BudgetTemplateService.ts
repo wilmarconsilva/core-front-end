@@ -4,6 +4,6 @@ import { get } from '../../Templates/DocumentHtmlTemplate';
 
 export class BudgetTemplateService implements ITemplateService {
   render(data: IDocumentTemplate): string {
-    return get({ ...data, documentTitle: 'Orçamento' });
+    return get('Orçamento', data);
   }
 }

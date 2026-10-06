@@ -3,6 +3,6 @@ import { ILocalitySaveDto } from '../../DataTransferObjects/ILocalitySaveDto';
 import { ILocalityListing } from '../../DataTransferObjects/ILocalityListing';
 import { ILocalityListingFilter } from '../../DataTransferObjects/ILocalityListingFilter';
 
-export interface ILocalityOfflineRepository extends IOfflineRepository<ILocalitySaveDto, ILocalityListing, ILocalityListingFilter> {
+export interface ILocalityOfflineRepository extends IOfflineRepository<ILocalitySaveDto, ILocalityListing, ILocalityListingFilter, ILocalitySaveDto> {
     getQuantity(): Promise<number>
 }

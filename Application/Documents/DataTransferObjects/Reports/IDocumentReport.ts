@@ -16,7 +16,7 @@ export interface IDocumentReport {
   paymentInstallmentDownPaymentMethod?: PaymentMethod;
   paymentInstallmentDownPaymentMethodDescription?: string;
   observations?: string;
-  userName: string;
+  sellerName: string;
   customerName: string;
   customerLocalityState: string;
 }
