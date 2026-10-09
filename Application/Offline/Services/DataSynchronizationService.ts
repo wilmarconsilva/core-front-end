@@ -193,8 +193,9 @@ export class DataSynchronizationService implements IDataSynchronizationService {
   }
 
   /**
-   * Only back-end rejections (4xx) become pendencies; network/server outages
-   * leave the record untouched to be retried on the next synchronization.
+   * Every failure becomes a pendency, including network/server outages: online, the
+   * user does not see the records created offline, so without a pendency the record
+   * would seem to have vanished. It is still retried on the next synchronization.
    */
   private async registerPendencyIfRejected(
     entityType: SynchronizationEntityType,
