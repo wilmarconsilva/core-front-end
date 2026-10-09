@@ -37,6 +37,6 @@ export class APIConsumerUtility
         
         console.log(error);
 
-        return apiError.detail ?? `Status: ${apiError.status ?? "não definido."} - ${new Date().toLocaleString('pt-BR')}`;
+        return apiError.detail ?? `Falha inesperada. Status: ${apiError.status ?? "não definido"} - ${new Date().toLocaleString('pt-BR')}. Por favor, tente novamente ou contate o suporte.`;
     }
 }

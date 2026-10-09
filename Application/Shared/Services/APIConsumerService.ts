@@ -19,16 +19,9 @@ export class APIConsumerService {
     try {
       const response = await this.fetchFn(`${WEB_SERVICE_REST_URL}${path}`, requestInit);
 
-      if (!response.ok) 
+      if (!response.ok)
       {
-        let error: IApiError = {};
-
-        const text = await response.text();
-        try {
-          error = JSON.parse(text);
-        } catch {
-          error = { detail: text };
-        }
+        const error = await APIConsumerService.readError(response);
 
         throw { ...error, status: response.status };
       }
@@ -64,6 +57,27 @@ export class APIConsumerService {
       }
       
       throw apiError;
+    }
+  }
+
+  /**
+   * Only a body written by the API becomes the error detail: an empty body or an HTML page
+   * (e.g. a reverse proxy 502/503) is discarded, so the generic message of
+   * APIConsumerUtility.GetErrorMessage is shown instead.
+   */
+  private static async readError(response: Response): Promise<IApiError> {
+    const text = await response.text();
+    const contentType = response.headers.get('Content-Type') ?? '';
+
+    if (!text.trim() || contentType.includes('text/html')) {
+      return {};
+    }
+
+    try {
+      const parsed: unknown = JSON.parse(text);
+      return typeof parsed === 'object' && parsed !== null ? parsed as IApiError : { detail: String(parsed) };
+    } catch {
+      return { detail: text };
     }
   }
 
