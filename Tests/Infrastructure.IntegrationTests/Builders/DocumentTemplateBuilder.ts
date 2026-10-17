@@ -46,8 +46,7 @@ export class DocumentTemplateBuilder {
     const valueTotal = Math.max(0, valueSubtotal - this.discountValue);
 
     return {
-      title: 'Pedido 3',
-      budgetId: 7,
+      title: 'Pedido',
       issueDate: '16 de outubro de 2026',
       customer: {
         name: 'José Conceição D’Ávila',

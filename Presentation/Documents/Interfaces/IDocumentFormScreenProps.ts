@@ -33,7 +33,6 @@ export interface IDocumentFormScreenProps {
     setObservations: (value: string) => void;
     signature: string | null;
     setSignature: (value: string | null) => void;
-    isPaymentMethodRequired: boolean;
     paymentMethod: PaymentMethod | null;
     setPaymentMethod: (value: PaymentMethod | null) => void;
     paymentMethodOptions: { label: string; value: PaymentMethod | null }[];
@@ -58,6 +57,7 @@ export interface IDocumentFormScreenProps {
     selectProductLine: (index: number, product: { id: number; description: string }) => void;
     addProductLine: () => void;
     removeProductLine: (index: number) => void;
+    valueSubtotal: number;
     valueTotal: number;
     filterCustomerName: string;
     setFilterCustomerName: (value: string) => void;

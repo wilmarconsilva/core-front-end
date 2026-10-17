@@ -3,7 +3,6 @@ import { IDocumentListing } from '../../Documents/DataTransferObjects/IDocumentL
 import { IDocumentListingFilter } from '../../Documents/DataTransferObjects/IDocumentListingFilter';
 import { IDocumentProductSaveDto } from '../../Documents/DataTransferObjects/IDocumentProductSaveDto';
 import { IDocumentSaveDto } from '../../Documents/DataTransferObjects/IDocumentSaveDto';
-import { IPaymentSaveDto } from '../../Documents/DataTransferObjects/Payments/IPaymentSaveDto';
 import { IBudgetDetailDto } from '../../Documents/Budgets/DataTransferObjects/IBudgetDetailDto';
 import { IBudgetListing } from '../../Documents/Budgets/DataTransferObjects/IBudgetListing';
 import { IBudgetSaveDto } from '../../Documents/Budgets/DataTransferObjects/IBudgetSaveDto';
@@ -177,11 +176,11 @@ export async function buildBudgetListing(
   return buildDocumentListing(dto, customerRepository);
 }
 
-export async function buildDocumentDetail<TPayment extends IPaymentSaveDto>(
-  dto: IDocumentSaveDto<IDocumentProductSaveDto, TPayment>,
+export async function buildDocumentDetail(
+  dto: IDocumentSaveDto<IDocumentProductSaveDto>,
   customerRepository: IOfflineRepository<ICustomerSaveDto, ICustomerListing, unknown>,
   productRepository: IOfflineRepository<IProductSaveDto, IProductListing, unknown>,
-): Promise<Omit<IOrderDetailDto, 'payment'> & { payment: TPayment }> {
+): Promise<IOrderDetailDto> {
   const customer = await customerRepository.getById(dto.customerId);
 
   const products = await Promise.all(
@@ -196,7 +195,6 @@ export async function buildDocumentDetail<TPayment extends IPaymentSaveDto>(
         },
         quantity: line.quantity,
         valueUnit: line.valueUnit,
-        valueTotal: line.valueTotal,
       };
     }),
   );

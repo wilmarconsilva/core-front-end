@@ -5,5 +5,4 @@ export interface IDocumentProductDetailDto {
   product: IEntityReferenceDto;
   quantity: number;
   valueUnit: number;
-  valueTotal: number;
 }

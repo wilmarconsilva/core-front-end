@@ -7,7 +7,7 @@ export class DocumentSaveDtoBuilder {
   static readonly creationDateTime = new Date(2026, 0, 10, 12, 0, 0);
 
   static product(productId: number, quantity = 2, valueUnit = 50): IDocumentProductSaveDto {
-    return { id: 0, productId, quantity, valueUnit, valueTotal: quantity * valueUnit };
+    return { id: 0, productId, quantity, valueUnit };
   }
 
   static order(customerId: number, productIds: number[], id = 0): IOrderSaveDto {

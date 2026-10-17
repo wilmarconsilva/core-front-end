@@ -3,5 +3,4 @@ export interface IDocumentProductSaveDto {
   productId: number;
   quantity: number;
   valueUnit: number;
-  valueTotal: number;
 }

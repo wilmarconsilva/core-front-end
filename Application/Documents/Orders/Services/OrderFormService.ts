@@ -2,8 +2,6 @@ import { IBudgetDetailDto } from '../../Budgets/DataTransferObjects/IBudgetDetai
 import { IOrderDetailDto } from '../DataTransferObjects/IOrderDetailDto';
 import { IOrderProductSaveDto } from '../DataTransferObjects/IOrderProductSaveDto';
 import { IOrderSaveDto } from '../DataTransferObjects/IOrderSaveDto';
-import { IOrderPaymentSaveDto } from '../DataTransferObjects/IOrderPaymentSaveDto';
-import { IDocumentPaymentDto } from '../../DataTransferObjects/Payments/IDocumentPaymentDto';
 import { DocumentFormService, DocumentFormState } from '../../Services/DocumentFormService';
 
 export interface OrderFormState extends DocumentFormState<IOrderProductSaveDto> {
@@ -11,13 +9,9 @@ export interface OrderFormState extends DocumentFormState<IOrderProductSaveDto> 
 }
 
 export class OrderFormService {
-  static readonly paymentMethodPolicy = DocumentFormService.requiredPaymentMethodPolicy;
-
   static createInitialForm(): OrderFormState {
     return {
-      ...DocumentFormService.createInitialFormState<IOrderProductSaveDto>(
-        OrderFormService.paymentMethodPolicy,
-      ),
+      ...DocumentFormService.createInitialFormState<IOrderProductSaveDto>(),
       budgetId: '',
     };
   }
@@ -46,17 +40,14 @@ export class OrderFormService {
   }
 
   static buildSaveDto(id: number | undefined, form: OrderFormState): IOrderSaveDto {
-    const fields = DocumentFormService.buildSaveDtoFields(id, form);
-
     return {
-      ...fields,
-      payment: OrderFormService.toOrderPayment(fields.payment),
+      ...DocumentFormService.buildSaveDtoFields(id, form),
       budgetId: form.budgetId ? parseInt(form.budgetId, 10) : undefined,
     };
   }
 
   static buildValidationRules(form: OrderFormState) {
-    return DocumentFormService.buildValidationRules(form, OrderFormService.paymentMethodPolicy);
+    return DocumentFormService.buildValidationRules(form);
   }
 
   static formToDetail(id: number | undefined, form: OrderFormState, creationDateTime?: string): IOrderDetailDto {
@@ -64,12 +55,5 @@ export class OrderFormService {
       ...(DocumentFormService.formToDetailDto(id, form, creationDateTime) as IOrderDetailDto),
       budgetId: form.budgetId ? parseInt(form.budgetId, 10) : undefined,
     };
-  }
-
-  /** O pedido exige método de pagamento: a validação do formulário garante que ele foi informado. */
-  private static toOrderPayment(payment: IDocumentPaymentDto): IOrderPaymentSaveDto {
-    if (payment.method === null) throw new Error('O método de pagamento do pedido é obrigatório.');
-
-    return { ...payment, method: payment.method };
   }
 }

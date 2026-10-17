@@ -8,7 +8,7 @@ import { IDocumentDetailDto } from '../DataTransferObjects/IDocumentDetailDto';
 import { IDocumentProductDetailDto } from '../DataTransferObjects/IDocumentProductDetailDto';
 import { IDocumentProductSaveDto } from '../DataTransferObjects/IDocumentProductSaveDto';
 import { IDocumentSaveDto } from '../DataTransferObjects/IDocumentSaveDto';
-import { IDocumentPaymentDto } from '../DataTransferObjects/Payments/IDocumentPaymentDto';
+import { IPaymentSaveDto } from '../DataTransferObjects/Payments/IPaymentSaveDto';
 import { IEntityReferenceDto } from '../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
 import { toApiDateTime } from '../../Shared/Utilities/DateTimeUtilities';
 import { DocumentInstallmentFormState, InstallmentFormService } from './Payments/InstallmentFormService';
@@ -29,12 +29,6 @@ export interface DocumentFormState<TProduct extends IDocumentProductSaveDto> {
   productLines: DocumentProductFormLine<TProduct>[];
 }
 
-/** Define se o documento exige método de pagamento e com qual valor o formulário nasce. */
-export interface PaymentMethodPolicy {
-  isRequired: boolean;
-  initialValue: PaymentMethod | null;
-}
-
 export interface DocumentFormBaseSetters<TProduct extends IDocumentProductSaveDto> {
   setCustomerId: (value: number) => void;
   setCustomerDisplayLabel: (value: string) => void;
@@ -47,42 +41,27 @@ export interface DocumentFormBaseSetters<TProduct extends IDocumentProductSaveDt
 }
 
 export class DocumentFormService {
-  static readonly paymentMethodOptions = Object.values(PaymentMethod)
+  /** A entrada do parcelamento sempre exige método de pagamento. */
+  static readonly downPaymentMethodOptions = Object.values(PaymentMethod)
     .filter((v) => typeof v === 'number')
     .map((v) => ({ label: PaymentMethodLabels[v as PaymentMethod], value: v as PaymentMethod }));
 
-  static readonly requiredPaymentMethodPolicy: PaymentMethodPolicy = {
-    isRequired: true,
-    initialValue: PaymentMethod.Check,
-  };
-
-  static readonly optionalPaymentMethodPolicy: PaymentMethodPolicy = {
-    isRequired: false,
-    initialValue: null,
-  };
-
-  static paymentMethodOptionsFor(policy: PaymentMethodPolicy): { label: string; value: PaymentMethod | null }[] {
-    if (policy.isRequired) return DocumentFormService.paymentMethodOptions;
-
-    return [
-      { label: PaymentMethodNotDefinedLabel, value: null },
-      ...DocumentFormService.paymentMethodOptions,
-    ];
-  }
+  static readonly paymentMethodOptions: { label: string; value: PaymentMethod | null }[] = [
+    { label: PaymentMethodNotDefinedLabel, value: null },
+    ...DocumentFormService.downPaymentMethodOptions,
+  ];
 
   static entitySelectLabel(entity: IEntityReferenceDto): string {
     return entity.description;
   }
 
-  static createInitialFormState<TProduct extends IDocumentProductSaveDto>(
-    paymentMethodPolicy: PaymentMethodPolicy,
-  ): DocumentFormState<TProduct> {
+  static createInitialFormState<TProduct extends IDocumentProductSaveDto>(): DocumentFormState<TProduct> {
     return {
       customerId: 0,
       customerDisplayLabel: '',
       observations: '',
       signature: null,
-      paymentMethod: paymentMethodPolicy.initialValue,
+      paymentMethod: null,
       discountValue: 0,
       installment: InstallmentFormService.createInitialState(),
       productLines: [DocumentFormService.createEmptyProductLine<TProduct>()],
@@ -122,7 +101,7 @@ export class DocumentFormService {
     id: number | undefined,
     form: DocumentFormState<TProduct>,
   ): Pick<
-    IDocumentSaveDto<TProduct, IDocumentPaymentDto>,
+    IDocumentSaveDto<TProduct>,
     'id' | 'creationDateTime' | 'customerId' | 'payment' | 'observations' | 'customerSignatureImage' | 'products'
   > {
     return {
@@ -140,14 +119,10 @@ export class DocumentFormService {
     };
   }
 
-  static buildValidationRules(
-    form: DocumentFormState<IDocumentProductSaveDto>,
-    paymentMethodPolicy: PaymentMethodPolicy,
-  ): IValidationRule[] {
+  static buildValidationRules(form: DocumentFormState<IDocumentProductSaveDto>): IValidationRule[] {
     return [
       { key: 'customerId', isValid: !!form.customerId },
       { key: 'productLines', isValid: form.productLines.length > 0 },
-      { key: 'paymentMethod', isValid: !paymentMethodPolicy.isRequired || form.paymentMethod !== null },
       ...InstallmentFormService.buildValidationRules(form.installment),
     ];
   }
@@ -159,7 +134,6 @@ export class DocumentFormService {
       productDescription: '',
       quantity: 0,
       valueUnit: 0,
-      valueTotal: 0,
     } as DocumentProductFormLine<TProduct>;
   }
 
@@ -173,7 +147,6 @@ export class DocumentFormService {
         productDescription: product.product.description,
         quantity: product.quantity,
         valueUnit: product.valueUnit,
-        valueTotal: product.valueTotal,
       } as DocumentProductFormLine<TProduct>))
       : [DocumentFormService.createEmptyProductLine<TProduct>()];
   }
@@ -191,17 +164,9 @@ export class DocumentFormService {
     field: keyof TProduct,
     value: number,
   ): DocumentProductFormLine<TProduct>[] {
-    return productLines.map((productLine, currentIndex) => {
-      if (currentIndex !== index) return productLine;
-
-      const updated = { ...productLine, [field]: value };
-
-      if (field === 'quantity' || field === 'valueUnit') {
-        updated.valueTotal = updated.quantity * updated.valueUnit;
-      }
-
-      return updated;
-    });
+    return productLines.map((productLine, currentIndex) =>
+      currentIndex === index ? { ...productLine, [field]: value } : productLine,
+    );
   }
 
   static selectProductLine<TProduct extends IDocumentProductSaveDto>(
@@ -220,7 +185,7 @@ export class DocumentFormService {
     paymentMethod: PaymentMethod | null,
     discountValue: number,
     installment: DocumentInstallmentFormState,
-  ): IDocumentPaymentDto {
+  ): IPaymentSaveDto {
     return {
       method: paymentMethod,
       discountValue,
@@ -228,10 +193,21 @@ export class DocumentFormService {
     };
   }
 
-  static calculateTotal(productLines: IDocumentProductSaveDto[], discountValue: number): number {
-    const valueSubtotal = productLines.reduce((sum, productLine) => sum + productLine.valueTotal, 0);
+  /** Mesma regra do back-end (DocumentProduct): o total da linha é quantidade × valor unitário. */
+  static calculateProductTotal(productLine: Pick<IDocumentProductSaveDto, 'quantity' | 'valueUnit'>): number {
+    return productLine.quantity * productLine.valueUnit;
+  }
 
-    return Math.max(0, valueSubtotal - discountValue);
+  /** Mesma regra do back-end (Document): o subtotal é a soma dos totais dos produtos. */
+  static calculateSubtotal(productLines: Pick<IDocumentProductSaveDto, 'quantity' | 'valueUnit'>[]): number {
+    return productLines.reduce(
+      (sum, productLine) => sum + DocumentFormService.calculateProductTotal(productLine),
+      0,
+    );
+  }
+
+  static calculateTotal(productLines: Pick<IDocumentProductSaveDto, 'quantity' | 'valueUnit'>[], discountValue: number): number {
+    return Math.max(0, DocumentFormService.calculateSubtotal(productLines) - discountValue);
   }
 
   /** Linhas com produto escolhido; as vazias são descartadas. */
@@ -277,7 +253,6 @@ export class DocumentFormService {
         },
         quantity: line.quantity,
         valueUnit: line.valueUnit,
-        valueTotal: line.valueTotal,
       })),
     };
   }

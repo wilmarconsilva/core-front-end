@@ -46,7 +46,6 @@ export function DocumentFormScreen({
   setObservations,
   signature,
   setSignature,
-  isPaymentMethodRequired,
   paymentMethod,
   setPaymentMethod,
   paymentMethodOptions,
@@ -71,6 +70,7 @@ export function DocumentFormScreen({
   selectProductLine,
   addProductLine,
   removeProductLine,
+  valueSubtotal,
   valueTotal,
   filterCustomerName,
   setFilterCustomerName,
@@ -208,7 +208,10 @@ export function DocumentFormScreen({
             <Ionicons name="add-outline" size={16} color={colors.primary} />
             <Text style={styles.addButtonText}>Adicionar Produto</Text>
           </TouchableOpacity>
-          <View style={styles.summaryRow}>
+          <View style={styles.summary}>
+            <Text style={styles.subtotalText}>
+              Subtotal: {valueSubtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </Text>
             <Text style={styles.summaryText}>
               Total: {valueTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
             </Text>
@@ -218,7 +221,7 @@ export function DocumentFormScreen({
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Pagamento</Text>
           <SelectField
-            label={isPaymentMethodRequired ? 'Forma de Pagamento *' : 'Forma de Pagamento'}
+            label="Forma de Pagamento"
             value={paymentMethod}
             options={paymentMethodOptions}
             error={errors.paymentMethod}

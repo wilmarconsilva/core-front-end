@@ -10,7 +10,8 @@ import {
   IDocumentTemplateCustomer,
   IDocumentTemplatePayment,
 } from '../DataTransferObjects/IDocumentTemplate';
-import { IDocumentPaymentDto } from '../DataTransferObjects/Payments/IDocumentPaymentDto';
+import { IPaymentSaveDto } from '../DataTransferObjects/Payments/IPaymentSaveDto';
+import { DocumentFormService } from './DocumentFormService';
 import { DocumentPdfDetail } from './Interfaces/IDocumentPdfService';
 
 /** Dados complementares ao documento, obtidos de outros módulos (online pela API, offline pelo snapshot). */
@@ -33,8 +34,8 @@ export class DocumentTemplateMapper {
     sources: IDocumentTemplateSources,
     documentTitle: string,
   ): IDocumentTemplate {
-    const valueSubtotal = detail.products.reduce((sum, product) => sum + product.valueTotal, 0);
-    const valueTotal = Math.max(0, valueSubtotal - detail.payment.discountValue);
+    const valueSubtotal = DocumentFormService.calculateSubtotal(detail.products);
+    const valueTotal = DocumentFormService.calculateTotal(detail.products, detail.payment.discountValue);
 
     return {
       title: documentTitle,
@@ -45,7 +46,7 @@ export class DocumentTemplateMapper {
         description: product.product.description,
         quantity: product.quantity.toLocaleString('pt-BR', { maximumFractionDigits: 3 }),
         valueUnit: formatCurrency(product.valueUnit),
-        valueTotal: formatCurrency(product.valueTotal),
+        valueTotal: formatCurrency(DocumentFormService.calculateProductTotal(product)),
       })),
       valueSubtotal: formatCurrency(valueSubtotal),
       discountValue: detail.payment.discountValue > 0 ? formatCurrency(detail.payment.discountValue) : undefined,
@@ -78,7 +79,7 @@ export class DocumentTemplateMapper {
     return personType === PersonType.Natural ? 'CPF' : 'CNPJ';
   }
 
-  private static toPayment(payment: IDocumentPaymentDto, valueTotal: number): IDocumentTemplatePayment {
+  private static toPayment(payment: IPaymentSaveDto, valueTotal: number): IDocumentTemplatePayment {
     const installment = payment.installment;
     const downPayment = installment?.downPayment;
 

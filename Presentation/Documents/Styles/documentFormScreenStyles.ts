@@ -26,8 +26,8 @@ const documentOnly = StyleSheet.create({
    */
   productField: { flexGrow: 1, flexShrink: 1, flexBasis: 240, minWidth: 0 },
   productSmallField: { flexGrow: 0, flexShrink: 0, flexBasis: 90 },
-  totalText: { fontSize: 13, color: colors.textSecondary, marginTop: 4 },
-  summaryRow: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12 },
+  summary: { alignItems: 'flex-end', marginTop: 12 },
+  subtotalText: { fontSize: 13, color: colors.textSecondary, marginBottom: 4 },
   summaryText: { fontSize: 15, fontWeight: '700', color: colors.textPrimary },
 });
 

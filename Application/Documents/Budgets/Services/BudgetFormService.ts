@@ -9,12 +9,8 @@ import {
 export type BudgetFormState = DocumentFormState<IBudgetProductSaveDto>;
 
 export class BudgetFormService {
-  static readonly paymentMethodPolicy = DocumentFormService.optionalPaymentMethodPolicy;
-
   static createInitialForm(): BudgetFormState {
-    return DocumentFormService.createInitialFormState<IBudgetProductSaveDto>(
-      BudgetFormService.paymentMethodPolicy,
-    );
+    return DocumentFormService.createInitialFormState<IBudgetProductSaveDto>();
   }
 
   static detailToForm(detail: IBudgetDetailDto): BudgetFormState {
@@ -26,7 +22,7 @@ export class BudgetFormService {
   }
 
   static buildValidationRules(form: BudgetFormState) {
-    return DocumentFormService.buildValidationRules(form, BudgetFormService.paymentMethodPolicy);
+    return DocumentFormService.buildValidationRules(form);
   }
 
   static formToDetail(id: number | undefined, form: BudgetFormState, creationDateTime?: string): IBudgetDetailDto {

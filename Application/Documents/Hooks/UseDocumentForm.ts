@@ -10,7 +10,6 @@ import {
   DocumentFormService,
   DocumentFormState,
   DocumentProductFormLine,
-  PaymentMethodPolicy,
 } from '../Services/DocumentFormService';
 import { IEntityReferenceDto } from '../../Shared/DataTransferObjects/Entities/IEntityReferenceDto';
 import { DocumentInstallmentFormState } from '../Services/Payments/InstallmentFormService';
@@ -34,7 +33,6 @@ interface IDocumentFormService<
   TDetail extends { payment: IPaymentSaveDto; creationDateTime: string },
   TSaveDto,
 > {
-  paymentMethodPolicy: PaymentMethodPolicy;
   createInitialForm: () => TFormState;
   detailToForm: (detail: TDetail) => TFormState;
   buildValidationRules: (form: TFormState) => IValidationRule[];
@@ -93,6 +91,7 @@ export function UseDocumentForm<
   const [filterProductDescription, setFilterProductDescription] = useState('');
   const isSeedApplied = useRef(false);
 
+  const valueSubtotal = DocumentFormService.calculateSubtotal(productLines);
   const valueTotal = DocumentFormService.calculateTotal(productLines, discountValue);
   const installmentFields = UseDocumentInstallmentForm(
     valueTotal,
@@ -210,9 +209,8 @@ export function UseDocumentForm<
     setSignature,
     paymentMethod,
     setPaymentMethod,
-    isPaymentMethodRequired: formService.paymentMethodPolicy.isRequired,
-    paymentMethodOptions: DocumentFormService.paymentMethodOptionsFor(formService.paymentMethodPolicy),
-    downPaymentMethodOptions: DocumentFormService.paymentMethodOptions,
+    paymentMethodOptions: DocumentFormService.paymentMethodOptions,
+    downPaymentMethodOptions: DocumentFormService.downPaymentMethodOptions,
     discountValue,
     setDiscountValue,
     ...installmentFields,
@@ -221,6 +219,7 @@ export function UseDocumentForm<
     selectProductLine,
     addProductLine,
     removeProductLine,
+    valueSubtotal,
     valueTotal,
     filterCustomerName,
     setFilterCustomerName,
