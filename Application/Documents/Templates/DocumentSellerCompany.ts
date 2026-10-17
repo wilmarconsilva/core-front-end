@@ -10,4 +10,5 @@ export const DocumentSellerCompany = {
   instagram: { label: '@wsgeomembranas', url: 'https://www.instagram.com/wsgeomembranas/' },
   email: { label: 'ws@wsgeomembranas.com.br', url: 'mailto:ws@wsgeomembranas.com.br' },
   presentation: 'Somos fornecedores Nortene e Engepol, há mais de 25 anos no mercado atendendo com excelência nossos clientes.',
+  additionalObservations: 'Valetinha de ancoragem e a própria ancoragem da geomembrana no solo é por conta do cliente.'
 } as const;
