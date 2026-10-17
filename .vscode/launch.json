@@ -6,6 +6,7 @@
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:8081",
+      "preLaunchTask": "Expo: web",
       "webRoot": "${workspaceFolder}",
       "skipFiles": [
         "chrome-error://**",

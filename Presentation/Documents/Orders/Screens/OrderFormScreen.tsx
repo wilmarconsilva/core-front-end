@@ -2,16 +2,13 @@ import React from 'react';
 import { View } from 'react-native';
 import { UseOrderForm } from '../../../../Application/Documents/Orders/Hooks/UseOrderForm';
 import { UseDocumentPdf } from '../../../../Application/Documents/Hooks/UseDocumentPdf';
-import { OrderTemplateService } from '../../../../Application/Documents/Orders/Services/OrderTemplateService';
 import { IOrderFormScreenProps } from '../Interfaces/IOrderFormScreenProps';
 import { IntField } from '../../../Shared/Components/IntField';
 import { DocumentFormScreen } from '../../Screens/DocumentFormScreen';
 
-const orderTemplateService = new OrderTemplateService();
-
 export function OrderFormScreen({ id, budgetId, onGoBack }: IOrderFormScreenProps) {
   const form = UseOrderForm(id, budgetId, onGoBack);
-  const { generatePdf } = UseDocumentPdf(orderTemplateService);
+  const { generatePdf } = UseDocumentPdf('Pedido');
 
   const handleGeneratePdf = () => generatePdf(form.buildDetailFromForm());
 

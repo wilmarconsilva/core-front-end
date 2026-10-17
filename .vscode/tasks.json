@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // Sobe o Expo (web) e só libera o debug quando o Metro estiver ouvindo na porta 8081.
+      // Se a task já estiver rodando, o VS Code a reaproveita em vez de subir outra.
+      "label": "Expo: web",
+      "type": "npm",
+      "script": "web",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": {
+        "owner": "expo",
+        "pattern": {
+          "regexp": "^__never_matches__$"
+        },
+        "background": {
+          "activeBegins": true,
+          "beginsPattern": "^> core@",
+          "endsPattern": "Waiting on http://localhost:8081"
+        }
+      }
+    }
+  ]
+}

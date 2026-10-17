@@ -5,9 +5,17 @@
  * assets (HTML, CSS, JS, images, fonts) available offline.
  */
 
-const CACHE_VERSION = '1.3.0';
+const CACHE_VERSION = '1.3.1';
 const CACHE_NAME = `core-pwa-${CACHE_VERSION}`;
 const APP_SHELL_URL = '/index.html';
+
+// Fonts of the PDF generator: fetched with fetch() (no request destination), so they
+// are precached and served cache-first to generate PDFs offline.
+const STATIC_FILE_URLS = [
+  '/fonts/arimo-1.33/Arimo-Regular.ttf',
+  '/fonts/arimo-1.33/Arimo-Bold.ttf',
+  '/fonts/arimo-1.33/Arimo-Italic.ttf',
+];
 
 const PRECACHE_URLS = [
   '/',
@@ -15,6 +23,7 @@ const PRECACHE_URLS = [
   '/manifest.json',
   '/pwa-icon-192.png',
   '/pwa-icon-512.png',
+  ...STATIC_FILE_URLS,
 ];
 
 const CACHEABLE_DESTINATIONS = ['script', 'style', 'image', 'font'];
@@ -58,6 +67,11 @@ self.addEventListener('fetch', (event) => {
   const isSameOrigin = url.origin === self.location.origin;
   const isCacheableAsset = CACHEABLE_DESTINATIONS.includes(request.destination);
 
+  if (isSameOrigin && STATIC_FILE_URLS.includes(url.pathname)) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
   if (isSameOrigin && isCacheableAsset) {
     event.respondWith(staleWhileRevalidate(request));
   }
@@ -73,6 +87,21 @@ function networkFirstWithShellFallback(request) {
     .catch(() =>
       caches.match(request).then((cached) => cached || caches.match(APP_SHELL_URL)),
     );
+}
+
+function cacheFirst(request) {
+  return caches.open(CACHE_NAME).then((cache) =>
+    cache.match(request, { ignoreSearch: true }).then(
+      (cached) =>
+        cached ||
+        fetch(request).then((response) => {
+          if (response && response.status === 200) {
+            cache.put(request, response.clone());
+          }
+          return response;
+        }),
+    ),
+  );
 }
 
 function staleWhileRevalidate(request) {

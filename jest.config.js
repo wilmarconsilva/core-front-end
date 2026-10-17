@@ -23,5 +23,14 @@ module.exports = {
       setupFilesAfterEnv: ['<rootDir>/Tests/Application.IntegrationTests/Fixtures/JestSetup.ts'],
       transformIgnorePatterns,
     },
+    {
+      displayName: 'integration:infrastructure',
+      preset: 'jest-expo/node',
+      testMatch: ['<rootDir>/Tests/Infrastructure.IntegrationTests/**/*Tests.ts'],
+      setupFilesAfterEnv: ['<rootDir>/Tests/Infrastructure.IntegrationTests/Fixtures/JestSetup.ts'],
+      transformIgnorePatterns,
+      // O mesmo build de navegador que o Metro empacota (no Node, `pdfmake` resolveria a versão de servidor).
+      moduleNameMapper: { '^pdfmake$': '<rootDir>/node_modules/pdfmake/build/pdfmake.js' },
+    },
   ],
 };

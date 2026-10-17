@@ -64,6 +64,7 @@ import { CurrentUserApiService } from '../../Application/Persons/Users/Services/
 import { CurrentUserOfflineRepository } from '../../Infrastructure/Persons/Users/Repositories/CurrentUserOfflineRepository';
 import { IDocumentPdfService } from '../../Application/Documents/Services/Interfaces/IDocumentPdfService';
 import { DocumentPdfService } from '../../Application/Documents/Services/DocumentPdfService';
+import { PdfMakeDocumentRenderer } from '../../Infrastructure/Documents/Pdf/PdfMakeDocumentRenderer';
 
 /**
  * Composition root (the only place that knows Infrastructure): wires the
@@ -161,6 +162,7 @@ class ApplicationCompositionRootImpl implements IApplicationServices {
     customerService: this.createCustomerService(true),
     localityService: this.createLocalityService(true),
     currentUserService: this.currentUserService,
+    pdfRenderer: new PdfMakeDocumentRenderer(),
   });
 
   private createProductService(): ICrudService<IProductSaveDto, IProductDetailDto, IProductListing, IProductListingFilter> {

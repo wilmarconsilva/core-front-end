@@ -28,12 +28,17 @@ const IMAGE_MIME_TYPES_BY_BASE64_PREFIX: Record<string, string> = {
 };
 
 export class DocumentTemplateMapper {
-  static fromDetail(detail: DocumentPdfDetail, sources: IDocumentTemplateSources): IDocumentTemplate {
+  static fromDetail(
+    detail: DocumentPdfDetail,
+    sources: IDocumentTemplateSources,
+    documentTitle: string,
+  ): IDocumentTemplate {
     const valueSubtotal = detail.products.reduce((sum, product) => sum + product.valueTotal, 0);
     const valueTotal = Math.max(0, valueSubtotal - detail.payment.discountValue);
+    const id = DocumentTemplateMapper.positiveOrUndefined(detail.id);
 
     return {
-      number: DocumentTemplateMapper.positiveOrUndefined(detail.id),
+      title: id ? `${documentTitle} ${id}` : documentTitle,
       budgetId: DocumentTemplateMapper.positiveOrUndefined(detail.budgetId),
       issueDate: new Date(detail.creationDateTime)
         .toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }),
