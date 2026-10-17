@@ -2,8 +2,8 @@ import { IEntityReferenceDto } from '../../../Shared/DataTransferObjects/Entitie
 
 export interface ICustomerAddressDetailDto {
   id: number;
-  neighborhood: string;
-  street: string;
+  neighborhood?: string;
+  street?: string;
   locality: IEntityReferenceDto;
   complement?: string;
   postalCode?: string;

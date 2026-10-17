@@ -100,6 +100,23 @@ describe('DataSynchronizationService', () => {
     expect(await IndexedDbInspector.getPendencies()).toEqual([]);
   });
 
+  test('Synchronize_CustomerWithoutStreetAndNeighborhoodCreatedOffline_PushesItWithoutThem', async () => {
+    const { services } = ApplicationSession.startOffline();
+    await services.customerService.create(CustomerSaveDtoBuilder.customerWithoutStreetAndNeighborhood('Cliente Sem Logradouro'));
+
+    const status = await synchronizeOnline();
+
+    expect(status).toBe('success');
+    const [serverCustomer] = backEnd.customers.all();
+    expect(serverCustomer).toMatchObject({ id: 1, name: 'Cliente Sem Logradouro', addresses: [{ localityId: 1 }] });
+    expect(serverCustomer.addresses[0].street).toBeUndefined();
+    expect(serverCustomer.addresses[0].neighborhood).toBeUndefined();
+
+    const customers = await IndexedDbInspector.getAll<ICustomerSaveDto>(OfflineStoreNames.customers);
+    expect(customers).toEqual([serverCustomer]);
+    expect(await IndexedDbInspector.getPendencies()).toEqual([]);
+  });
+
   test('Synchronize_CustomerRejectedByBackEnd_RegistersPendencyAndKeepsLocalRecord', async () => {
     const { services } = ApplicationSession.startOffline();
     await services.customerService.create(CustomerSaveDtoBuilder.customer('Cliente Inválido'));

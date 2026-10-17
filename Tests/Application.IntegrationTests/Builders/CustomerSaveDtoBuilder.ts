@@ -12,4 +12,10 @@ export class CustomerSaveDtoBuilder {
       addresses: [{ id: 0, street: 'Rua das Flores', neighborhood: 'Centro', number: '100', localityId }],
     };
   }
+
+  static customerWithoutStreetAndNeighborhood(name = 'Maria da Silva', id = 0, localityId = 1): ICustomerSaveDto {
+    const customer = CustomerSaveDtoBuilder.customer(name, id, localityId);
+
+    return { ...customer, addresses: [{ id: 0, localityId }] };
+  }
 }

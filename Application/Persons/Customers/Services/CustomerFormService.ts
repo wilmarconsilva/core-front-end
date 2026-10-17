@@ -33,7 +33,7 @@ export class CustomerFormService {
   }
 
   static createEmptyAddress(): ICustomerAddressSaveDto {
-    return { id: 0, neighborhood: '', street: '', localityId: 0 };
+    return { id: 0, localityId: 0 };
   }
 
   static sanitizeEmailInput(raw: string): string {
@@ -86,7 +86,11 @@ export class CustomerFormService {
       name: form.name.trim(),
       personType: form.personType,
       document: form.document.trim(),
-      addresses: form.addresses,
+      addresses: form.addresses.map((address) => ({
+        ...address,
+        neighborhood: address.neighborhood?.trim() || undefined,
+        street: address.street?.trim() || undefined,
+      })),
       email: form.email.trim() || undefined,
       stateRegistration: form.stateRegistration.trim() || undefined,
     };
@@ -108,20 +112,10 @@ export class CustomerFormService {
         isValid: CustomerFormService.validateDocument(form.personType, form.document),
         message: `Informe um ${documentFieldLabel} válido.`,
       },
-      ...form.addresses.flatMap((address, index) => [
-        {
-          key: CustomerFormService.addressErrorKey(index, 'street'),
-          isValid: !!address.street.trim(),
-        },
-        {
-          key: CustomerFormService.addressErrorKey(index, 'neighborhood'),
-          isValid: !!address.neighborhood.trim(),
-        },
-        {
-          key: CustomerFormService.addressErrorKey(index, 'localityId'),
-          isValid: !!address.localityId,
-        },
-      ]),
+      ...form.addresses.map((address, index) => ({
+        key: CustomerFormService.addressErrorKey(index, 'localityId'),
+        isValid: !!address.localityId,
+      })),
     ];
   }
 
