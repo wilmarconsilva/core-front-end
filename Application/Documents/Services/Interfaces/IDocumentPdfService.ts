@@ -1,7 +1,7 @@
 import { IDocumentDetailDto } from '../../DataTransferObjects/IDocumentDetailDto';
 
 /** Documento a imprimir: o detalhe montado a partir do formulário (pode ainda não estar salvo). */
-export type DocumentPdfDetail = IDocumentDetailDto & { id: number; budgetId?: number };
+export type DocumentPdfDetail = IDocumentDetailDto;
 
 export interface IDocumentPdfFile {
   fileName: string;

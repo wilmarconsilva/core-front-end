@@ -35,11 +35,9 @@ export class DocumentTemplateMapper {
   ): IDocumentTemplate {
     const valueSubtotal = detail.products.reduce((sum, product) => sum + product.valueTotal, 0);
     const valueTotal = Math.max(0, valueSubtotal - detail.payment.discountValue);
-    const id = DocumentTemplateMapper.positiveOrUndefined(detail.id);
 
     return {
-      title: id ? `${documentTitle} ${id}` : documentTitle,
-      budgetId: DocumentTemplateMapper.positiveOrUndefined(detail.budgetId),
+      title: documentTitle,
       issueDate: new Date(detail.creationDateTime)
         .toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }),
       customer: DocumentTemplateMapper.toCustomer(detail, sources),

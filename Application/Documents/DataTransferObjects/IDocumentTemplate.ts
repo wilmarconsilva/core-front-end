@@ -29,7 +29,6 @@ export interface IDocumentTemplateSignature {
 export interface IDocumentTemplate {
   /** Tipo do documento seguido do número, que só existe depois de salvo no servidor (ex.: "Orçamento 12"). */
   title: string;
-  budgetId?: number;
   issueDate: string;
   customer: IDocumentTemplateCustomer;
   products: IDocumentTemplateProduct[];

@@ -111,8 +111,6 @@ function buildHeader(data: IDocumentTemplate): Content {
     subtitle(`${DocumentSellerCompany.city}, ${data.issueDate}.`),
   ];
 
-  if (data.budgetId) titleBlock.push(subtitle(`Originado através do orçamento ${data.budgetId}`));
-
   return {
     layout: NO_PADDING_LAYOUT,
     table: {
