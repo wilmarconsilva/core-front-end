@@ -63,7 +63,8 @@ export function get(data: IDocumentTemplate): TDocumentDefinitions {
       buildHeader(data),
       buildCustomerSection(data.customer),
       buildProductsTable(data),
-      buildPaymentSection(data.payment, data.observations),
+      buildPaymentSection(data.payment),
+      buildObservationsSection(data),
       buildIssuerSection(),
       buildSignatures(data.sellerSignature, data.customerSignature),
     ],
@@ -324,7 +325,7 @@ function buildProductRow(product: IDocumentTemplateProduct, index: number): Tabl
   ];
 }
 
-function buildPaymentSection(payment: IDocumentTemplatePayment, observations?: string): Content {
+function buildPaymentSection(payment: IDocumentTemplatePayment): Content {
   const line = (label: string, value: string | undefined, index: number): Content[] =>
     value ? [{ text: [{ text: `${label} `, bold: true }, value], margin: [0, index ? mm(1) : 0, 0, 0] }] : [];
 
@@ -335,10 +336,25 @@ function buildPaymentSection(payment: IDocumentTemplatePayment, observations?: s
       ...line('ENTRADA:', payment.downPayment, 1),
       ...line('FORMA DE PAGAMENTO DA ENTRADA:', payment.downPaymentMethod, 1),
       ...line('PARCELAMENTO:', payment.installments, 1),
-      ...(observations
-        ? [{ text: [{ text: 'Observações: ', bold: true }, observations], margin: [0, mm(2), 0, 0] } as Content]
-        : []),
     ],
+  };
+}
+
+/** Cada observação só é impressa se existir; sem nenhuma, a seção é omitida. */
+function buildObservationsSection(data: IDocumentTemplate): Content {
+  const observations = [
+    { label: 'Observações:', value: data.observations },
+    { label: 'Observações adicionais:', value: DocumentSellerCompany.additionalObservations },
+  ].filter((observation): observation is { label: string; value: string } => !!observation.value);
+
+  if (!observations.length) return [];
+
+  return {
+    margin: [0, mm(5), 0, 0],
+    stack: observations.map(({ label, value }, index): Content => ({
+      text: [{ text: `${label} `, bold: true }, value],
+      margin: [0, index ? mm(2) : 0, 0, 0],
+    })),
   };
 }
 
