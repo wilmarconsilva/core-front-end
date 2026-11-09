@@ -1,12 +1,14 @@
 import Toast from 'react-native-toast-message';
 import { IAccessToken } from '../../Authentication/DataTransferObjects/IAccessToken';
 import { TokenStorageService } from '../../Authentication/Services/TokenStorageService';
+import '../DataTransferObjects/Configuration/IRuntimeConfiguration';
+import { resolveWebApiRestUrl } from '../Utilities/WebApiRestUrlResolver';
 
-if (!process.env?.EXPO_PUBLIC_WEB_API_REST_URL?.trim()) {
-  throw new Error('EXPO_PUBLIC_WEB_API_REST_URL is not defined as an environment variable or in the .env file.');
-}
-
-export const WEB_SERVICE_REST_URL = process.env.EXPO_PUBLIC_WEB_API_REST_URL as string;
+// `process.env.EXPO_PUBLIC_*` precisa ser acessado literalmente: o Expo substitui a expressão pelo valor no build.
+export const WEB_SERVICE_REST_URL = resolveWebApiRestUrl(
+  globalThis.__CORE_RUNTIME_CONFIG__?.WEB_API_REST_URL,
+  process.env.EXPO_PUBLIC_WEB_API_REST_URL,
+);
 
 export class SessionExpiredError extends Error {
   constructor() {

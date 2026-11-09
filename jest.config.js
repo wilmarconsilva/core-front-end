@@ -16,6 +16,12 @@ module.exports = {
   testTimeout: 30000,
   projects: [
     {
+      displayName: 'unit',
+      preset: 'jest-expo/node',
+      testMatch: ['<rootDir>/Tests/Application.UnitTests/**/*Tests.ts'],
+      transformIgnorePatterns,
+    },
+    {
       displayName: 'integration',
       // Preset de Node: a sincronização não renderiza componentes, e o IndexedDB é simulado em memória.
       preset: 'jest-expo/node',

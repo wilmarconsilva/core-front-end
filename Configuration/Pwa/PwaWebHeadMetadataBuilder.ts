@@ -28,7 +28,17 @@ export class PwaWebHeadMetadataBuilder implements IPwaWebHeadMetadataBuilder {
       `<link rel="apple-touch-icon" href="${metadata.appleTouchIconPath}" />`,
       this.safeAreaStyle(metadata),
       this.serviceWorkerRegistrationScript(),
+      this.runtimeConfigScript(),
     ].join('\n    ');
+  }
+
+  /**
+   * Publica a configuração de runtime (URL da API) em `globalThis` antes do bundle.
+   * Precisa ser síncrono (sem `async`/`defer`): o bundle sai com `defer` e lê a configuração
+   * ao carregar o módulo, então este script tem que executar antes dele.
+   */
+  private runtimeConfigScript(): string {
+    return `<script src="${PwaPublicAssetUrls.runtimeConfig}"></script>`;
   }
 
   /**

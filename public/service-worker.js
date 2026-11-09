@@ -9,6 +9,12 @@ const CACHE_VERSION = '1.4.0';
 const CACHE_NAME = `core-pwa-${CACHE_VERSION}`;
 const APP_SHELL_URL = '/index.html';
 
+// Configuração de runtime (URL da API), gerada pelo container na inicialização. Muda sem que a
+// versão do app (CACHE_VERSION) mude, então NUNCA pode ser servida do cache estando online:
+// network-first, com o cache apenas como fallback offline. Fica no precache para que o app
+// abra offline já a partir do primeiro acesso (nele a página ainda não é controlada pelo SW).
+const RUNTIME_CONFIG_URL = '/runtime-config.js';
+
 // Fonts of the PDF generator: fetched with fetch() (no request destination), so they
 // are precached and served cache-first to generate PDFs offline.
 const STATIC_FILE_URLS = [
@@ -20,6 +26,7 @@ const STATIC_FILE_URLS = [
 const PRECACHE_URLS = [
   '/',
   APP_SHELL_URL,
+  RUNTIME_CONFIG_URL,
   '/manifest.json',
   '/pwa-icon-192.png',
   '/pwa-icon-512.png',
@@ -67,6 +74,12 @@ self.addEventListener('fetch', (event) => {
   const isSameOrigin = url.origin === self.location.origin;
   const isCacheableAsset = CACHEABLE_DESTINATIONS.includes(request.destination);
 
+  // Antes da regra genérica de scripts (stale-while-revalidate), que serviria a configuração antiga.
+  if (isSameOrigin && url.pathname === RUNTIME_CONFIG_URL) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
   if (isSameOrigin && STATIC_FILE_URLS.includes(url.pathname)) {
     event.respondWith(cacheFirst(request));
     return;
@@ -87,6 +100,24 @@ function networkFirstWithShellFallback(request) {
     .catch(() =>
       caches.match(request).then((cached) => cached || caches.match(APP_SHELL_URL)),
     );
+}
+
+// Só respostas 200 entram no cache: um erro transitório do servidor não pode substituir a
+// última configuração boa. Com o servidor respondendo erro, cai para o cache se houver.
+function networkFirst(request) {
+  return caches.open(CACHE_NAME).then((cache) =>
+    fetch(request)
+      .then((response) => {
+        if (response && response.status === 200) {
+          cache.put(request, response.clone());
+          return response;
+        }
+        return cache.match(request, { ignoreSearch: true }).then((cached) => cached || response);
+      })
+      .catch(() =>
+        cache.match(request, { ignoreSearch: true }).then((cached) => cached || Response.error()),
+      ),
+  );
 }
 
 function cacheFirst(request) {

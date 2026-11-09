@@ -15,25 +15,24 @@ ENV EXPO_NO_TELEMETRY=1 \
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# As variáveis EXPO_PUBLIC_* são embutidas no bundle em tempo de build (não são lidas em runtime).
-# Consequência: mudar a URL da API exige rebuild da imagem. Declaradas DEPOIS do npm ci
-# para que trocar a URL não invalide o cache das dependências.
-ARG EXPO_PUBLIC_WEB_API_REST_URL
+# A URL da API NÃO entra no build: ela é definida na inicialização do container pela variável
+# WEB_API_REST_URL (Docker/runtime-config.sh), então a mesma imagem serve qualquer ambiente.
+#
+# As demais variáveis EXPO_PUBLIC_* continuam embutidas no bundle em tempo de build. Declaradas
+# DEPOIS do npm ci para que trocá-las não invalide o cache das dependências.
 ARG EXPO_PUBLIC_OPERATION_MODE=""
 
-ENV EXPO_PUBLIC_WEB_API_REST_URL=$EXPO_PUBLIC_WEB_API_REST_URL \
-    EXPO_PUBLIC_OPERATION_MODE=$EXPO_PUBLIC_OPERATION_MODE
-
-# Falha cedo e com mensagem clara: sem a URL da API o app quebra no primeiro import
-# (Application/Shared/Services/HttpClientService.ts).
-RUN test -n "$EXPO_PUBLIC_WEB_API_REST_URL" \
-    || (echo "ERRO: build arg EXPO_PUBLIC_WEB_API_REST_URL é obrigatório." && exit 1)
+ENV EXPO_PUBLIC_OPERATION_MODE=$EXPO_PUBLIC_OPERATION_MODE
 
 # Copia o código-fonte
 COPY . .
 
-# Sincroniza os artefatos de PWA (public/) e exporta o site estático em /src/dist
-RUN npm run build:web
+# Sincroniza os artefatos de PWA (public/) e exporta o site estático em /src/dist.
+# Falha o build se o runtime-config.js não for exportado (o nginx serviria o index.html no lugar).
+# O sed garante LF no script do entrypoint mesmo que o checkout no Windows o traga com CRLF.
+RUN npm run build:web \
+    && test -f dist/runtime-config.js \
+    && sed -i 's/\r$//' Docker/runtime-config.sh
 
 
 # ============================================
@@ -44,5 +43,12 @@ FROM nginxinc/nginx-unprivileged:stable-alpine AS final
 
 COPY Docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /src/dist /usr/share/nginx/html
+
+# O runtime-config.js é reescrito na inicialização pelo usuário não-root do nginx (uid 101).
+# Só esse arquivo recebe permissão de escrita; o restante do site continua somente-leitura.
+COPY --from=build --chown=101:101 /src/dist/runtime-config.js /usr/share/nginx/html/runtime-config.js
+
+# Scripts em /docker-entrypoint.d rodam antes do nginx; se falharem, o container não sobe.
+COPY --from=build --chmod=0755 /src/Docker/runtime-config.sh /docker-entrypoint.d/40-runtime-config.sh
 
 EXPOSE 8080
