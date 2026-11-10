@@ -1,5 +1,5 @@
 import { IAppVersion } from './Interfaces/IAppVersion';
 
 export const AppVersion: IAppVersion = {
-  semanticVersion: '1.4.0',
+  semanticVersion: '1.5.1',
 };

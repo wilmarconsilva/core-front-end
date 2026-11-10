@@ -2,6 +2,7 @@ import { IValidationRule } from '../../../Shared/Hooks/UseFormValidation';
 import { PaymentMethod } from '../../../../Domain/Documents/ValueObjects/Payments/Enums/PaymentMethod';
 import { InstallmentSaveDto } from '../../DataTransferObjects/Payments/IInstallmentSaveDto';
 import { IPaymentSaveDto } from '../../DataTransferObjects/Payments/IPaymentSaveDto';
+import { roundHalfToEven } from '../../../Shared/Utilities/MathUtilities';
 export type DownPaymentSyncSource = 'value' | 'percentage';
 
 export interface DocumentInstallmentFormState {
@@ -38,7 +39,9 @@ export class InstallmentFormService {
       downPaymentMethod: downPayment?.method ?? PaymentMethod.Check,
       downPaymentValue: downPayment?.value ?? 0,
       downPaymentPercentage: downPayment?.percentage ?? 0,
-      downPaymentSyncSource: 'percentage',
+      // O valor da entrada é a fonte da verdade (o back-end deriva o percentual dele, arredondado em 2 casas);
+      // recalcular o valor a partir do percentual arredondado o alteraria.
+      downPaymentSyncSource: 'value',
     };
   }
 
@@ -109,6 +112,7 @@ export class InstallmentFormService {
     return { ...state, hasDownPayment: true };
   }
 
+  /** Mesma regra do back-end (Installment.SetValue): saldo sem a entrada dividido pelas parcelas, arredondado em centavos. */
   static calculateInstallmentValue(
     valueTotal: number,
     installmentQty: number,
@@ -119,7 +123,7 @@ export class InstallmentFormService {
     const downPayment = hasDownPayment ? downPaymentValue : 0;
     const remaining = Math.max(0, valueTotal - downPayment);
 
-    return quantity > 0 ? remaining / quantity : 0;
+    return quantity > 0 ? roundHalfToEven(remaining / quantity) : 0;
   }
 
   static syncFromDownPaymentValue(
@@ -173,13 +177,15 @@ export class InstallmentFormService {
     );
   }
 
+  /** O valor da entrada é a fonte da verdade no back-end; aqui ele só é estimado a partir do percentual digitado, em centavos. */
   private static calculateValueFromPercentage(percentage: number, valueTotal: number): number {
-    return valueTotal * (percentage / 100);
+    return roundHalfToEven(valueTotal * (percentage / 100));
   }
 
   private static calculatePercentageFromValue(value: number, valueTotal: number): number {
     if (valueTotal <= 0) return 0;
 
-    return (value / valueTotal) * 100;
+    // Mesma regra do back-end (DownPayment.SetPercentage): Math.Round(Value / valueTotal * 100, 2).
+    return roundHalfToEven((value / valueTotal) * 100);
   }
 }

@@ -5,6 +5,7 @@ import { CustomerFormService } from '../../Persons/Customers/Services/CustomerFo
 import { ICurrentUserDto } from '../../Persons/Users/DataTransferObjects/ICurrentUserDto';
 import { ILocalityDetailDto } from '../../Territories/Localities/DataTransferObjects/ILocalityDetailDto';
 import { formatCurrency } from '../../Shared/Utilities/FormatUtilities';
+import { InstallmentFormService } from './Payments/InstallmentFormService';
 import {
   IDocumentTemplate,
   IDocumentTemplateCustomer,
@@ -87,8 +88,12 @@ export class DocumentTemplateMapper {
       return { method: getPaymentMethodLabel(payment.method) };
     }
 
-    // Same rule as the back-end Installment: the down payment is deducted before splitting.
-    const installmentValue = (valueTotal - (downPayment?.value ?? 0)) / installment.quantity;
+    const installmentValue = InstallmentFormService.calculateInstallmentValue(
+      valueTotal,
+      installment.quantity,
+      downPayment?.value ?? 0,
+      !!downPayment,
+    );
 
     return {
       method: getPaymentMethodLabel(payment.method),
