@@ -15,7 +15,7 @@ type IndicatorAppearance = {
   spinning: boolean;
 };
 
-/** Tempo que o estado de sucesso permanece visível antes de sair de cena. */
+/** Tempo que o estado final (sucesso ou falha) permanece visível antes de sair de cena. */
 const AUTO_HIDE_DELAY_MS = 5000;
 
 /**
@@ -54,8 +54,9 @@ function resolveAppearance(status: SynchronizationStatus, operationMode: Operati
  * Puramente apresentacional: observa o status e nunca bloqueia a interface.
  *
  * Entra deslizando como um toast quando a sincronização começa e sai da mesma
- * forma, em sentido contrário, 5 segundos após o sucesso. Falha e modo offline
- * permanecem, porque descrevem condições que persistem.
+ * forma, em sentido contrário, 5 segundos após o término (sucesso ou falha). Os
+ * registros que falharam continuam acessíveis em Pendências de Sincronização. O
+ * modo offline permanece, porque descreve uma condição que persiste na sessão.
  */
 export function DataSynchronizationIndicator() {
   const { status } = UseDataSynchronization();
@@ -69,7 +70,8 @@ export function DataSynchronizationIndicator() {
   const appearance = resolveAppearance(status, operationMode);
   const isSpinning = appearance?.spinning ?? false;
   const hasAppearance = appearance !== null;
-  const shouldAutoHide = status === 'success' && operationMode !== OperationMode.Offline;
+  const isFinished = status === 'success' || status === 'error';
+  const shouldAutoHide = isFinished && operationMode !== OperationMode.Offline;
 
   useEffect(() => {
     if (!isSpinning) {

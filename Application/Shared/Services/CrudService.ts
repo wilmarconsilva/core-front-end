@@ -1,6 +1,7 @@
 import { APIConsumerService } from './APIConsumerService';
 import { ICrudService } from './Interfaces/ICrudService';
 import { buildQueryParams } from '../Utilities/QueryUtilities';
+import { IRequestOptions } from '../DataTransferObjects/APIConsumer/IRequestOptions';
 
 export class CrudService<TSaveDto, TDetailDto, TListing, TFilter>
   extends APIConsumerService
@@ -26,12 +27,12 @@ export class CrudService<TSaveDto, TDetailDto, TListing, TFilter>
     }, { toastsConfiguration: { doNotShowSuccess: true } });
   }
 
-  async create(dto: TSaveDto): Promise<TSaveDto> {
+  async create(dto: TSaveDto, requestOptions?: IRequestOptions): Promise<TSaveDto> {
     return this.request<TSaveDto>(this.basePath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dto),
-    });
+    }, requestOptions);
   }
 
   async update(id: number, dto: TSaveDto): Promise<TSaveDto> {

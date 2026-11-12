@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message';
 import { IListingFilter } from '../../Shared/DataTransferObjects/Listings/IListingFilter';
 import { IDocumentSaveDto } from '../../Documents/DataTransferObjects/IDocumentSaveDto';
 import { IDocumentProductSaveDto } from '../../Documents/DataTransferObjects/IDocumentProductSaveDto';
@@ -26,11 +27,20 @@ import { toApiCreatePayload } from '../Utilities/OfflineUtilities';
 import { describeDocument, remapDocumentReferences } from './OfflineMappersService';
 import { APIConsumerUtility } from '../../Shared/Utilities/APIConsumerUtility';
 import { ICurrentUserService } from '../../Persons/Users/Services/Interfaces/ICurrentUserService';
+import { IRequestOptions } from '../../Shared/DataTransferObjects/APIConsumer/IRequestOptions';
 
 const FETCH_PAGE_SIZE = 50;
 
+/**
+ * The push runs in background, with no user action: a toast per record would show the back-end
+ * message out of context. Failures are reported by the pendencies and by a single summary toast.
+ */
+const SILENT_PUSH_OPTIONS: IRequestOptions = {
+  toastsConfiguration: { doNotShowSuccess: true, doNotShowError: true },
+};
+
 interface ICreatePushService<TSaveDto> {
-  create(dto: TSaveDto): Promise<TSaveDto>;
+  create(dto: TSaveDto, requestOptions?: IRequestOptions): Promise<TSaveDto>;
 }
 
 interface IListingFetchService<TListing, TFilter> {
@@ -71,6 +81,7 @@ export class DataSynchronizationService implements IDataSynchronizationService {
   private readonly listeners = new Set<SynchronizationListener>();
   private hasRun = false;
   private hadFailure = false;
+  private unsynchronizedRecordsCount = 0;
 
   constructor(private readonly dependencies: DataSynchronizationDependencies) {}
 
@@ -92,6 +103,7 @@ export class DataSynchronizationService implements IDataSynchronizationService {
     }
     this.hasRun = true;
     this.hadFailure = false;
+    this.unsynchronizedRecordsCount = 0;
     this.setStatus('syncing');
 
     const runStep = async (step: () => Promise<void>): Promise<void> => {
@@ -141,6 +153,17 @@ export class DataSynchronizationService implements IDataSynchronizationService {
     await runStep(() => this.dependencies.currentUserService.synchronize());
 
     this.setStatus(this.hadFailure ? 'error' : 'success');
+    this.notifyUnsynchronizedRecords();
+  }
+
+  private notifyUnsynchronizedRecords(): void {
+    const count = this.unsynchronizedRecordsCount;
+    if (count === 0) {
+      return;
+    }
+
+    const records = count === 1 ? '1 registro não foi sincronizado' : `${count} registros não foram sincronizados`;
+    Toast.show({ type: 'error', text1: `${records}. Verifique as pendências de sincronização.` });
   }
 
   private async pushLocalRecords<T extends { id: number }>(
@@ -154,7 +177,7 @@ export class DataSynchronizationService implements IDataSynchronizationService {
 
     for (const record of pending) {
       try {
-        const created = await api.create(toApiCreatePayload(record));
+        const created = await api.create(toApiCreatePayload(record), SILENT_PUSH_OPTIONS);
         idMap.set(record.id, created.id);
         await repository.remove(record.id);
         await this.dependencies.synchronizationPendencyService.resolve(entityType, record.id);
@@ -179,7 +202,7 @@ export class DataSynchronizationService implements IDataSynchronizationService {
     for (const record of pending) {
       const remapped = remapDocumentReferences(record, customerIdMap, productIdMap);
       try {
-        await api.create(toApiCreatePayload(remapped));
+        await api.create(toApiCreatePayload(remapped), SILENT_PUSH_OPTIONS);
         await repository.remove(record.id);
         await this.dependencies.synchronizationPendencyService.resolve(entityType, record.id);
       } catch (error) {
@@ -204,6 +227,7 @@ export class DataSynchronizationService implements IDataSynchronizationService {
     error: unknown,
   ): Promise<void> {
     const apiError = error as IApiError;
+    this.unsynchronizedRecordsCount++;
 
     await this.dependencies.synchronizationPendencyService.register({
       entityType,

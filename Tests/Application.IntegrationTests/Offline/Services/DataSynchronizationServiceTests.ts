@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message';
 import { ApplicationSession } from '../../Fixtures/ApplicationSession';
 import { FakeBackEnd } from '../../Fixtures/FakeBackEnd';
 import { IndexedDbInspector } from '../../Fixtures/IndexedDbInspector';
@@ -21,6 +22,7 @@ describe('DataSynchronizationService', () => {
 
   beforeEach(() => {
     backEnd = new FakeBackEnd().install();
+    jest.mocked(Toast.show).mockClear();
   });
 
   async function synchronizeOnline(): Promise<SynchronizationStatus> {
@@ -243,6 +245,58 @@ describe('DataSynchronizationService', () => {
     await synchronizeOnline();
     expect(backEnd.requestsTo('GET', '/localities/synchronization')).toHaveLength(1);
     expect(await IndexedDbInspector.getIds(OfflineStoreNames.localities)).toEqual([1, 2]);
+  });
+
+  test('Synchronize_RecordsPushedSuccessfully_ShowsNoToast', async () => {
+    const { services } = ApplicationSession.startOffline();
+    await services.productService.create(ProductSaveDtoBuilder.product('Areia'));
+    await services.customerService.create(CustomerSaveDtoBuilder.customer('João Offline'));
+    jest.mocked(Toast.show).mockClear();
+
+    const status = await synchronizeOnline();
+
+    expect(status).toBe('success');
+    expect(Toast.show).not.toHaveBeenCalled();
+  });
+
+  test('Synchronize_RecordsRejectedByBackEnd_ShowsOnlySummaryToast', async () => {
+    const { services } = ApplicationSession.startOffline();
+    const product = await services.productService.create(ProductSaveDtoBuilder.product('Brita'));
+    await services.customerService.create(CustomerSaveDtoBuilder.customer('Cliente Inválido'));
+    await services.customerService.create(CustomerSaveDtoBuilder.customer('Cliente Válido'));
+    await services.orderService.create(DocumentSaveDtoBuilder.order(1, [product.id]));
+    backEnd.rejectNext('POST', '/customers', {
+      status: 400,
+      detail: 'O campo: Cpf contém um CPF inválido.',
+      when: (body) => body.name === 'Cliente Inválido',
+    });
+    backEnd.rejectNext('POST', '/orders', { status: 400, detail: 'Forma de pagamento inválida.' });
+    jest.mocked(Toast.show).mockClear();
+
+    const status = await synchronizeOnline();
+
+    expect(status).toBe('error');
+    expect(await IndexedDbInspector.getPendencies()).toHaveLength(2);
+    expect(Toast.show).toHaveBeenCalledTimes(1);
+    expect(Toast.show).toHaveBeenCalledWith({
+      type: 'error',
+      text1: '2 registros não foram sincronizados. Verifique as Pendências de Sincronização.',
+    });
+  });
+
+  test('Synchronize_BackEndUnavailable_ShowsSummaryToastForUnsynchronizedRecord', async () => {
+    const { services } = ApplicationSession.startOffline();
+    await services.customerService.create(CustomerSaveDtoBuilder.customer('Cliente Pendente'));
+    backEnd.goDown();
+    jest.mocked(Toast.show).mockClear();
+
+    const status = await synchronizeOnline();
+
+    expect(status).toBe('error');
+    expect(Toast.show).toHaveBeenCalledWith({
+      type: 'error',
+      text1: '1 registro não foi sincronizado. Verifique as Pendências de Sincronização.',
+    });
   });
 
   test('Synchronize_CalledTwiceInSameSession_RunsOnceAndNotifiesStatusChanges', async () => {

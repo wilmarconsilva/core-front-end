@@ -8,6 +8,7 @@ import {
   notifyOfflineSaved,
   toApiCreatePayload,
 } from '../Utilities/OfflineUtilities';
+import { IRequestOptions } from '../../Shared/DataTransferObjects/APIConsumer/IRequestOptions';
 import { blockOfflineOperation } from '../../../Domain/Offline/Exceptions/OfflineUnavailableError';
 
 export type OfflineListingMapper<TSaveDto, TListing> = (
@@ -64,7 +65,7 @@ export class OfflineCrudService<TSaveDto extends { id: number }, TDetailDto, TLi
     return this.apiService.getById(id);
   }
 
-  async create(dto: TSaveDto): Promise<TSaveDto> {
+  async create(dto: TSaveDto, requestOptions?: IRequestOptions): Promise<TSaveDto> {
     if (OperationModeService.getMode() === OperationMode.Offline) {
       const records = await this.config.repository.getAllRecords();
       const offlineDto = assignLocalId(dto, records.map((record) => record.id));
@@ -72,7 +73,7 @@ export class OfflineCrudService<TSaveDto extends { id: number }, TDetailDto, TLi
       notifyOfflineSaved();
       return offlineDto;
     }
-    return this.apiService.create(dto);
+    return this.apiService.create(dto, requestOptions);
   }
 
   async update(id: number, dto: TSaveDto): Promise<TSaveDto> {
